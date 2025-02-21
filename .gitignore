@@ -1,0 +1,16 @@
+
+
+# Node.js
+node_modules/
+
+# Yarn
+.yarn/
+.pnp.*
+yarn-error.log
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
