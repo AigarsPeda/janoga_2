@@ -9,16 +9,18 @@ interface StrapiImageProps {
   className?: string;
   priority?: boolean;
   fill?: boolean;
+  style?: React.CSSProperties;
 }
 
 export function StrapiImage({
   src,
-  alt,
+  alt = "", // Added a default empty string for alt
   height,
   width,
   className,
   priority = false,
   fill = false,
+  style,
 }: Readonly<StrapiImageProps>) {
   if (!src) return null;
   const imageUrl = getStrapiMedia(src);
@@ -33,6 +35,7 @@ export function StrapiImage({
       className={className}
       priority={priority}
       fill={fill}
+      style={style}
     />
   );
 }

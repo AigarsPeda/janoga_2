@@ -9,15 +9,23 @@
     "logoText": {
       "type": "string"
     },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
     "navItems": {
       "type": "component",
-      "repeatable": true,
-      "component": "elements.link"
+      "component": "elements.link",
+      "repeatable": true
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "elements.link"
+      "component": "elements.link",
+      "repeatable": false
     }
   }
 }

@@ -12,23 +12,17 @@
     "text": {
       "type": "text"
     },
-    "topLink": {
-      "displayName": "Link",
-      "type": "component",
-      "repeatable": false,
-      "component": "elements.link"
-    },
     "buttonLink": {
       "type": "component",
-      "repeatable": true,
-      "component": "elements.link"
+      "component": "elements.link",
+      "repeatable": true
     },
     "image": {
+      "type": "media",
+      "multiple": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     }
   }
 }

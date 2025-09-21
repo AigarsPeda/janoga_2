@@ -100,7 +100,6 @@ export interface LayoutHero extends Struct.ComponentSchema {
     heading: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images'>;
     text: Schema.Attribute.Text;
-    topLink: Schema.Attribute.Component<'elements.link', false>;
   };
 }
 
@@ -134,6 +133,7 @@ export interface LayoutTopNav extends Struct.ComponentSchema {
   };
   attributes: {
     cta: Schema.Attribute.Component<'elements.link', false>;
+    logo: Schema.Attribute.Media<'images' | 'files'>;
     logoText: Schema.Attribute.String;
     navItems: Schema.Attribute.Component<'elements.link', true>;
   };

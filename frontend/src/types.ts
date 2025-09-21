@@ -20,12 +20,17 @@ export interface NavLink {
   isPrimary: boolean;
 }
 
-export type Block = HeroProps | CardGridProps | SectionHeadingProps | ContentWithImageProps | PriceGridProps;
+export type Block =
+  | HeroProps
+  | CardGridProps
+  | SectionHeadingProps
+  | ContentWithImageProps
+  | PriceGridProps;
 
 export interface HeroProps extends Base<"layout.hero"> {
   heading: string;
   text: string;
-  topLink?: NavLink;
+  // topLink?: NavLink;
   buttonLink?: NavLink[];
   image: {
     url: string;
