@@ -81,6 +81,16 @@ export interface LayoutContentWithImage extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutFeatureCard extends Struct.ComponentSchema {
+  collectionName: 'components_layout_feature_cards';
+  info: {
+    displayName: 'FeatureCard';
+  };
+  attributes: {
+    item: Schema.Attribute.Component<'elements.feature', true>;
+  };
+}
+
 export interface LayoutFooter extends Struct.ComponentSchema {
   collectionName: 'components_layout_footers';
   info: {
@@ -151,6 +161,7 @@ declare module '@strapi/strapi' {
       'elements.price-card': ElementsPriceCard;
       'layout.card-grid': LayoutCardGrid;
       'layout.content-with-image': LayoutContentWithImage;
+      'layout.feature-card': LayoutFeatureCard;
       'layout.footer': LayoutFooter;
       'layout.hero': LayoutHero;
       'layout.price-grid': LayoutPriceGrid;

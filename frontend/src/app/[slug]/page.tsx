@@ -67,6 +67,13 @@ async function loader(slug: string) {
               },
             },
           },
+          "layout.feature-card": {
+            populate: {
+              item: {
+                populate: "*",
+              },
+            },
+          },
         },
       },
     },

@@ -25,7 +25,8 @@
         "layout.card-grid",
         "layout.section-heading",
         "layout.content-with-image",
-        "layout.price-grid"
+        "layout.price-grid",
+        "layout.feature-card"
       ]
     }
   }
