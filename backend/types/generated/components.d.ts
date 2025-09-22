@@ -20,7 +20,7 @@ export interface ElementsFeature extends Struct.ComponentSchema {
     displayName: 'Feature';
   };
   attributes: {
-    buttonLink: Schema.Attribute.Component<'elements.link', true>;
+    buttonLink: Schema.Attribute.Component<'elements.link', false>;
     description: Schema.Attribute.String;
     heading: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images' | 'files'>;
@@ -87,7 +87,7 @@ export interface LayoutFeatureCard extends Struct.ComponentSchema {
     displayName: 'FeatureCard';
   };
   attributes: {
-    item: Schema.Attribute.Component<'elements.feature', true>;
+    items: Schema.Attribute.Component<'elements.feature', true>;
   };
 }
 

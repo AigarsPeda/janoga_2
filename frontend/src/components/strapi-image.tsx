@@ -1,26 +1,26 @@
-import Image from "next/image";
 import { getStrapiMedia } from "@/lib/utils";
+import Image from "next/image";
 
 interface StrapiImageProps {
   src: string;
   alt: string;
-  height?: number;
   width?: number;
+  fill?: boolean;
+  height?: number;
   className?: string;
   priority?: boolean;
-  fill?: boolean;
   style?: React.CSSProperties;
 }
 
 export function StrapiImage({
   src,
-  alt = "", // Added a default empty string for alt
-  height,
   width,
-  className,
-  priority = false,
-  fill = false,
   style,
+  height,
+  className,
+  alt = "",
+  fill = false,
+  priority = false,
 }: Readonly<StrapiImageProps>) {
   if (!src) return null;
   const imageUrl = getStrapiMedia(src);

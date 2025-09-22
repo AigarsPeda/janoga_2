@@ -53,7 +53,7 @@ async function loader() {
           },
           "layout.feature-card": {
             populate: {
-              item: {
+              items: {
                 populate: "*",
               },
             },

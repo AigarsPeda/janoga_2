@@ -5,7 +5,7 @@
   },
   "options": {},
   "attributes": {
-    "item": {
+    "items": {
       "type": "component",
       "component": "elements.feature",
       "repeatable": true

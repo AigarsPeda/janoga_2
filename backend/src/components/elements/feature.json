@@ -22,7 +22,7 @@
     "buttonLink": {
       "type": "component",
       "component": "elements.link",
-      "repeatable": true
+      "repeatable": false
     }
   }
 }
