@@ -1,13 +1,14 @@
 import type { Block } from "@/types";
 
-import qs from "qs";
 import { getStrapiURL } from "@/lib/utils";
+import qs from "qs";
 
-import { Hero } from "@/components/hero";
-import { SectionHeading } from "@/components/section-heading";
-import ContentWithImage from "@/components/content-with-image";
-import { Pricing } from "@/components/pricing";
 import { CardCarousel } from "@/components/card-carousel";
+import ContentWithImage from "@/components/content-with-image";
+import { FeatureCard } from "@/components/feature-card";
+import { Hero } from "@/components/hero";
+import { Pricing } from "@/components/pricing";
+import { SectionHeading } from "@/components/section-heading";
 
 async function loader() {
   const { fetchData } = await import("@/lib/fetch");
@@ -84,6 +85,8 @@ function BlockRenderer(block: Block, index: number) {
       return <ContentWithImage key={index} {...block} />;
     case "layout.price-grid":
       return <Pricing key={index} {...block} />;
+    case "layout.feature-card":
+      return <FeatureCard key={index} {...block} />;
     default:
       return null;
   }
