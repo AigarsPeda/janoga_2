@@ -20,8 +20,19 @@ export interface ElementsFeature extends Struct.ComponentSchema {
     displayName: 'Feature';
   };
   attributes: {
+    buttonLink: Schema.Attribute.Component<'elements.link', true>;
     description: Schema.Attribute.String;
+    heading: Schema.Attribute.String;
+    image: Schema.Attribute.Media<'images' | 'files'>;
   };
+}
+
+export interface ElementsFeatureCard extends Struct.ComponentSchema {
+  collectionName: 'components_elements_feature_cards';
+  info: {
+    displayName: 'FeatureCard';
+  };
+  attributes: {};
 }
 
 export interface ElementsLink extends Struct.ComponentSchema {
@@ -144,6 +155,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'elements.card': ElementsCard;
       'elements.feature': ElementsFeature;
+      'elements.feature-card': ElementsFeatureCard;
       'elements.link': ElementsLink;
       'elements.price-card': ElementsPriceCard;
       'layout.card-grid': LayoutCardGrid;

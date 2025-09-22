@@ -33,9 +33,11 @@ export function Pricing(data: Readonly<PriceGridProps>) {
                       </li>
                     ))}
                 </ul>
-                <Button size="lg" asChild className="mt-10 w-full">
-                  <Link href={link.href}>{link.text}</Link>
-                </Button>
+                {link && (
+                  <Button size="lg" asChild className="mt-10 w-full">
+                    <Link href={link.href}>{link.text}</Link>
+                  </Button>
+                )}
               </CardContent>
               {selected ? (
                 <span className="absolute inset-x-0 -top-5 mx-auto w-32 rounded-full bg-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground shadow-md">

@@ -7,6 +7,22 @@
   "attributes": {
     "description": {
       "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "heading": {
+      "type": "string"
+    },
+    "buttonLink": {
+      "type": "component",
+      "component": "elements.link",
+      "repeatable": true
     }
   }
 }

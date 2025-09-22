@@ -77,6 +77,6 @@ export interface PriceGridProps extends Base<"layout.price-grid"> {
       id: string;
       description: string;
     }[];
-    link: NavLink;
+    link?: NavLink;
   }[];
 }
