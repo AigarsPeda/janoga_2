@@ -50,7 +50,7 @@ export default function ClientCarousel({ clients }: Readonly<ClientCarouselProps
   return (
     <>
       <div className="container mx-auto">
-        <div className="relative min-h-[5.7rem] md:min-h-[10rem] flex justify-center items-center">
+        <div className="relative min-h-[5rem] md:min-h-[5rem] flex justify-center items-center">
           <div className="absolute top-0 left-0 z-10 w-20 h-full bg-gradient-to-r from-[var(--color-background)] to-transparent"></div>
           <AnimatePresence mode="wait">
             <motion.div
