@@ -85,7 +85,7 @@ export interface LayoutClientCarousel extends Struct.ComponentSchema {
     displayName: 'Client Carousel';
   };
   attributes: {
-    Clients: Schema.Attribute.Component<'elements.logo', true>;
+    clients: Schema.Attribute.Component<'elements.logo', true>;
   };
 }
 

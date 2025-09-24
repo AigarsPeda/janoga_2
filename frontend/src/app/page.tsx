@@ -9,6 +9,7 @@ import { FeatureCard } from "@/components/feature-card";
 import { Hero } from "@/components/hero";
 import { Pricing } from "@/components/pricing";
 import { SectionHeading } from "@/components/section-heading";
+import ClientCarousel from "@/components/client-carousel";
 
 async function loader() {
   const { fetchData } = await import("@/lib/fetch");
@@ -60,7 +61,15 @@ async function loader() {
             },
           },
           "layout.client-carousel": {
-            populate: "*",
+            populate: {
+              clients: {
+                populate: {
+                  image: {
+                    fields: ["url", "alternativeText", "name"],
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -90,6 +99,8 @@ function BlockRenderer(block: Block, index: number) {
       return <Pricing key={index} {...block} />;
     case "layout.feature-card":
       return <FeatureCard key={index} {...block} />;
+    case "layout.client-carousel":
+      return <ClientCarousel key={index} {...block} />;
     default:
       return null;
   }

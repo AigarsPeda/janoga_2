@@ -4,7 +4,8 @@ type ComponentType =
   | "layout.section-heading"
   | "layout.content-with-image"
   | "layout.price-grid"
-  | "layout.feature-card";
+  | "layout.feature-card"
+  | "layout.client-carousel";
 
 interface Base<T extends ComponentType, D extends {} = {}> {
   __component: T;
@@ -27,7 +28,8 @@ export type Block =
   | SectionHeadingProps
   | ContentWithImageProps
   | PriceGridProps
-  | FeatureCardProps;
+  | FeatureCardProps
+  | ClientCarouselProps;
 
 export interface FeatureCardProps extends Base<"layout.feature-card"> {
   items: {
@@ -95,4 +97,19 @@ export interface PriceGridProps extends Base<"layout.price-grid"> {
     }[];
     link?: NavLink;
   }[];
+}
+
+export interface Client {
+  id: string;
+  href: string;
+  isExternal: boolean;
+  image: {
+    url: string;
+    alternativeText: string | null;
+    name: string;
+  };
+}
+
+export interface ClientCarouselProps extends Base<"layout.client-carousel"> {
+  clients: Client[];
 }

@@ -5,7 +5,7 @@
   },
   "options": {},
   "attributes": {
-    "Clients": {
+    "clients": {
       "type": "component",
       "component": "elements.logo",
       "repeatable": true
