@@ -85,10 +85,10 @@ export interface ContentWithImageProps extends Base<"layout.content-with-image">
 export interface PriceGridProps extends Base<"layout.price-grid"> {
   priceCard: {
     id: string;
-    heading: string;
-    description: string;
     price: string;
+    heading: string;
     selected: boolean;
+    description: string;
     feature: {
       id: string;
       description: string;

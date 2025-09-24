@@ -17,8 +17,8 @@ export function StrapiImage({
   width,
   style,
   height,
-  className,
   alt = "",
+  className,
   fill = false,
   priority = false,
 }: Readonly<StrapiImageProps>) {
