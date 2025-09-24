@@ -51,7 +51,7 @@ export default function ClientCarousel({ clients }: Readonly<ClientCarouselProps
     <>
       <div className="container mx-auto">
         <div className="relative min-h-[5.7rem] md:min-h-[10rem] flex justify-center items-center">
-          <div className="absolute top-0 left-0 z-10 w-20 h-full bg-gradient-to-r from-white to-transparent"></div>
+          <div className="absolute top-0 left-0 z-10 w-20 h-full bg-gradient-to-r from-[var(--color-background)] to-transparent"></div>
           <AnimatePresence mode="wait">
             <motion.div
               exit="hidden"
@@ -70,7 +70,7 @@ export default function ClientCarousel({ clients }: Readonly<ClientCarouselProps
               />
             </motion.div>
           </AnimatePresence>
-          <div className="absolute top-0 right-0 z-10 w-20 h-full bg-gradient-to-l from-white to-transparent"></div>
+          <div className="absolute top-0 right-0 z-10 w-20 h-full bg-gradient-to-l from-[var(--color-background)] to-transparent"></div>
         </div>
       </div>
     </>
@@ -108,7 +108,10 @@ type PropType = {
 };
 
 const EmblaCarousel: FC<PropType> = ({ slides, options, handArraySwitch, handelIsLoading }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel(options, [AutoScroll({ playOnInit: true })]);
+  // Ensure autoplay goes right-to-left by setting direction to "backward"
+  const [emblaRef, emblaApi] = useEmblaCarousel(options, [
+    AutoScroll({ playOnInit: true, direction: "backward" }),
+  ]);
   const timerId = useRef<NodeJS.Timeout | null>(null);
   const [userIsInteracting, setUserIsInteracting] = useState(false);
 
@@ -192,24 +195,24 @@ const EmblaCarousel: FC<PropType> = ({ slides, options, handArraySwitch, handelI
   }, [emblaApi, slides]);
 
   return (
-    <div className="embla">
-      <div className="embla__viewport" ref={emblaRef}>
-        <div className="embla__container">
+    <div className="embla w-full">
+      <div className="embla__viewport overflow-hidden" ref={emblaRef}>
+        <div className="embla__container flex items-center gap-8">
           {slides.map((item, i) => (
-            <div key={`${i}`} className="embla__slide">
+            <div key={`${i}`} className="embla__slide shrink-0 flex-[0_0_auto]">
               <div className="embla__slide__number">
                 <Link
                   prefetch={true}
                   href={item.href ?? "/"}
                   target={item.isExternal ? "_self" : "_blank"}
-                  className="object-cover w-full h-full"
+                  className="block"
                 >
                   {item.image.url && (
                     <img
                       src={getStrapiMedia(item.image.url) ?? ""}
                       alt="our client logo"
-                      className="object-contain w-full h-full"
-                      style={{ maxHeight: "80px", margin: "0 auto" }}
+                      className="object-contain h-12 md:h-16 w-auto mx-auto"
+                      style={{ maxHeight: "80px" }}
                     />
                   )}
                 </Link>
