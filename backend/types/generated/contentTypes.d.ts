@@ -454,6 +454,7 @@ export interface ApiLandingPageLandingPage extends Struct.SingleTypeSchema {
         'layout.content-with-image',
         'layout.price-grid',
         'layout.feature-card',
+        'layout.client-carousel',
       ]
     >;
     createdAt: Schema.Attribute.DateTime;

@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_layout_client_carousels",
+  "info": {
+    "displayName": "Client Carousel"
+  },
+  "options": {},
+  "attributes": {
+    "Clients": {
+      "type": "component",
+      "component": "elements.logo",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

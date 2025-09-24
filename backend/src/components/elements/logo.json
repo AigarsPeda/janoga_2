@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_elements_logos",
+  "info": {
+    "displayName": "Logo"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "href": {
+      "type": "string"
+    },
+    "isExternal": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "config": {}
+}

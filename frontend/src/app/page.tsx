@@ -59,6 +59,9 @@ async function loader() {
               },
             },
           },
+          "layout.client-carousel": {
+            populate: "*",
+          },
         },
       },
     },

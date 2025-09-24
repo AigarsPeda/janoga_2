@@ -40,6 +40,18 @@ export interface ElementsLink extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsLogo extends Struct.ComponentSchema {
+  collectionName: 'components_elements_logos';
+  info: {
+    displayName: 'Logo';
+  };
+  attributes: {
+    href: Schema.Attribute.String;
+    image: Schema.Attribute.Media<'images'>;
+    isExternal: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
 export interface ElementsPriceCard extends Struct.ComponentSchema {
   collectionName: 'components_elements_price_cards';
   info: {
@@ -64,6 +76,16 @@ export interface LayoutCardGrid extends Struct.ComponentSchema {
   };
   attributes: {
     cardItems: Schema.Attribute.Component<'elements.card', true>;
+  };
+}
+
+export interface LayoutClientCarousel extends Struct.ComponentSchema {
+  collectionName: 'components_layout_client_carousels';
+  info: {
+    displayName: 'Client Carousel';
+  };
+  attributes: {
+    Clients: Schema.Attribute.Component<'elements.logo', true>;
   };
 }
 
@@ -158,8 +180,10 @@ declare module '@strapi/strapi' {
       'elements.card': ElementsCard;
       'elements.feature': ElementsFeature;
       'elements.link': ElementsLink;
+      'elements.logo': ElementsLogo;
       'elements.price-card': ElementsPriceCard;
       'layout.card-grid': LayoutCardGrid;
+      'layout.client-carousel': LayoutClientCarousel;
       'layout.content-with-image': LayoutContentWithImage;
       'layout.feature-card': LayoutFeatureCard;
       'layout.footer': LayoutFooter;
