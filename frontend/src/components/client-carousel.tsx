@@ -108,9 +108,8 @@ type PropType = {
 };
 
 const EmblaCarousel: FC<PropType> = ({ slides, options, handArraySwitch, handelIsLoading }) => {
-  // Ensure autoplay goes right-to-left by setting direction to "backward"
   const [emblaRef, emblaApi] = useEmblaCarousel(options, [
-    AutoScroll({ playOnInit: true, direction: "backward" }),
+    AutoScroll({ playOnInit: true, direction: "forward", speed: 1 }),
   ]);
   const timerId = useRef<NodeJS.Timeout | null>(null);
   const [userIsInteracting, setUserIsInteracting] = useState(false);
