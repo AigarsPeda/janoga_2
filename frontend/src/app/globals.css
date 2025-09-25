@@ -142,6 +142,36 @@
   }
 }
 
+/* --------------------------------------------------
+   Animated horizontal timeline line (Delivery steps)
+   Inspired by subtle flowing accent line on vercel.com
+--------------------------------------------------- */
+.timeline-line {
+  height: 2px; /* h-0.5 */
+  background: #423e3e; /* solid black base line */
+  position: absolute;
+  overflow: hidden;
+}
+
+/* Narrow moving primary colored pulse */
+.timeline-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 90px; /* size of the glowing segment */
+  left: -90px; /* start fully outside on the left */
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, hsl(var(--primary)) 55%, rgba(255,255,255,0) 100%);
+  animation: timeline-pulse 4s linear infinite;
+  filter: drop-shadow(0 0 3px hsl(var(--primary))) drop-shadow(0 0 6px hsl(var(--primary)));
+  pointer-events: none;
+}
+
+@keyframes timeline-pulse {
+  0% { left: -90px; }
+  100% { left: 100%; }
+}
+
 
 /******************************************* 
   Rich Text Styles
