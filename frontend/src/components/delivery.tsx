@@ -1,6 +1,8 @@
 "use client";
 
 import type { DeliveryProps } from "@/types";
+import { Fragment } from "react";
+import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   CircleDollarSign,
@@ -29,6 +31,53 @@ function getIconComponent(name: string | undefined): LucideIcon {
 export function Delivery({ steps }: Readonly<DeliveryProps>) {
   if (!steps || steps.length === 0) return null;
 
+  function renderDescription(text: string) {
+    if (!text) return null;
+    // Regex matches: full URLs (http/https), www. prefixed, or email addresses
+    const pattern =
+      /((https?:\/\/[^\s<]+)|(www\.[^\s<]+)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}))/gi;
+    const nodes: ReactNode[] = [];
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      const matchText = match[0];
+      const start = match.index;
+      if (start > lastIndex) {
+        nodes.push(text.slice(lastIndex, start));
+      }
+
+      let href = matchText;
+      let isEmail = false;
+      if (matchText.includes("@") && !matchText.startsWith("http")) {
+        // treat as email if it contains @ and not obviously a URL
+        isEmail = true;
+        href = `mailto:${matchText}`;
+      } else if (matchText.startsWith("www.")) {
+        href = `https://${matchText}`; // assume https for bare www.
+      }
+
+      nodes.push(
+        <a
+          key={`${start}-${matchText}`}
+          href={href}
+          target={isEmail ? undefined : "_blank"}
+          // security & SEO
+          rel={isEmail ? undefined : "noopener noreferrer nofollow"}
+          className="underline decoration-dotted text-primary break-all hover:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-sm"
+          aria-label={isEmail ? `Email ${matchText}` : `Open link ${matchText} in new tab`}
+        >
+          {matchText}
+        </a>,
+      );
+      lastIndex = pattern.lastIndex;
+    }
+    if (lastIndex < text.length) {
+      nodes.push(text.slice(lastIndex));
+    }
+    // Preserve React key stability by wrapping in Fragment (parent <p> already provides key context)
+    return <Fragment>{nodes}</Fragment>;
+  }
+
   return (
     <section aria-label="Delivery steps timeline" className="w-full py-8 container">
       <div className="relative">
@@ -54,7 +103,7 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
                   </span>
                   <div className="mt-0 flex-1 pl-4 md:mt-4 md:pl-0 md:flex md:flex-col h-full w-full">
                     <div className="rounded-md border border-border/50 text-black bg-white px-4 py-3 shadow-sm backdrop-blur-sm transition-colors whitespace-pre-line md:text-base text-sm flex-1 flex">
-                      <p className="m-0 leading-snug">{step.description}</p>
+                      <p className="m-0 leading-snug">{renderDescription(step.description)}</p>
                     </div>
                   </div>
                 </div>
