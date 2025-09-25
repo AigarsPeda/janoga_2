@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { MobileNavbar } from "@/components/mobile-navbar";
 import { Button } from "@/components/ui/button";
-import { getStrapiURL } from "@/lib/utils";
+import { cn, getStrapiURL } from "@/lib/utils";
 
 interface HeaderProps {
   data: {
@@ -41,8 +41,9 @@ export function Header({ data }: Readonly<HeaderProps>) {
             navItems.map((item, i) => (
               <Link
                 href={item.href}
-                className="flex cursor-pointer items-center text-lg font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
-                // key={item.text}
+                className={cn("font-medium text-muted-foreground hover:text-foreground", {
+                  "text-primary": item.isPrimary,
+                })}
                 key={`navItems-link-${i}`}
                 target={item.isExternal ? "_blank" : "_self"}
               >

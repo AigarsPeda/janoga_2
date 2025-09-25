@@ -455,6 +455,7 @@ export interface ApiLandingPageLandingPage extends Struct.SingleTypeSchema {
         'layout.price-grid',
         'layout.feature-card',
         'layout.client-carousel',
+        'layout.call-to-action',
       ]
     >;
     createdAt: Schema.Attribute.DateTime;
@@ -494,7 +495,7 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         'layout.content-with-image',
         'layout.card-grid',
         'layout.price-grid',
-        'layout.feature-card',
+        'layout.delivery',
       ]
     >;
     createdAt: Schema.Attribute.DateTime;

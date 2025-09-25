@@ -7,6 +7,9 @@ import { Hero } from "@/components/hero";
 import { CardGrid } from "@/components/card-grid";
 import { SectionHeading } from "@/components/section-heading";
 import ContentWithImage from "@/components/content-with-image";
+import { steps } from "framer-motion";
+import { Delivery } from "@/components/delivery";
+import { notFound } from "next/navigation";
 
 interface StaticParamsProps {
   id: number;
@@ -74,6 +77,13 @@ async function loader(slug: string) {
               },
             },
           },
+          "layout.delivery": {
+            populate: {
+              steps: {
+                populate: "*",
+              },
+            },
+          },
         },
       },
     },
@@ -89,7 +99,8 @@ async function loader(slug: string) {
 }
 
 function BlockRenderer(block: Block) {
-  console.log(block.__component, "From BlockRenderer");
+  console.log("PAGE BLOCKS:", block);
+  // console.log(block.__component, "From BlockRenderer");
   switch (block.__component) {
     case "layout.hero":
       return <Hero key={block.id} {...block} />;
@@ -99,15 +110,26 @@ function BlockRenderer(block: Block) {
       return <SectionHeading key={block.id} {...block} />;
     case "layout.content-with-image":
       return <ContentWithImage key={block.id} {...block} />;
+    case "layout.delivery":
+      return <Delivery key={block.id} {...block} />;
     default:
       return null;
   }
 }
 
-export default async function PageBySlugRoute({ params }: { params: { slug: string } }) {
-  const slug = params?.slug;
+export default async function PageBySlugRoute({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
+  if (!slug) notFound();
+
   const data = await loader(slug);
-  const blocks = data?.data[0]?.blocks;
-  if (!blocks) return null;
-  return <div>{blocks ? blocks.map((block: any) => BlockRenderer(block)) : null}</div>;
+  const pageEntry = data?.data?.[0];
+
+  if (!pageEntry) notFound();
+
+  const blocks = pageEntry?.blocks;
+
+  if (!blocks || !Array.isArray(blocks)) return null;
+
+  return <div>{blocks.map((block) => BlockRenderer(block))}</div>;
 }

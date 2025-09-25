@@ -1,15 +1,17 @@
 type ComponentType =
   | "layout.hero"
+  | "layout.delivery"
   | "layout.card-grid"
-  | "layout.section-heading"
-  | "layout.content-with-image"
   | "layout.price-grid"
   | "layout.feature-card"
-  | "layout.client-carousel";
+  | "layout.call-to-action"
+  | "layout.client-carousel"
+  | "layout.section-heading"
+  | "layout.content-with-image";
 
 interface Base<T extends ComponentType, D extends {} = {}> {
   __component: T;
-  id: string;
+  id: string; // is this correct?
   createdAt: string;
   updatedAt: string;
   data: D;
@@ -18,18 +20,20 @@ interface Base<T extends ComponentType, D extends {} = {}> {
 export interface NavLink {
   href: string;
   text: string;
-  isExternal: boolean;
   isPrimary: boolean;
+  isExternal: boolean;
 }
 
 export type Block =
   | HeroProps
+  | DeliveryProps
   | CardGridProps
-  | SectionHeadingProps
-  | ContentWithImageProps
   | PriceGridProps
   | FeatureCardProps
-  | ClientCarouselProps;
+  | CallToActionProps
+  | ClientCarouselProps
+  | SectionHeadingProps
+  | ContentWithImageProps;
 
 export interface FeatureCardProps extends Base<"layout.feature-card"> {
   items: {
@@ -112,4 +116,20 @@ export interface Client {
 
 export interface ClientCarouselProps extends Base<"layout.client-carousel"> {
   clients: Client[];
+}
+
+export interface CallToActionProps extends Base<"layout.call-to-action"> {
+  id: string;
+  heading: string;
+  buttonLink: NavLink;
+}
+
+export interface Step {
+  id: string;
+  icon: string;
+  description: string;
+}
+
+export interface DeliveryProps extends Base<"layout.delivery"> {
+  steps: Step[];
 }

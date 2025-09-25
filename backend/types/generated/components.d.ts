@@ -68,6 +68,30 @@ export interface ElementsPriceCard extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsStep extends Struct.ComponentSchema {
+  collectionName: 'components_elements_steps';
+  info: {
+    displayName: 'Icon with description';
+  };
+  attributes: {
+    description: Schema.Attribute.String;
+    icon: Schema.Attribute.Enumeration<
+      ['phone', 'truck', 'money', 'dish', 'menu']
+    >;
+  };
+}
+
+export interface LayoutCallToAction extends Struct.ComponentSchema {
+  collectionName: 'components_layout_call_to_actions';
+  info: {
+    displayName: 'Call to action';
+  };
+  attributes: {
+    buttonLink: Schema.Attribute.Component<'elements.link', false>;
+    heading: Schema.Attribute.String;
+  };
+}
+
 export interface LayoutCardGrid extends Struct.ComponentSchema {
   collectionName: 'components_layout_card_grids';
   info: {
@@ -100,6 +124,16 @@ export interface LayoutContentWithImage extends Struct.ComponentSchema {
     reverse: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     subHeading: Schema.Attribute.String;
     text: Schema.Attribute.Text;
+  };
+}
+
+export interface LayoutDelivery extends Struct.ComponentSchema {
+  collectionName: 'components_layout_deliveries';
+  info: {
+    displayName: 'Delivery';
+  };
+  attributes: {
+    steps: Schema.Attribute.Component<'elements.step', true>;
   };
 }
 
@@ -182,9 +216,12 @@ declare module '@strapi/strapi' {
       'elements.link': ElementsLink;
       'elements.logo': ElementsLogo;
       'elements.price-card': ElementsPriceCard;
+      'elements.step': ElementsStep;
+      'layout.call-to-action': LayoutCallToAction;
       'layout.card-grid': LayoutCardGrid;
       'layout.client-carousel': LayoutClientCarousel;
       'layout.content-with-image': LayoutContentWithImage;
+      'layout.delivery': LayoutDelivery;
       'layout.feature-card': LayoutFeatureCard;
       'layout.footer': LayoutFooter;
       'layout.hero': LayoutHero;

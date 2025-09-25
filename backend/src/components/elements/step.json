@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_elements_steps",
+  "info": {
+    "displayName": "Icon with description"
+  },
+  "options": {},
+  "attributes": {
+    "description": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "enumeration",
+      "enum": [
+        "phone",
+        "truck",
+        "money",
+        "dish",
+        "menu"
+      ]
+    }
+  },
+  "config": {}
+}

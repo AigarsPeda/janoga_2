@@ -8,7 +8,7 @@ export function SectionHeading(data: Readonly<SectionHeadingProps>) {
   const headingStyle = centered ? "flex flex-col text-center" : "";
 
   return (
-    <div className={cn("container items-center justify-between gap-2 py-4", headingStyle)}>
+    <div className={cn("container items-center justify-between gap-2 py-10", headingStyle)}>
       <div className="flex flex-col gap-3">
         {subHeading && <span className="font-bold uppercase text-primary">{subHeading}</span>}
         {heading && (

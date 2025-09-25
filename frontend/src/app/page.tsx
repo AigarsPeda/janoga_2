@@ -10,6 +10,7 @@ import { Hero } from "@/components/hero";
 import { Pricing } from "@/components/pricing";
 import { SectionHeading } from "@/components/section-heading";
 import ClientCarousel from "@/components/client-carousel";
+import { CallToAction } from "@/components/call-to-action";
 
 async function loader() {
   const { fetchData } = await import("@/lib/fetch");
@@ -71,6 +72,7 @@ async function loader() {
               },
             },
           },
+          "layout.call-to-action": { populate: "*" },
         },
       },
     },
@@ -101,6 +103,8 @@ function BlockRenderer(block: Block, index: number) {
       return <FeatureCard key={index} {...block} />;
     case "layout.client-carousel":
       return <ClientCarousel key={index} {...block} />;
+    case "layout.call-to-action":
+      return <CallToAction key={index} {...block} />;
     default:
       return null;
   }

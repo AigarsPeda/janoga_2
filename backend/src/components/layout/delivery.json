@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_layout_deliveries",
+  "info": {
+    "displayName": "Delivery"
+  },
+  "options": {},
+  "attributes": {
+    "steps": {
+      "type": "component",
+      "component": "elements.step",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}
