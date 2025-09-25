@@ -100,6 +100,8 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
       <div className="relative" id="delivery-timeline-root">
         {/* Dynamic horizontal line (desktop only) */}
         <TimelineLine />
+        {/* Dynamic vertical line (mobile only) */}
+        <TimelineLineVertical />
         <ol className="relative flex flex-col gap-8 md:grid md:grid-flow-col md:auto-cols-fr md:gap-8 md:items-stretch">
           {steps.map((step, idx) => {
             const Icon = getIconComponent(step.icon);
@@ -204,6 +206,76 @@ function TimelineLine() {
   return (
     <div ref={lineRef} className="timeline-line pointer-events-none hidden md:block" aria-hidden>
       <div ref={pulseRef} className="timeline-pulse" />
+    </div>
+  );
+}
+
+/* Mobile vertical line */
+function TimelineLineVertical() {
+  const lineRef = useRef<HTMLDivElement | null>(null);
+  const pulseRef = useRef<HTMLDivElement | null>(null);
+  const lastIconRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    function computeBounds() {
+      if (!lineRef.current) return;
+      const icons = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "#delivery-timeline-root [data-timeline-icon] .timeline-icon",
+        ),
+      );
+      if (icons.length < 2) return;
+      const first = icons[0];
+      const last = icons[icons.length - 1];
+      lastIconRef.current = last;
+      const parent = lineRef.current.parentElement;
+      if (!parent) return;
+      const parentRect = parent.getBoundingClientRect();
+      const firstRect = first.getBoundingClientRect();
+      const lastRect = last.getBoundingClientRect();
+      const top = firstRect.top + firstRect.height / 2 - parentRect.top;
+      const bottom = lastRect.top + lastRect.height / 2 - parentRect.top;
+      const height = bottom - top;
+      lineRef.current.style.top = top + "px";
+      lineRef.current.style.height = height + "px";
+      // center horizontally to icon centers (icons aligned left with some padding -> use first icon center)
+      const xCenter = firstRect.left + firstRect.width / 2 - parentRect.left;
+      lineRef.current.style.left = xCenter + "px";
+    }
+    computeBounds();
+    window.addEventListener("resize", computeBounds);
+    return () => window.removeEventListener("resize", computeBounds);
+  }, []);
+
+  useEffect(() => {
+    if (!lineRef.current || !pulseRef.current) return;
+    const line = lineRef.current;
+    const pulse = pulseRef.current;
+    const tween = gsap.fromTo(
+      pulse,
+      { y: () => -pulse.offsetHeight },
+      {
+        y: () => line.offsetHeight,
+        duration: 4,
+        ease: "none",
+        repeat: -1,
+        onRepeat: () => {
+          if (lastIconRef.current) {
+            lastIconRef.current.classList.remove("delivery-icon-glow");
+            void lastIconRef.current.offsetWidth;
+            lastIconRef.current.classList.add("delivery-icon-glow");
+          }
+        },
+      },
+    );
+    return () => {
+      tween.kill();
+    };
+  }, []);
+
+  return (
+    <div ref={lineRef} className="timeline-line-vertical pointer-events-none md:hidden" aria-hidden>
+      <div ref={pulseRef} className="timeline-pulse-vertical" />
     </div>
   );
 }

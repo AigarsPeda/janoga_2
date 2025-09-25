@@ -170,6 +170,27 @@
 
 /* (movement handled via GSAP; keyframes removed) */
 
+/* Vertical (mobile) timeline */
+.timeline-line-vertical {
+  position: absolute;
+  width: 2px;
+  background: #383232;
+  overflow: hidden;
+  top: 0;
+  height: 0; /* dynamic */
+}
+
+.timeline-pulse-vertical {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 70px; /* length of pulse */
+  top: -70px; /* start above */
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, hsl(var(--primary)) 55%, rgba(255,255,255,0) 100%);
+  filter: drop-shadow(0 0 4px hsl(var(--primary))) drop-shadow(0 0 12px hsl(var(--primary)));
+  pointer-events: none;
+}
+
 /* Glow effect for last icon when pulse finishes a cycle */
 .delivery-icon-glow {
   animation: delivery-icon-glow 650ms ease-out;
