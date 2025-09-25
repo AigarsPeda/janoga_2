@@ -1,7 +1,8 @@
 "use client";
 
 import type { DeliveryProps } from "@/types";
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef } from "react";
+import gsap from "gsap";
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -96,9 +97,9 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
 
   return (
     <section aria-label="Delivery steps timeline" className="w-full py-8 container">
-      <div className="relative">
-        {/* Animated horizontal line behind the steps (desktop) */}
-        <div className="timeline-line pointer-events-none absolute left-0 right-0 top-6 hidden md:block" />
+      <div className="relative" id="delivery-timeline-root">
+        {/* Dynamic horizontal line (desktop only) */}
+        <TimelineLine />
         <ol className="relative flex flex-col gap-8 md:grid md:grid-flow-col md:auto-cols-fr md:gap-8 md:items-stretch">
           {steps.map((step, idx) => {
             const Icon = getIconComponent(step.icon);
@@ -107,13 +108,15 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
               <li
                 key={step.id ?? idx}
                 className="group relative flex md:flex-1 md:flex-col md:h-full"
+                data-timeline-icon
               >
                 {idx < steps.length - 1 && (
                   <span className="absolute left-6 top-12 h-[calc(100%-3rem)] w-px bg-muted md:hidden" />
                 )}
                 <div className="flex items-start md:flex-col md:items-center h-full w-full">
                   <span
-                    className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary ring-4 ring-background shadow-md transition-transform group-hover:scale-105 will-change-transform"
+                    className="timeline-icon relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary ring-4 ring-background shadow-md transition-transform group-hover:scale-105 will-change-transform"
+                    data-last-icon={isLast ? "true" : undefined}
                     aria-hidden
                   >
                     <Icon className="h-6 w-6" />
@@ -131,5 +134,76 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
         </ol>
       </div>
     </section>
+  );
+}
+
+/* Separate component so we can use hooks without re-rendering list unnecessarily */
+function TimelineLine() {
+  const lineRef = useRef<HTMLDivElement | null>(null);
+  const pulseRef = useRef<HTMLDivElement | null>(null);
+  const lastIconRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    function computeBounds() {
+      if (!lineRef.current) return;
+      const icons = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "#delivery-timeline-root [data-timeline-icon] .timeline-icon",
+        ),
+      );
+      if (icons.length < 2) return;
+      const first = icons[0];
+      const last = icons[icons.length - 1];
+      lastIconRef.current = last;
+      const parent = lineRef.current.parentElement;
+      if (!parent) return;
+      const parentRect = parent.getBoundingClientRect();
+      const firstRect = first.getBoundingClientRect();
+      const lastRect = last.getBoundingClientRect();
+      const left = firstRect.left + firstRect.width / 2 - parentRect.left;
+      const right = lastRect.left + lastRect.width / 2 - parentRect.left;
+      const width = right - left;
+      lineRef.current.style.left = left + "px";
+      lineRef.current.style.width = width + "px";
+      // Center vertically to icon centers
+      const iconCenter = firstRect.top + firstRect.height / 2 - parentRect.top;
+      lineRef.current.style.top = iconCenter + "px";
+    }
+    computeBounds();
+    window.addEventListener("resize", computeBounds);
+    return () => window.removeEventListener("resize", computeBounds);
+  }, []);
+
+  // GSAP animated pulse + glow on last icon each loop
+  useEffect(() => {
+    if (!lineRef.current || !pulseRef.current) return;
+    const line = lineRef.current;
+    const pulse = pulseRef.current;
+    const tween = gsap.fromTo(
+      pulse,
+      { x: () => -pulse.offsetWidth },
+      {
+        x: () => line.offsetWidth,
+        duration: 4,
+        ease: "none",
+        repeat: -1,
+        onRepeat: () => {
+          if (lastIconRef.current) {
+            lastIconRef.current.classList.remove("delivery-icon-glow");
+            void lastIconRef.current.offsetWidth;
+            lastIconRef.current.classList.add("delivery-icon-glow");
+          }
+        },
+      },
+    );
+    return () => {
+      tween.kill();
+    };
+  }, []);
+
+  return (
+    <div ref={lineRef} className="timeline-line pointer-events-none hidden md:block" aria-hidden>
+      <div ref={pulseRef} className="timeline-pulse" />
+    </div>
   );
 }
