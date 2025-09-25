@@ -98,7 +98,7 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
     <section aria-label="Delivery steps timeline" className="w-full py-8 container">
       <div className="relative">
         <div className="pointer-events-none absolute left-0 right-0 top-6 hidden h-0.5 bg-muted md:block" />
-        <ol className="relative flex flex-col gap-8 md:grid md:grid-flow-col md:auto-cols-fr md:gap-0 md:items-stretch">
+        <ol className="relative flex flex-col gap-8 md:grid md:grid-flow-col md:auto-cols-fr md:gap-8 md:items-stretch">
           {steps.map((step, idx) => {
             const Icon = getIconComponent(step.icon);
             const isLast = idx === steps.length - 1;
