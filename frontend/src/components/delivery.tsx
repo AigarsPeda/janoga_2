@@ -33,9 +33,9 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
 
   function renderDescription(text: string) {
     if (!text) return null;
-    // Regex matches: full URLs (http/https), www. prefixed, or email addresses
+    // Regex matches (broadly): URLs, www domains, emails, and raw phone-like sequences (final validation below)
     const pattern =
-      /((https?:\/\/[^\s<]+)|(www\.[^\s<]+)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}))/gi;
+      /((https?:\/\/[^\s<]+)|(www\.[^\s<]+)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|(\+?\d[\d\s()\-]{5,}\d))/gi;
     const nodes: ReactNode[] = [];
     let lastIndex = 0;
     let match: RegExpExecArray | null;
@@ -48,23 +48,39 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
 
       let href = matchText;
       let isEmail = false;
+      let isPhone = false;
+
       if (matchText.includes("@") && !matchText.startsWith("http")) {
-        // treat as email if it contains @ and not obviously a URL
+        // Email
         isEmail = true;
         href = `mailto:${matchText}`;
       } else if (matchText.startsWith("www.")) {
-        href = `https://${matchText}`; // assume https for bare www.
+        // Bare domain
+        href = `https://${matchText}`;
+      } else if (!matchText.startsWith("http")) {
+        // Potential phone (exclude urls/emails) – validate pattern now
+        const cleaned = matchText.replace(/[\s()\-.]/g, "");
+        const digitCount = cleaned.replace(/\D/g, "").length;
+        if (/^[+]?\d[\d\s()\-.]*$/.test(matchText) && digitCount >= 7 && digitCount <= 16) {
+          isPhone = true;
+          href = `tel:${cleaned}`;
+        }
       }
 
       nodes.push(
         <a
           key={`${start}-${matchText}`}
           href={href}
-          target={isEmail ? undefined : "_blank"}
-          // security & SEO
-          rel={isEmail ? undefined : "noopener noreferrer nofollow"}
+          target={isEmail || isPhone ? undefined : "_blank"}
+          rel={isEmail || isPhone ? undefined : "noopener noreferrer nofollow"}
           className="underline decoration-dotted text-primary break-all hover:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-sm"
-          aria-label={isEmail ? `Email ${matchText}` : `Open link ${matchText} in new tab`}
+          aria-label={
+            isEmail
+              ? `Email ${matchText}`
+              : isPhone
+                ? `Call ${matchText}`
+                : `Open link ${matchText} in new tab`
+          }
         >
           {matchText}
         </a>,
