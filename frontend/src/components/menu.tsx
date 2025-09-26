@@ -77,7 +77,7 @@ export default function Menu({ days, note, buttonLink }: MenuCardProps) {
                             key={it.id}
                             className="group flex items-start text-base leading-relaxed text-neutral-800"
                           >
-                            <div className="flex w-full items-start">
+                            <div className="flex w-full items-center">
                               <span className="pr-3 font-medium tracking-wide leading-snug max-w-[65%] break-words">
                                 {it.description}
                               </span>
