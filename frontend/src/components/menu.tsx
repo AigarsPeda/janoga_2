@@ -3,6 +3,8 @@
 import { MenuProps } from "@/types";
 import { cn } from "@/lib/utils";
 import * as React from "react";
+import type { LucideIcon } from "lucide-react";
+import { Soup, UtensilsCrossed, IceCream, CircleHelp, Salad, Coffee } from "lucide-react";
 
 /* ---------------------------------------------
    Cafe Style Menu Card
@@ -23,12 +25,27 @@ function formatPrice(price: string | number) {
   return price;
 }
 
+// Icon map for kinds (case-insensitive). Extend as needed.
+const kindIconMap: Record<string, LucideIcon> = {
+  soup: Soup,
+  main: UtensilsCrossed,
+  dessert: IceCream,
+  salad: Salad,
+  drinks: Coffee,
+  drink: Coffee,
+};
+
+function getKindIcon(kind: string | undefined): LucideIcon {
+  if (!kind) return CircleHelp;
+  return kindIconMap[kind.trim().toLowerCase()] || CircleHelp;
+}
+
 export default function Menu({ days, title = "Drinks", note }: MenuCardProps) {
   return (
     <div className="w-full flex justify-center">
       <div
         className={cn(
-          "relative mx-auto w-full max-w-[420px] rounded-[2.2rem]",
+          "relative mx-auto w-full max-w-[620px] rounded-[2.2rem]",
           "bg-neutral-50 text-neutral-900 shadow-xl ring-1 ring-black/5",
           "p-8 sm:p-10 font-[var(--font-heading)]",
         )}
@@ -38,7 +55,7 @@ export default function Menu({ days, title = "Drinks", note }: MenuCardProps) {
             <section key={cat.id} aria-labelledby={`menu-cat-${cat.id}`} className="space-y-4">
               <h3
                 id={`menu-cat-${cat.id}`}
-                className="text-lg font-bold tracking-wide text-neutral-800"
+                className="text-2xl font-extrabold tracking-wide text-neutral-900"
               >
                 {cat.heading}
               </h3>
@@ -54,35 +71,38 @@ export default function Menu({ days, title = "Drinks", note }: MenuCardProps) {
                   }
                   groups[key].push(it);
                 });
-                return order.map((kind) => (
-                  <div key={kind} className="space-y-2">
-                    <h4 className="pt-2 text-sm font-semibold uppercase tracking-wider text-neutral-500">
-                      {kind}
-                    </h4>
-                    <ul className="space-y-2">
-                      {groups[kind].map((it) => (
-                        <li
-                          key={it.id}
-                          className="group flex items-start text-sm leading-relaxed text-neutral-700"
-                        >
-                          <div className="flex w-full items-center gap-2">
-                            <span className="max-w-[60%] grow break-words pr-1 font-medium tracking-wide text-neutral-800">
-                              {it.description}
-                            </span>
-                            {/* leader line always visible */}
-                            <span
-                              aria-hidden
-                              className="h-[2px] flex-1 bg-[repeating-linear-gradient(90deg,currentColor_0,currentColor_2px,transparent_2px,transparent_6px)] text-neutral-300"
-                            />
-                            <span className="pl-1 font-semibold tabular-nums text-neutral-900">
-                              {formatPrice(it.price)}
-                            </span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ));
+                return order.map((kind) => {
+                  const KindIcon = getKindIcon(kind);
+                  return (
+                    <div key={kind} className="space-y-2">
+                      <div className="pt-2 flex items-center gap-3">
+                        <KindIcon className="h-6 w-6 text-neutral-500" aria-hidden />
+                      </div>
+                      <ul className="space-y-2">
+                        {groups[kind].map((it) => (
+                          <li
+                            key={it.id}
+                            className="group flex items-start text-base leading-relaxed text-neutral-800"
+                          >
+                            <div className="flex w-full items-center gap-2">
+                              <span className="max-w-[60%] grow break-words pr-1 font-medium tracking-wide">
+                                {it.description}
+                              </span>
+                              {/* leader line always visible */}
+                              <span
+                                aria-hidden
+                                className="h-[2px] flex-1 bg-[repeating-linear-gradient(90deg,currentColor_0,currentColor_2px,transparent_2px,transparent_6px)] text-neutral-300"
+                              />
+                              <span className="pl-1 font-semibold tabular-nums text-neutral-900 text-base">
+                                {formatPrice(it.price)}
+                              </span>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                });
               })()}
             </section>
           ))}
