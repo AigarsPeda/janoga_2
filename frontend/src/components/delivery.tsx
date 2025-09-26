@@ -117,7 +117,7 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
                 )}
                 <div className="flex items-start md:flex-col md:items-center h-full w-full">
                   <span
-                    className="timeline-icon relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary ring-4 ring-background shadow-md transition-transform group-hover:scale-105 will-change-transform"
+                    className="timeline-icon relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-white ring-4 ring-background shadow-md transition-transform group-hover:scale-105 will-change-transform"
                     data-last-icon={isLast ? "true" : undefined}
                     aria-hidden
                   >
