@@ -42,34 +42,47 @@ export default function Menu({ days, title = "Drinks", note }: MenuCardProps) {
               >
                 {cat.heading}
               </h3>
-              <ul className="space-y-2">
-                {cat.item.map((it) => (
-                  <li
-                    key={it.id}
-                    className="group flex items-start text-sm leading-relaxed text-neutral-700"
-                  >
-                    {/* Name + dots + price */}
-                    <div className="grid w-full grid-cols-[auto_1fr_auto] items-baseline">
-                      <span className="pr-2 capitalize tracking-wide text-neutral-800">
-                        {it.description}
-                      </span>
-                      {/* dotted leader */}
-                      <span
-                        aria-hidden
-                        className="mx-1 mb-1 h-[2px] self-end bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] [background-size:6px_2px] text-neutral-300"
-                      />
-                      <span className="pl-2 font-semibold tabular-nums text-neutral-900">
-                        {formatPrice(it.price)}
-                      </span>
-                    </div>
-                    {it.kind && (
-                      <span className="ml-2 mt-[2px] inline-block rounded bg-neutral-200 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-neutral-700 group-hover:bg-neutral-300">
-                        {it.kind}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
+              {(() => {
+                // Group items by their first-seen kind preserving appearance order
+                const order: string[] = [];
+                const groups: Record<string, typeof cat.item> = {};
+                cat.item.forEach((it) => {
+                  const key = it.kind || "Other";
+                  if (!groups[key]) {
+                    groups[key] = [];
+                    order.push(key);
+                  }
+                  groups[key].push(it);
+                });
+                return order.map((kind) => (
+                  <div key={kind} className="space-y-2">
+                    <h4 className="pt-2 text-sm font-semibold uppercase tracking-wider text-neutral-500">
+                      {kind}
+                    </h4>
+                    <ul className="space-y-2">
+                      {groups[kind].map((it) => (
+                        <li
+                          key={it.id}
+                          className="group flex items-start text-sm leading-relaxed text-neutral-700"
+                        >
+                          <div className="grid w-full grid-cols-[auto_1fr_auto] items-baseline">
+                            <span className="pr-2 capitalize tracking-wide text-neutral-800">
+                              {it.description}
+                            </span>
+                            <span
+                              aria-hidden
+                              className="mx-1 mb-1 h-[2px] self-end bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] [background-size:6px_2px] text-neutral-300"
+                            />
+                            <span className="pl-2 font-semibold tabular-nums text-neutral-900">
+                              {formatPrice(it.price)}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ));
+              })()}
             </section>
           ))}
         </div>
