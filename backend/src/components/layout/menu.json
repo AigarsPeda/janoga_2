@@ -9,6 +9,11 @@
       "type": "component",
       "component": "layout.day",
       "repeatable": true
+    },
+    "buttonLink": {
+      "type": "component",
+      "component": "elements.link",
+      "repeatable": false
     }
   },
   "config": {}

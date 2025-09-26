@@ -201,6 +201,7 @@ export interface LayoutMenu extends Struct.ComponentSchema {
     displayName: 'Menu';
   };
   attributes: {
+    buttonLink: Schema.Attribute.Component<'elements.link', false>;
     days: Schema.Attribute.Component<'layout.day', true>;
   };
 }

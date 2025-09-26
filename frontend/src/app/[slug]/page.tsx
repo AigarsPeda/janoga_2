@@ -95,6 +95,9 @@ async function loader(slug: string) {
                   },
                 },
               },
+              buttonLink: {
+                populate: "*",
+              },
             },
           },
         },

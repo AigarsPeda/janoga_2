@@ -151,4 +151,5 @@ export interface MenuDay {
 
 export interface MenuProps extends Base<"layout.menu"> {
   days: MenuDay[];
+  buttonLink?: NavLink;
 }

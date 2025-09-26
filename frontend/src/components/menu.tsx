@@ -1,19 +1,11 @@
 "use client";
 
-import { MenuProps } from "@/types";
 import { cn } from "@/lib/utils";
-import * as React from "react";
+import { MenuProps } from "@/types";
 import type { LucideIcon } from "lucide-react";
-import { Soup, UtensilsCrossed, IceCream, CircleHelp, Salad, Coffee } from "lucide-react";
-
-/* ---------------------------------------------
-   Cafe Style Menu Card
-   - Uses incoming `days` array as categories
-   - Each category heading displayed
-   - Items have dotted leader between name & price
-   - Optional kind rendered in subtle italics
-   - Pure Tailwind (no extra CSS file needed)
----------------------------------------------- */
+import { CircleHelp, Coffee, IceCream, Salad, Soup, UtensilsCrossed } from "lucide-react";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 interface MenuCardProps extends MenuProps {
   title?: string;
@@ -40,7 +32,8 @@ function getKindIcon(kind: string | undefined): LucideIcon {
   return kindIconMap[kind.trim().toLowerCase()] || CircleHelp;
 }
 
-export default function Menu({ days, title = "Drinks", note }: MenuCardProps) {
+export default function Menu({ days, note, buttonLink }: MenuCardProps) {
+  console.log("buttonLink", buttonLink);
   return (
     <div className="w-full flex justify-center">
       <div
@@ -105,28 +98,20 @@ export default function Menu({ days, title = "Drinks", note }: MenuCardProps) {
               })()}
             </section>
           ))}
-        </div>
-
-        {/* Optional note area */}
-        {note && (
-          <div className="mt-10 flex items-start gap-3 text-xs text-neutral-600">
-            <div className="flex h-12 w-12 items-center justify-center rounded-md border border-neutral-300 bg-white text-neutral-500">
-              {/* Simple cup icon (ASCII) */}
-              <svg
-                aria-hidden
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.5}
-                className="h-8 w-8"
-              >
-                <path d="M6 8h11a4 4 0 0 1 0 8H6V8Z" />
-                <path d="M6 8v9a3 3 0 0 0 3 3h5a3 3 0 0 0 3-3V8M9 5c0 .5-.5 1-.5 1s-.5.5-.5 1" />
-              </svg>
+          {buttonLink && (
+            <div className="mt-10">
+              <Button asChild size={"lg"}>
+                <Link
+                  href={buttonLink.href}
+                  className="cursor-pointer"
+                  target={buttonLink.isExternal ? "_blank" : "_self"}
+                >
+                  {buttonLink.text}
+                </Link>
+              </Button>
             </div>
-            <p className="max-w-[220px] leading-snug">{note}</p>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Subtle outer glow similar to mockup */}
         <div className="pointer-events-none absolute inset-0 -z-10 rounded-[2.5rem] bg-gradient-to-b from-neutral-900/10 to-neutral-900/0" />
