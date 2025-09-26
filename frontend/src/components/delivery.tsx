@@ -143,7 +143,10 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
 function TimelineLine() {
   const lineRef = useRef<HTMLDivElement | null>(null);
   const pulseRef = useRef<HTMLDivElement | null>(null);
-  const lastIconRef = useRef<HTMLElement | null>(null);
+  const lastIconRef = useRef<HTMLElement | null>(null); // kept in case of future specific styling
+  const iconCentersRef = useRef<number[]>([]);
+  const iconElsRef = useRef<HTMLElement[]>([]);
+  const triggeredRef = useRef<boolean[]>([]);
 
   useEffect(() => {
     function computeBounds() {
@@ -167,13 +170,18 @@ function TimelineLine() {
       const width = right - left;
       lineRef.current.style.left = left + "px";
       lineRef.current.style.width = width + "px";
-      // Center vertically to icon centers
+      // Center vertically to icon centers (subtract half line height for perfect center)
       const iconCenter = firstRect.top + firstRect.height / 2 - parentRect.top;
-      lineRef.current.style.top = iconCenter + "px";
+      const lineHeight = lineRef.current.offsetHeight || 0;
+      lineRef.current.style.top = iconCenter - lineHeight / 2 + "px";
     }
     computeBounds();
+    const t = setTimeout(computeBounds, 50); // second pass after layout settle
     window.addEventListener("resize", computeBounds);
-    return () => window.removeEventListener("resize", computeBounds);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", computeBounds);
+    };
   }, []);
 
   // GSAP animated pulse + glow on last icon each loop
@@ -181,24 +189,58 @@ function TimelineLine() {
     if (!lineRef.current || !pulseRef.current) return;
     const line = lineRef.current;
     const pulse = pulseRef.current;
+
+    function computeIconCenters() {
+      const icons = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "#delivery-timeline-root [data-timeline-icon] .timeline-icon",
+        ),
+      );
+      iconElsRef.current = icons;
+      triggeredRef.current = icons.map(() => false);
+      if (icons.length === 0) return;
+      const lineRect = line.getBoundingClientRect();
+      iconCentersRef.current = icons.map((el) => {
+        const r = el.getBoundingClientRect();
+        return r.left + r.width / 2 - lineRect.left; // center X relative to line start
+      });
+    }
+
+    computeIconCenters();
+    window.addEventListener("resize", computeIconCenters);
+
+    const baseSpeed = 120; // px per second (lower => slower)
+    const calcDuration = () => Math.max(3.5, line.offsetWidth / baseSpeed);
     const tween = gsap.fromTo(
       pulse,
       { x: () => -pulse.offsetWidth },
       {
         x: () => line.offsetWidth,
-        duration: 4,
+        duration: calcDuration(),
         ease: "none",
         repeat: -1,
+        onUpdate: () => {
+          const xPos = gsap.getProperty(pulse, "x") as number;
+          const pulseCenter = xPos + pulse.offsetWidth / 2; // smoother perceived timing
+          iconCentersRef.current.forEach((cx, i) => {
+            if (!triggeredRef.current[i] && cx <= pulseCenter) {
+              const el = iconElsRef.current[i];
+              if (el) {
+                el.classList.remove("delivery-icon-glow");
+                void el.offsetWidth;
+                el.classList.add("delivery-icon-glow");
+              }
+              triggeredRef.current[i] = true;
+            }
+          });
+        },
         onRepeat: () => {
-          if (lastIconRef.current) {
-            lastIconRef.current.classList.remove("delivery-icon-glow");
-            void lastIconRef.current.offsetWidth;
-            lastIconRef.current.classList.add("delivery-icon-glow");
-          }
+          triggeredRef.current = triggeredRef.current.map(() => false);
         },
       },
     );
     return () => {
+      window.removeEventListener("resize", computeIconCenters);
       tween.kill();
     };
   }, []);
@@ -215,6 +257,9 @@ function TimelineLineVertical() {
   const lineRef = useRef<HTMLDivElement | null>(null);
   const pulseRef = useRef<HTMLDivElement | null>(null);
   const lastIconRef = useRef<HTMLElement | null>(null);
+  const iconCentersRef = useRef<number[]>([]);
+  const iconElsRef = useRef<HTMLElement[]>([]);
+  const triggeredRef = useRef<boolean[]>([]);
 
   useEffect(() => {
     function computeBounds() {
@@ -240,35 +285,74 @@ function TimelineLineVertical() {
       lineRef.current.style.height = height + "px";
       // center horizontally to icon centers (icons aligned left with some padding -> use first icon center)
       const xCenter = firstRect.left + firstRect.width / 2 - parentRect.left;
-      lineRef.current.style.left = xCenter + "px";
+      const lineWidth = lineRef.current.offsetWidth || 0;
+      lineRef.current.style.left = xCenter - lineWidth / 2 + "px";
     }
     computeBounds();
+    const t = setTimeout(computeBounds, 50);
     window.addEventListener("resize", computeBounds);
-    return () => window.removeEventListener("resize", computeBounds);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", computeBounds);
+    };
   }, []);
 
   useEffect(() => {
     if (!lineRef.current || !pulseRef.current) return;
     const line = lineRef.current;
     const pulse = pulseRef.current;
+
+    function computeIconCenters() {
+      const icons = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "#delivery-timeline-root [data-timeline-icon] .timeline-icon",
+        ),
+      );
+      iconElsRef.current = icons;
+      triggeredRef.current = icons.map(() => false);
+      if (icons.length === 0) return;
+      const lineRect = line.getBoundingClientRect();
+      iconCentersRef.current = icons.map((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top + r.height / 2 - lineRect.top; // center Y relative to line start
+      });
+    }
+
+    computeIconCenters();
+    window.addEventListener("resize", computeIconCenters);
+
+    const baseSpeed = 110;
+    const calcDuration = () => Math.max(3.5, line.offsetHeight / baseSpeed);
     const tween = gsap.fromTo(
       pulse,
       { y: () => -pulse.offsetHeight },
       {
         y: () => line.offsetHeight,
-        duration: 4,
+        duration: calcDuration(),
         ease: "none",
         repeat: -1,
+        onUpdate: () => {
+          const yPos = gsap.getProperty(pulse, "y") as number;
+          const pulseCenter = yPos + pulse.offsetHeight / 2;
+          iconCentersRef.current.forEach((cy, i) => {
+            if (!triggeredRef.current[i] && cy <= pulseCenter) {
+              const el = iconElsRef.current[i];
+              if (el) {
+                el.classList.remove("delivery-icon-glow");
+                void el.offsetWidth;
+                el.classList.add("delivery-icon-glow");
+              }
+              triggeredRef.current[i] = true;
+            }
+          });
+        },
         onRepeat: () => {
-          if (lastIconRef.current) {
-            lastIconRef.current.classList.remove("delivery-icon-glow");
-            void lastIconRef.current.offsetWidth;
-            lastIconRef.current.classList.add("delivery-icon-glow");
-          }
+          triggeredRef.current = triggeredRef.current.map(() => false);
         },
       },
     );
     return () => {
+      window.removeEventListener("resize", computeIconCenters);
       tween.kill();
     };
   }, []);
