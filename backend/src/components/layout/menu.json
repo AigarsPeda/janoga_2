@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_layout_menus",
+  "info": {
+    "displayName": "Menu"
+  },
+  "options": {},
+  "attributes": {
+    "days": {
+      "type": "component",
+      "component": "layout.day",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

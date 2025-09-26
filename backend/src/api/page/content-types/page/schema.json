@@ -30,7 +30,8 @@
         "layout.content-with-image",
         "layout.card-grid",
         "layout.price-grid",
-        "layout.delivery"
+        "layout.delivery",
+        "layout.menu"
       ]
     }
   }

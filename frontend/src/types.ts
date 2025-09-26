@@ -7,7 +7,8 @@ type ComponentType =
   | "layout.call-to-action"
   | "layout.client-carousel"
   | "layout.section-heading"
-  | "layout.content-with-image";
+  | "layout.content-with-image"
+  | "layout.menu";
 
 interface Base<T extends ComponentType, D extends {} = {}> {
   __component: T;
@@ -33,7 +34,8 @@ export type Block =
   | CallToActionProps
   | ClientCarouselProps
   | SectionHeadingProps
-  | ContentWithImageProps;
+  | ContentWithImageProps
+  | MenuProps;
 
 export interface FeatureCardProps extends Base<"layout.feature-card"> {
   items: {
@@ -132,4 +134,21 @@ export interface Step {
 
 export interface DeliveryProps extends Base<"layout.delivery"> {
   steps: Step[];
+}
+
+export interface MenuItem {
+  id: string;
+  description: string;
+  price: string | number;
+  kind: "Soup" | "Main" | "Dessert" | string; // allow future kinds
+}
+
+export interface MenuDay {
+  id: string;
+  heading: string;
+  item: MenuItem[];
+}
+
+export interface MenuProps extends Base<"layout.menu"> {
+  days: MenuDay[];
 }

@@ -10,6 +10,7 @@ import ContentWithImage from "@/components/content-with-image";
 import { steps } from "framer-motion";
 import { Delivery } from "@/components/delivery";
 import { notFound } from "next/navigation";
+import Menu from "@/components/menu";
 
 interface StaticParamsProps {
   id: number;
@@ -84,6 +85,18 @@ async function loader(slug: string) {
               },
             },
           },
+          "layout.menu": {
+            // Deep populate nested components: menu -> days -> item
+            populate: {
+              days: {
+                populate: {
+                  item: {
+                    populate: "*",
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -112,6 +125,8 @@ function BlockRenderer(block: Block) {
       return <ContentWithImage key={block.id} {...block} />;
     case "layout.delivery":
       return <Delivery key={block.id} {...block} />;
+    case "layout.menu":
+      return <Menu key={block.id} {...block} />;
     default:
       return null;
   }

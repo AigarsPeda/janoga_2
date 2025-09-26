@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_layout_days",
+  "info": {
+    "displayName": "Day"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "item": {
+      "type": "component",
+      "component": "elements.item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

@@ -27,6 +27,18 @@ export interface ElementsFeature extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsItem extends Struct.ComponentSchema {
+  collectionName: 'components_elements_items';
+  info: {
+    displayName: 'Item';
+  };
+  attributes: {
+    description: Schema.Attribute.String;
+    kind: Schema.Attribute.Enumeration<['Soup', 'Main', 'Dessert']>;
+    price: Schema.Attribute.Decimal;
+  };
+}
+
 export interface ElementsLink extends Struct.ComponentSchema {
   collectionName: 'components_elements_links';
   info: {
@@ -127,6 +139,17 @@ export interface LayoutContentWithImage extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutDay extends Struct.ComponentSchema {
+  collectionName: 'components_layout_days';
+  info: {
+    displayName: 'Day';
+  };
+  attributes: {
+    heading: Schema.Attribute.String;
+    item: Schema.Attribute.Component<'elements.item', true>;
+  };
+}
+
 export interface LayoutDelivery extends Struct.ComponentSchema {
   collectionName: 'components_layout_deliveries';
   info: {
@@ -172,6 +195,16 @@ export interface LayoutHero extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutMenu extends Struct.ComponentSchema {
+  collectionName: 'components_layout_menus';
+  info: {
+    displayName: 'Menu';
+  };
+  attributes: {
+    days: Schema.Attribute.Component<'layout.day', true>;
+  };
+}
+
 export interface LayoutPriceGrid extends Struct.ComponentSchema {
   collectionName: 'components_layout_price_grids';
   info: {
@@ -213,6 +246,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'elements.card': ElementsCard;
       'elements.feature': ElementsFeature;
+      'elements.item': ElementsItem;
       'elements.link': ElementsLink;
       'elements.logo': ElementsLogo;
       'elements.price-card': ElementsPriceCard;
@@ -221,10 +255,12 @@ declare module '@strapi/strapi' {
       'layout.card-grid': LayoutCardGrid;
       'layout.client-carousel': LayoutClientCarousel;
       'layout.content-with-image': LayoutContentWithImage;
+      'layout.day': LayoutDay;
       'layout.delivery': LayoutDelivery;
       'layout.feature-card': LayoutFeatureCard;
       'layout.footer': LayoutFooter;
       'layout.hero': LayoutHero;
+      'layout.menu': LayoutMenu;
       'layout.price-grid': LayoutPriceGrid;
       'layout.section-heading': LayoutSectionHeading;
       'layout.top-nav': LayoutTopNav;
