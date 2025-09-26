@@ -1,22 +1,103 @@
-import { MenuProps } from "@/types";
+"use client";
 
-export default function Menu({ days }: MenuProps) {
+import { MenuProps } from "@/types";
+import { cn } from "@/lib/utils";
+import * as React from "react";
+
+/* ---------------------------------------------
+   Cafe Style Menu Card
+   - Uses incoming `days` array as categories
+   - Each category heading displayed
+   - Items have dotted leader between name & price
+   - Optional kind rendered in subtle italics
+   - Pure Tailwind (no extra CSS file needed)
+---------------------------------------------- */
+
+interface MenuCardProps extends MenuProps {
+  title?: string;
+  note?: string;
+}
+
+function formatPrice(price: string | number) {
+  if (typeof price === "number") return price.toFixed(price % 1 === 0 ? 0 : 2);
+  return price;
+}
+
+export default function Menu({ days, title = "Drinks", note }: MenuCardProps) {
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Menu</h2>
-      {days.map((day) => (
-        <div key={day.id}>
-          <h3 className="font-medium">{day.heading}</h3>
-          <ul className="ml-4 list-disc">
-            {day.item.map((it) => (
-              <li key={it.id}>
-                <span>{it.description}</span> – <span>{it.price}</span>{" "}
-                <span className="italic text-sm text-gray-500">{it.kind}</span>
-              </li>
-            ))}
-          </ul>
+    <div className="w-full flex justify-center">
+      <div
+        className={cn(
+          "relative mx-auto w-full max-w-[420px] rounded-[2.2rem]",
+          "bg-neutral-50 text-neutral-900 shadow-xl ring-1 ring-black/5",
+          "p-8 sm:p-10 font-[var(--font-heading)]",
+        )}
+      >
+        <div className="space-y-10">
+          {days.map((cat) => (
+            <section key={cat.id} aria-labelledby={`menu-cat-${cat.id}`} className="space-y-4">
+              <h3
+                id={`menu-cat-${cat.id}`}
+                className="text-lg font-bold tracking-wide text-neutral-800"
+              >
+                {cat.heading}
+              </h3>
+              <ul className="space-y-2">
+                {cat.item.map((it) => (
+                  <li
+                    key={it.id}
+                    className="group flex items-start text-sm leading-relaxed text-neutral-700"
+                  >
+                    {/* Name + dots + price */}
+                    <div className="grid w-full grid-cols-[auto_1fr_auto] items-baseline">
+                      <span className="pr-2 capitalize tracking-wide text-neutral-800">
+                        {it.description}
+                      </span>
+                      {/* dotted leader */}
+                      <span
+                        aria-hidden
+                        className="mx-1 mb-1 h-[2px] self-end bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] [background-size:6px_2px] text-neutral-300"
+                      />
+                      <span className="pl-2 font-semibold tabular-nums text-neutral-900">
+                        {formatPrice(it.price)}
+                      </span>
+                    </div>
+                    {it.kind && (
+                      <span className="ml-2 mt-[2px] inline-block rounded bg-neutral-200 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-neutral-700 group-hover:bg-neutral-300">
+                        {it.kind}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
         </div>
-      ))}
+
+        {/* Optional note area */}
+        {note && (
+          <div className="mt-10 flex items-start gap-3 text-xs text-neutral-600">
+            <div className="flex h-12 w-12 items-center justify-center rounded-md border border-neutral-300 bg-white text-neutral-500">
+              {/* Simple cup icon (ASCII) */}
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                className="h-8 w-8"
+              >
+                <path d="M6 8h11a4 4 0 0 1 0 8H6V8Z" />
+                <path d="M6 8v9a3 3 0 0 0 3 3h5a3 3 0 0 0 3-3V8M9 5c0 .5-.5 1-.5 1s-.5.5-.5 1" />
+              </svg>
+            </div>
+            <p className="max-w-[220px] leading-snug">{note}</p>
+          </div>
+        )}
+
+        {/* Subtle outer glow similar to mockup */}
+        <div className="pointer-events-none absolute inset-0 -z-10 rounded-[2.5rem] bg-gradient-to-b from-neutral-900/10 to-neutral-900/0" />
+      </div>
     </div>
   );
 }
