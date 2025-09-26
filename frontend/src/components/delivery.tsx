@@ -124,7 +124,7 @@ export function Delivery({ steps }: Readonly<DeliveryProps>) {
                     <Icon className="h-6 w-6" />
                   </span>
                   <div className="mt-0 flex-1 pl-4 md:mt-4 md:pl-0 md:flex md:flex-col h-full w-full">
-                    <div className="rounded-md border border-border/50 text-black bg-gray-300 px-4 py-3 shadow-sm backdrop-blur-sm transition-colors whitespace-pre-line md:text-base text-sm flex-1 flex">
+                    <div className="rounded-md border border-border/50 text-black bg-neutral-50 px-4 py-3 shadow-sm backdrop-blur-sm transition-colors whitespace-pre-line md:text-base text-sm flex-1 flex">
                       <p className="m-0 leading-snug">{renderDescription(step.description)}</p>
                     </div>
                   </div>
