@@ -84,16 +84,15 @@ export default function Menu({ days, title = "Drinks", note }: MenuCardProps) {
                             key={it.id}
                             className="group flex items-start text-base leading-relaxed text-neutral-800"
                           >
-                            <div className="flex w-full items-center gap-2">
-                              <span className="max-w-[60%] grow break-words pr-1 font-medium tracking-wide">
-                                {it.description}
+                            <div className="flex w-full items-baseline">
+                              <span className="flex grow items-baseline break-words font-medium tracking-wide">
+                                <span className="pr-2">{it.description}</span>
+                                <span
+                                  aria-hidden
+                                  className="h-[2px] flex-1 bg-[repeating-linear-gradient(90deg,currentColor_0,currentColor_2px,transparent_2px,transparent_6px)] text-neutral-300"
+                                />
                               </span>
-                              {/* leader line always visible */}
-                              <span
-                                aria-hidden
-                                className="h-[2px] flex-1 bg-[repeating-linear-gradient(90deg,currentColor_0,currentColor_2px,transparent_2px,transparent_6px)] text-neutral-300"
-                              />
-                              <span className="pl-1 font-semibold tabular-nums text-neutral-900 text-base">
+                              <span className="ml-4 font-semibold tabular-nums text-neutral-900 text-base whitespace-nowrap">
                                 {formatPrice(it.price)}
                               </span>
                             </div>
