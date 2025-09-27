@@ -1,26 +1,14 @@
 "use client";
 
-import { MenuInfoProps } from "@/types";
 import { getIcon } from "@/lib/icons";
+import { MenuInfoProps } from "@/types";
 import * as React from "react";
 
-/*
-  MenuInfo renders a horizontal list of value elements describing what is included
-  in a menu price (e.g. Main dish + Side + Salad 5.0€). It accepts an array of
-  items (each has { price, items: { description, kind } }). We'll display each
-  group on its own line if multiple exist.
-
-  items[] shape (from types): {
-    id: string; price: string|number; items: { id, description, kind }
-  }
-
-  Assumption: For the visual similar to screenshot we group by price line.
-*/
 export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
   if (!items || items.length === 0) return null;
 
   return (
-    <section aria-label="Menu information" className="w-full container py-6 max-w-[680px]">
+    <section aria-label="Menu information" className="w-full container pb-6 max-w-[680px]">
       <div className="space-y-3">
         {items.map((group, groupIdx) => {
           const { price } = group;
