@@ -4,30 +4,7 @@ import type { DeliveryProps } from "@/types";
 import { Fragment, useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { ReactNode } from "react";
-import type { LucideIcon } from "lucide-react";
-import {
-  CircleDollarSign,
-  CircleHelp,
-  Phone,
-  Truck,
-  Utensils,
-  Wallet,
-  SquareMenu,
-} from "lucide-react";
-
-const iconMap: Record<string, LucideIcon> = {
-  truck: Truck,
-  phone: Phone,
-  money: Wallet,
-  dish: Utensils,
-  menu: SquareMenu,
-  dollar: CircleDollarSign,
-};
-
-function getIconComponent(name: string | undefined): LucideIcon {
-  if (!name) return CircleHelp;
-  return iconMap[name.trim().toLowerCase()] || CircleHelp;
-}
+import { getIcon as getIconComponent } from "@/lib/icons";
 
 export function Delivery({ steps }: Readonly<DeliveryProps>) {
   if (!steps || steps.length === 0) return null;

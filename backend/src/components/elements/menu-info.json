@@ -1,15 +1,12 @@
 {
-  "collectionName": "components_elements_items",
+  "collectionName": "components_elements_menu_infos",
   "info": {
-    "displayName": "Item"
+    "displayName": "Info"
   },
   "options": {},
   "attributes": {
     "description": {
       "type": "string"
-    },
-    "price": {
-      "type": "decimal"
     },
     "kind": {
       "type": "enumeration",

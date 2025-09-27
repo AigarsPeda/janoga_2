@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_layout_menu_infos",
+  "info": {
+    "displayName": "Menu Info"
+  },
+  "options": {},
+  "attributes": {
+    "items": {
+      "type": "component",
+      "component": "elements.info-item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

@@ -11,6 +11,7 @@ import { steps } from "framer-motion";
 import { Delivery } from "@/components/delivery";
 import { notFound } from "next/navigation";
 import Menu from "@/components/menu";
+import { MenuInfo } from "@/components/menu-info";
 
 interface StaticParamsProps {
   id: number;
@@ -86,7 +87,6 @@ async function loader(slug: string) {
             },
           },
           "layout.menu": {
-            // Deep populate nested components: menu -> days -> item
             populate: {
               days: {
                 populate: {
@@ -96,6 +96,13 @@ async function loader(slug: string) {
                 },
               },
               buttonLink: {
+                populate: "*",
+              },
+            },
+          },
+          "layout.menu-info": {
+            populate: {
+              items: {
                 populate: "*",
               },
             },
@@ -130,6 +137,8 @@ function BlockRenderer(block: Block) {
       return <Delivery key={block.id} {...block} />;
     case "layout.menu":
       return <Menu key={block.id} {...block} />;
+    case "layout.menu-info":
+      return <MenuInfo key={block.id} {...block} />;
     default:
       return null;
   }

@@ -27,6 +27,17 @@ export interface ElementsFeature extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsInfoItem extends Struct.ComponentSchema {
+  collectionName: 'components_elements_info_items';
+  info: {
+    displayName: 'Info item';
+  };
+  attributes: {
+    items: Schema.Attribute.Component<'elements.menu-info', true>;
+    price: Schema.Attribute.String;
+  };
+}
+
 export interface ElementsItem extends Struct.ComponentSchema {
   collectionName: 'components_elements_items';
   info: {
@@ -34,7 +45,9 @@ export interface ElementsItem extends Struct.ComponentSchema {
   };
   attributes: {
     description: Schema.Attribute.String;
-    kind: Schema.Attribute.Enumeration<['Soup', 'Main', 'Dessert']>;
+    kind: Schema.Attribute.Enumeration<
+      ['Soup', 'Main', 'Dessert', 'Side dish', 'Salad', 'Drink']
+    >;
     price: Schema.Attribute.Decimal;
   };
 }
@@ -61,6 +74,19 @@ export interface ElementsLogo extends Struct.ComponentSchema {
     href: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images'>;
     isExternal: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface ElementsMenuInfo extends Struct.ComponentSchema {
+  collectionName: 'components_elements_menu_infos';
+  info: {
+    displayName: 'Info';
+  };
+  attributes: {
+    description: Schema.Attribute.String;
+    kind: Schema.Attribute.Enumeration<
+      ['Soup', 'Main', 'Dessert', 'Side dish', 'Salad', 'Drink']
+    >;
   };
 }
 
@@ -206,6 +232,16 @@ export interface LayoutMenu extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutMenuInfo extends Struct.ComponentSchema {
+  collectionName: 'components_layout_menu_infos';
+  info: {
+    displayName: 'Menu Info';
+  };
+  attributes: {
+    items: Schema.Attribute.Component<'elements.info-item', true>;
+  };
+}
+
 export interface LayoutPriceGrid extends Struct.ComponentSchema {
   collectionName: 'components_layout_price_grids';
   info: {
@@ -247,9 +283,11 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'elements.card': ElementsCard;
       'elements.feature': ElementsFeature;
+      'elements.info-item': ElementsInfoItem;
       'elements.item': ElementsItem;
       'elements.link': ElementsLink;
       'elements.logo': ElementsLogo;
+      'elements.menu-info': ElementsMenuInfo;
       'elements.price-card': ElementsPriceCard;
       'elements.step': ElementsStep;
       'layout.call-to-action': LayoutCallToAction;
@@ -262,6 +300,7 @@ declare module '@strapi/strapi' {
       'layout.footer': LayoutFooter;
       'layout.hero': LayoutHero;
       'layout.menu': LayoutMenu;
+      'layout.menu-info': LayoutMenuInfo;
       'layout.price-grid': LayoutPriceGrid;
       'layout.section-heading': LayoutSectionHeading;
       'layout.top-nav': LayoutTopNav;

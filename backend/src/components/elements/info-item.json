@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_elements_info_items",
+  "info": {
+    "displayName": "Info item"
+  },
+  "options": {},
+  "attributes": {
+    "price": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "component": "elements.menu-info",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}
