@@ -33,7 +33,7 @@ export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
               key={group.id ?? groupIdx}
               className="flex items-center rounded-md border border-border/60 bg-neutral-900/40 px-5 py-3 text-sm md:text-base shadow-sm backdrop-blur-sm"
             >
-              <ul className="flex items-center gap-4 flex-nowrap overflow-x-auto scrollbar-none w-full justify-between">
+              <ul className="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-2 w-full">
                 {mealItems.map((mi: any, idx: number) => {
                   const Icon = getIcon(mi.kind || mi.description);
                   const label = [
@@ -42,24 +42,23 @@ export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
                   ]
                     .filter(Boolean)
                     .join(" ");
+
                   return (
-                    <li
-                      key={mi.id ?? idx}
-                      className="flex items-center gap-2 whitespace-nowrap w-full"
-                    >
-                      <Icon className="h-6 w-6 shrink-0 text-neutral-300" aria-hidden />
-                      <span className="font-medium tracking-tight text-neutral-300 leading-none">
-                        {label || mi.kind}
-                      </span>
-                      {idx < mealItems.length - 1 && (
-                        <span
-                          aria-hidden
-                          className="mx-1 -mr-2 text-neutral-500 font-light select-none"
-                        >
-                          +
+                    <React.Fragment key={mi.id ?? idx}>
+                      <li className="flex items-center justify-center gap-2 whitespace-nowrap">
+                        <Icon className="h-6 w-6 shrink-0 text-neutral-300" aria-hidden />
+                        <span className="font-medium tracking-tight text-neutral-300 leading-none">
+                          {label || mi.kind}
                         </span>
+                      </li>
+                      {idx < mealItems.length - 1 && (
+                        <div className="flex justify-center">
+                          <span aria-hidden className="text-neutral-500 font-light select-none">
+                            +
+                          </span>
+                        </div>
                       )}
-                    </li>
+                    </React.Fragment>
                   );
                 })}
               </ul>
