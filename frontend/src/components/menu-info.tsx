@@ -60,11 +60,7 @@ export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
                   );
                 })}
               </ul>
-              {/* Divider before price */}
-              <div
-                aria-hidden
-                className="mx-5 hidden h-8 w-px bg-gradient-to-b from-transparent via-neutral-600 to-transparent md:block"
-              />
+
               <div className="ml-auto flex items-baseline gap-1 pl-4 md:pl-0 relative before:md:hidden before:absolute before:left-0 before:top-1/2 before:h-6 before:-translate-y-1/2 before:w-px before:bg-neutral-700">
                 <span className="text-2xl font-light text-neutral-200 tabular-nums leading-none">
                   {typeof price === "number" ? price.toFixed(1) : price}
