@@ -38,7 +38,7 @@ export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
                   const Icon = getIcon(mi.kind || mi.description);
                   const label = [
                     mi.description,
-                    mi.kind && mi.kind !== mi.description ? mi.kind : undefined,
+                    // mi.kind && mi.kind !== mi.description ? mi.kind : undefined,
                   ]
                     .filter(Boolean)
                     .join(" ");

@@ -10,6 +10,9 @@ import {
   Salad,
   Drumstick,
   IceCream2,
+  Soup,
+  UtensilsCrossed,
+  GlassWater,
 } from "lucide-react";
 import * as React from "react";
 
@@ -26,13 +29,14 @@ const baseIconMap: Record<string, LucideIcon> = {
   menu: SquareMenu,
   dollar: CircleDollarSign,
   // Menu kinds (normalized to lowercase)
-  main: Drumstick,
-  "main dish": Drumstick,
-  soup: BowlIconFallback(),
+  main: UtensilsCrossed,
+  "main dish": UtensilsCrossed,
+  soup: Soup,
   dessert: IceCream2,
   salad: Salad,
   side: Utensils,
   "side dish": Utensils,
+  drink: GlassWater,
 };
 
 // Fallback inline soup/bowl icon (swap to official if available later)

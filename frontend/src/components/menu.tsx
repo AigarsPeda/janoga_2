@@ -3,7 +3,15 @@
 import { cn } from "@/lib/utils";
 import { MenuProps } from "@/types";
 import type { LucideIcon } from "lucide-react";
-import { CircleHelp, Coffee, IceCream, Salad, Soup, UtensilsCrossed } from "lucide-react";
+import {
+  CircleHelp,
+  Coffee,
+  GlassWater,
+  IceCream,
+  Salad,
+  Soup,
+  UtensilsCrossed,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
@@ -24,7 +32,8 @@ const kindIconMap: Record<string, LucideIcon> = {
   dessert: IceCream,
   salad: Salad,
   drinks: Coffee,
-  drink: Coffee,
+  //   drink: Coffee,
+  drink: GlassWater,
 };
 
 function getKindIcon(kind: string | undefined): LucideIcon {
