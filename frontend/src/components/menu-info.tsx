@@ -53,7 +53,10 @@ export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
                       </li>
                       {idx < mealItems.length - 1 && (
                         <div className="flex justify-center">
-                          <span aria-hidden className="text-neutral-200 font-medium select-none">
+                          <span
+                            aria-hidden
+                            className="text-neutral-200 font-medium select-none pr-2"
+                          >
                             +
                           </span>
                         </div>

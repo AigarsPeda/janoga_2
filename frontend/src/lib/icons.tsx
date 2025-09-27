@@ -13,6 +13,7 @@ import {
   Soup,
   UtensilsCrossed,
   GlassWater,
+  Sandwich,
 } from "lucide-react";
 import * as React from "react";
 
@@ -35,7 +36,7 @@ const baseIconMap: Record<string, LucideIcon> = {
   dessert: IceCream2,
   salad: Salad,
   side: Utensils,
-  "side dish": Utensils,
+  "side dish": Sandwich,
   drink: GlassWater,
 };
 
