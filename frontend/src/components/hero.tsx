@@ -12,14 +12,14 @@ export function Hero(data: Readonly<HeroProps>) {
   return (
     <>
       <section className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[92vh]">
-        <div className="absolute -left-10 top-2/3 -translate-y-1/2 w-80 h-96 lg:w-96 lg:h-[300px] z-20">
+        <div className="absolute -left-10 top-2/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
               src={image.url}
               alt={image.name || "Coffee preparation"}
               priority
               fill
-              sizes="(max-width: 768px) 320px, 400px"
+              sizes="(max-width: 768px) 240px, 288px"
               className="object-cover"
             />
             <div className="absolute inset-0 -z-10 bg-primary/20 [filter:blur(180px)]" />
@@ -47,14 +47,14 @@ export function Hero(data: Readonly<HeroProps>) {
               ))}
           </div>
         </div>
-        <div className="absolute -right-20 top-1/3 -translate-y-1/2 w-80 h-96 lg:w-96 lg:h-[300px] z-20">
+        <div className="absolute -right-20 top-1/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
               src={image2.url}
               alt={image2.name || "Hero image"}
               priority
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
+              sizes="(max-width: 768px) 240px, 288px"
               className="rounded-xl border border-border shadow-lg object-cover"
             />
             <div className="absolute inset-0 z-50 bg-primary/20 [filter:blur(180px)]" />
