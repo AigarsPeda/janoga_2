@@ -1,4 +1,5 @@
 type ComponentType =
+  | "layout.map"
   | "layout.form"
   | "layout.hero"
   | "layout.menu"
@@ -31,6 +32,7 @@ export type Block =
   | FormProps
   | HeroProps
   | MenuProps
+  | MyMapProps
   | MenuInfoProps
   | DeliveryProps
   | CardGridProps
@@ -182,4 +184,8 @@ export interface FormProps extends Base<"layout.form"> {
     placeholder?: string;
     isRequired: boolean;
   }[];
+}
+
+export interface MyMapProps extends Base<"layout.map"> {
+  address: string;
 }

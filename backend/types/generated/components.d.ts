@@ -248,6 +248,16 @@ export interface LayoutHero extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutMap extends Struct.ComponentSchema {
+  collectionName: 'components_layout_maps';
+  info: {
+    displayName: 'Map';
+  };
+  attributes: {
+    address: Schema.Attribute.String;
+  };
+}
+
 export interface LayoutMenu extends Struct.ComponentSchema {
   collectionName: 'components_layout_menus';
   info: {
@@ -328,6 +338,7 @@ declare module '@strapi/strapi' {
       'layout.footer': LayoutFooter;
       'layout.form': LayoutForm;
       'layout.hero': LayoutHero;
+      'layout.map': LayoutMap;
       'layout.menu': LayoutMenu;
       'layout.menu-info': LayoutMenuInfo;
       'layout.price-grid': LayoutPriceGrid;

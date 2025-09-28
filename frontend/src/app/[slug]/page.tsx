@@ -13,6 +13,7 @@ import { notFound } from "next/navigation";
 import Menu from "@/components/menu";
 import { MenuInfo } from "@/components/menu-info";
 import { Form } from "@/components/form";
+import { MapComponent } from "@/components/map";
 
 interface StaticParamsProps {
   id: number;
@@ -111,6 +112,9 @@ async function loader(slug: string) {
           "layout.form": {
             populate: "*",
           },
+          "layout.map": {
+            populate: "*",
+          },
         },
       },
     },
@@ -145,6 +149,8 @@ function BlockRenderer(block: Block) {
       return <MenuInfo key={block.id} {...block} />;
     case "layout.form":
       return <Form key={block.id} {...block} />;
+    case "layout.map":
+      return <MapComponent key={block.id} {...block} />;
     default:
       return null;
   }

@@ -1,7 +1,7 @@
 "use client";
-import * as React from "react";
-import { useForm } from "react-hook-form";
 import { FormProps } from "@/types";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 // Helper: build validation rules based on field definition
 function buildRules(field: FormProps["fields"][number]) {
@@ -9,7 +9,8 @@ function buildRules(field: FormProps["fields"][number]) {
   if (field.isRequired) {
     rules.required = `${field.label || field.placeholder || field.id} is required`;
   }
-  if (field.type === "email") {
+  // Support both "email" and common misspelling/alt key "e-mail"
+  if (field.type === "email" || field.type === "e-mail") {
     rules.pattern = {
       value: /[^@\s]+@[^@\s]+\.[^@\s]+/,
       message: "Please enter a valid email address",
@@ -22,30 +23,44 @@ type DynamicFormValues = Record<string, string>;
 
 export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProps>) {
   const {
+    reset,
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<DynamicFormValues>({
     defaultValues: fields.reduce((acc, f) => ({ ...acc, [f.id]: "" }), {} as DynamicFormValues),
     mode: "onBlur",
   });
 
-  const [status, setStatus] = React.useState<"idle" | "error" | "success">("idle");
-  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "error" | "success">("idle");
 
   const onSubmit = async (data: DynamicFormValues) => {
     setStatus("idle");
     setErrorMsg(null);
+
     try {
+      const labeledData: Record<string, string> = {};
+      fields.forEach((f) => {
+        const labelKey = (f.label || f.placeholder || f.id || "").trim() || f.id;
+        let finalKey = labelKey;
+        let i = 2;
+        while (labeledData[finalKey]) {
+          finalKey = `${labelKey} (${i++})`;
+        }
+        labeledData[finalKey] = data[f.id];
+      });
+
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipientEmail, ...data }),
+        body: JSON.stringify({ recipientEmail, ...labeledData }),
       });
+
       if (!res.ok) {
         throw new Error(`Request failed (${res.status})`);
       }
+
       setStatus("success");
       reset();
     } catch (e: any) {
@@ -54,8 +69,7 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
     }
   };
 
-  // Auto clear success after a few seconds
-  React.useEffect(() => {
+  useEffect(() => {
     if (status === "success") {
       const t = setTimeout(() => setStatus("idle"), 4000);
       return () => clearTimeout(t);
@@ -86,7 +100,7 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
             >
               <label
                 htmlFor={id}
-                className="mb-1 text-xs font-medium tracking-wide uppercase text-neutral-400"
+                className="mb-1 text-xs font-medium tracking-wide text-neutral-400"
               >
                 {field.label || field.placeholder}
                 {field.isRequired && <span className="ml-1 text-red-400">*</span>}
@@ -102,12 +116,16 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
               ) : (
                 <input
                   id={id}
-                  type={field.type}
+                  // Normalize legacy/misspelled type values so the browser recognizes the email input
+                  type={field.type === "e-mail" ? "email" : field.type}
                   placeholder={field.placeholder}
                   aria-invalid={hasError}
                   className={baseInputClasses + errorClasses}
                   {...register(field.id, buildRules(field))}
-                  autoComplete={field.type === "email" ? "email" : "off"}
+                  autoComplete={field.type === "e-mail" || field.type === "email" ? "email" : "off"}
+                  inputMode={
+                    field.type === "e-mail" || field.type === "email" ? "email" : undefined
+                  }
                 />
               )}
               {hasError && (

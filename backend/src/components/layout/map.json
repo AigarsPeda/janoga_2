@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_layout_maps",
+  "info": {
+    "displayName": "Map"
+  },
+  "options": {},
+  "attributes": {
+    "address": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}
