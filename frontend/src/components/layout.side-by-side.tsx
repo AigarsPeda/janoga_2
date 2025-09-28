@@ -6,11 +6,11 @@ export function SideBySide({ map, form }: Readonly<SideBySideProps>) {
   const { address } = map;
 
   return (
-    <div className="flex container h-[83vh]">
-      <div className="w-1/2 p-4">
+    <div className="flex flex-col md:flex-row container md:min-h-[83vh]">
+      <div className="w-full md:w-1/2 md:p-4 pb-4">
         <MapComponent address={address} />
       </div>
-      <div className="w-1/2 p-4">
+      <div className="w-full md:w-1/2 md:p-4">
         <MyForm
           fields={form.fields}
           submitButton={form.submitButton}
