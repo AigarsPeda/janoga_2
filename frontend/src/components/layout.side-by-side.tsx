@@ -6,7 +6,7 @@ export function SideBySide({ map, form }: Readonly<SideBySideProps>) {
   const { address } = map;
 
   return (
-    <div className="flex container">
+    <div className="flex container h-[83vh]">
       <div className="w-1/2 p-4">
         <MapComponent address={address} />
       </div>

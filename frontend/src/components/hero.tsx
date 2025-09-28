@@ -37,9 +37,10 @@ export function Hero(data: Readonly<HeroProps>) {
         <div className="relative flex-1 w-full h-80 md:h-96 lg:h-[500px]">
           <StrapiImage
             src={image.url}
-            alt={image.name}
+            alt={image.name || "Hero image"}
             priority
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
             className="rounded-xl border border-border shadow-lg object-cover"
           />
           <div className="absolute inset-0 -z-10 bg-primary/20 [filter:blur(180px)]" />

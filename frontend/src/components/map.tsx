@@ -167,8 +167,6 @@ const MapComponent = ({ address }: MyMapProps | { address: string }) => {
       >
         {/* AdvancedMarkerElement is created via useEffect, no JSX component needed */}
       </GoogleMap>
-
-      {/* Address display below the map */}
       {address && (
         <div className="p-4 bg-background border-t border-border/60">
           <div className="flex items-start gap-2">

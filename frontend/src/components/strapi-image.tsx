@@ -10,6 +10,7 @@ interface StrapiImageProps {
   className?: string;
   priority?: boolean;
   style?: React.CSSProperties;
+  sizes?: string;
 }
 
 export function StrapiImage({
@@ -21,6 +22,7 @@ export function StrapiImage({
   className,
   fill = false,
   priority = false,
+  sizes,
 }: Readonly<StrapiImageProps>) {
   if (!src) return null;
   const imageUrl = getStrapiMedia(src);
@@ -36,6 +38,7 @@ export function StrapiImage({
       priority={priority}
       fill={fill}
       style={style}
+      sizes={sizes}
     />
   );
 }

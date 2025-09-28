@@ -86,10 +86,10 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="group relative flex flex-col gap-6 rounded-xl bg-neutral-900/30 p-8 backdrop-blur border-neutral-700/40 shadow-lg max-w-2xl mx-auto w-full min-h-[460px] m-0"
+      className="group relative flex flex-col gap-6 rounded-xl bg-neutral-900/30 p-8 backdrop-blur border-neutral-700/40 shadow-lg max-w-2xl mx-auto w-full min-h-[568px] m-0"
       noValidate
     >
-      <div className="grid w-full gap-6 sm:grid-cols-2">
+      <div className="flex flex-col w-full gap-6">
         {fields.map((field) => {
           const id = `form-${field.id}`;
           const baseInputClasses =
@@ -99,12 +99,7 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
             ? " border-red-400/80 focus:ring-red-400/50 focus:border-red-400/80 bg-red-950/20"
             : "";
           return (
-            <div
-              key={field.id}
-              className={
-                field.type === "textField" ? "sm:col-span-2 flex flex-col" : "flex flex-col"
-              }
-            >
+            <div key={field.id} className="flex flex-col">
               <label
                 htmlFor={id}
                 className="mb-2 text-sm font-medium tracking-wide text-neutral-100"
@@ -117,7 +112,7 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
                   id={id}
                   placeholder={field.placeholder}
                   aria-invalid={hasError}
-                  className={baseInputClasses + errorClasses + " resize-y min-h-[140px]"}
+                  className={baseInputClasses + errorClasses + " resize-y min-h-[200px]"}
                   {...register(field.id, buildRules(field))}
                 />
               ) : (
