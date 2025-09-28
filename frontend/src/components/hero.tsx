@@ -12,25 +12,30 @@ export function Hero(data: Readonly<HeroProps>) {
   return (
     <>
       <section className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[89vh]">
-        <div className="absolute -left-10 top-2/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
+        {/* Left image - hidden on mobile */}
+        <div className="hidden md:block absolute -left-10 top-2/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
               src={image.url}
               alt={image.name || "Coffee preparation"}
               priority
               fill
-              sizes="(max-width: 768px) 240px, 288px"
+              sizes="240px, 288px"
               className="object-cover"
             />
             <div className="absolute inset-0 -z-10 bg-primary/20 [filter:blur(180px)]" />
           </div>
         </div>
-        <div className="flex absolute z-30 flex-col justify-center items-center gap-8 md:gap-10 text-center">
-          <h1 className="max-w-2xl text-center font-heading text-4xl font-semibold sm:text-5xl sm:leading-tight">
+
+        {/* Main content */}
+        <div className="flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 text-center z-30 px-4 md:px-0 md:absolute">
+          <h1 className="max-w-3xl text-center font-heading text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight">
             {heading}
           </h1>
-          <p className="text-muted-foreground max-w-md text-center text-lg">{text}</p>
-          <div className="flex w-full max-w-md flex-wrap justify-center gap-4">
+          <p className="text-muted-foreground max-w-sm sm:max-w-md text-center text-base sm:text-lg">
+            {text}
+          </p>
+          <div className="flex w-full max-w-sm sm:max-w-md flex-wrap justify-center gap-3 sm:gap-4">
             {buttonLink &&
               buttonLink.map((link, i) => (
                 <Button
@@ -38,7 +43,7 @@ export function Hero(data: Readonly<HeroProps>) {
                   size="lg"
                   variant={link.isPrimary ? "default" : "outline"}
                   asChild
-                  className="h-12 cursor-pointer border-border text-base sm:h-14 sm:px-10"
+                  className="h-11 sm:h-12 md:h-14 cursor-pointer border-border text-sm sm:text-base px-6 sm:px-8 md:px-10"
                 >
                   <Link href={link.href} target={link.isExternal ? "_blank" : "_self"}>
                     {link.text}
@@ -47,7 +52,9 @@ export function Hero(data: Readonly<HeroProps>) {
               ))}
           </div>
         </div>
-        <div className="absolute -right-20 top-1/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
+
+        {/* Right image - hidden on mobile */}
+        <div className="hidden md:block absolute -right-20 top-1/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
               src={image2.url}
@@ -63,8 +70,8 @@ export function Hero(data: Readonly<HeroProps>) {
       </section>
 
       {/* Animated ChevronDown at bottom */}
-      <div className="flex justify-center pb-8">
-        <ChevronDown className="w-8 h-8 text-muted-foreground animate-bounce" />
+      <div className="flex justify-center pb-6 sm:pb-8">
+        <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground animate-bounce" />
       </div>
     </>
   );
