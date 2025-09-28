@@ -1,19 +1,84 @@
+"use client";
 import { StrapiImage } from "@/components/strapi-image";
 import { Button } from "@/components/ui/button";
 import type { HeroProps } from "@/types";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// Register ScrollTrigger plugin
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export function Hero(data: Readonly<HeroProps>) {
   if (!data) return null;
 
   const { heading, text, buttonLink, image, image2 } = data;
 
+  // Refs for parallax elements
+  const leftImageRef = useRef<HTMLDivElement>(null);
+  const rightImageRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const leftImage = leftImageRef.current;
+    const rightImage = rightImageRef.current;
+    const section = sectionRef.current;
+
+    if (!leftImage || !rightImage || !section) return;
+
+    // Create parallax animations
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1,
+      },
+    });
+
+    // Left image moves slower (parallax effect)
+    tl.to(
+      leftImage,
+      {
+        yPercent: -20,
+        ease: "none",
+      },
+      0,
+    );
+
+    // Right image moves in opposite direction
+    tl.to(
+      rightImage,
+      {
+        yPercent: 20,
+        ease: "none",
+      },
+      0,
+    );
+
+    // Cleanup
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
+
   return (
     <>
-      <section className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[89vh]">
+      <section
+        ref={sectionRef}
+        className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[89vh]"
+      >
         {/* Left image - hidden on mobile */}
-        <div className="hidden md:block absolute -left-10 top-2/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
+        <div
+          ref={leftImageRef}
+          className="hidden md:block absolute -left-15 top-[55%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20"
+        >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
               src={image.url}
@@ -54,7 +119,10 @@ export function Hero(data: Readonly<HeroProps>) {
         </div>
 
         {/* Right image - hidden on mobile */}
-        <div className="hidden md:block absolute -right-20 top-1/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
+        <div
+          ref={rightImageRef}
+          className="hidden md:block absolute -right-15 top-[25%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20"
+        >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
               src={image2.url}
