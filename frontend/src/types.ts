@@ -1,4 +1,5 @@
 type ComponentType =
+  | "layout.form"
   | "layout.hero"
   | "layout.menu"
   | "layout.delivery"
@@ -27,6 +28,7 @@ export interface NavLink {
 }
 
 export type Block =
+  | FormProps
   | HeroProps
   | MenuProps
   | MenuInfoProps
@@ -167,5 +169,17 @@ export interface MenuInfoProps extends Base<"layout.menu-info"> {
       description: string;
       kind: DishKind;
     };
+  }[];
+}
+
+export interface FormProps extends Base<"layout.form"> {
+  submitButton: NavLink;
+  recipientEmail: string;
+  fields: {
+    id: string;
+    label: string;
+    type: string;
+    placeholder?: string;
+    isRequired: boolean;
   }[];
 }

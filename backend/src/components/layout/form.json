@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_layout_forms",
+  "info": {
+    "displayName": "Form"
+  },
+  "options": {},
+  "attributes": {
+    "submitButton": {
+      "type": "component",
+      "component": "elements.link",
+      "repeatable": false
+    },
+    "fields": {
+      "type": "component",
+      "component": "elements.field",
+      "repeatable": true
+    },
+    "recipientEmail": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

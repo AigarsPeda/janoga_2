@@ -12,6 +12,7 @@ import { Delivery } from "@/components/delivery";
 import { notFound } from "next/navigation";
 import Menu from "@/components/menu";
 import { MenuInfo } from "@/components/menu-info";
+import { Form } from "@/components/form";
 
 interface StaticParamsProps {
   id: number;
@@ -107,6 +108,9 @@ async function loader(slug: string) {
               },
             },
           },
+          "layout.form": {
+            populate: "*",
+          },
         },
       },
     },
@@ -139,6 +143,8 @@ function BlockRenderer(block: Block) {
       return <Menu key={block.id} {...block} />;
     case "layout.menu-info":
       return <MenuInfo key={block.id} {...block} />;
+    case "layout.form":
+      return <Form key={block.id} {...block} />;
     default:
       return null;
   }

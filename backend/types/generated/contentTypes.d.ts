@@ -555,6 +555,7 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         'layout.delivery',
         'layout.menu',
         'layout.menu-info',
+        'layout.form',
       ]
     >;
     createdAt: Schema.Attribute.DateTime;

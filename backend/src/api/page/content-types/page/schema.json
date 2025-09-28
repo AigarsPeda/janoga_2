@@ -32,7 +32,8 @@
         "layout.price-grid",
         "layout.delivery",
         "layout.menu",
-        "layout.menu-info"
+        "layout.menu-info",
+        "layout.form"
       ]
     }
   }

@@ -27,6 +27,21 @@ export interface ElementsFeature extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsField extends Struct.ComponentSchema {
+  collectionName: 'components_elements_fields';
+  info: {
+    displayName: 'Field';
+  };
+  attributes: {
+    isRequired: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label: Schema.Attribute.String;
+    placeholder: Schema.Attribute.String;
+    type: Schema.Attribute.Enumeration<
+      ['string', 'number', 'e-mail', 'textField']
+    >;
+  };
+}
+
 export interface ElementsInfoItem extends Struct.ComponentSchema {
   collectionName: 'components_elements_info_items';
   info: {
@@ -207,6 +222,18 @@ export interface LayoutFooter extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutForm extends Struct.ComponentSchema {
+  collectionName: 'components_layout_forms';
+  info: {
+    displayName: 'Form';
+  };
+  attributes: {
+    fields: Schema.Attribute.Component<'elements.field', true>;
+    recipientEmail: Schema.Attribute.String;
+    submitButton: Schema.Attribute.Component<'elements.link', false>;
+  };
+}
+
 export interface LayoutHero extends Struct.ComponentSchema {
   collectionName: 'components_layout_heroes';
   info: {
@@ -283,6 +310,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'elements.card': ElementsCard;
       'elements.feature': ElementsFeature;
+      'elements.field': ElementsField;
       'elements.info-item': ElementsInfoItem;
       'elements.item': ElementsItem;
       'elements.link': ElementsLink;
@@ -298,6 +326,7 @@ declare module '@strapi/strapi' {
       'layout.delivery': LayoutDelivery;
       'layout.feature-card': LayoutFeatureCard;
       'layout.footer': LayoutFooter;
+      'layout.form': LayoutForm;
       'layout.hero': LayoutHero;
       'layout.menu': LayoutMenu;
       'layout.menu-info': LayoutMenuInfo;
