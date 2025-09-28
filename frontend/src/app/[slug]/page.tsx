@@ -54,6 +54,9 @@ async function loader(slug: string) {
               image: {
                 fields: ["url", "alternativeText", "name"],
               },
+              image2: {
+                fields: ["url", "alternativeText", "name"],
+              },
               buttonLink: {
                 populate: "*",
               },

@@ -60,14 +60,18 @@ export interface FeatureCardProps extends Base<"layout.feature-card"> {
 }
 
 export interface HeroProps extends Base<"layout.hero"> {
-  heading: string;
   text: string;
-  // topLink?: NavLink;
+  heading: string;
   buttonLink?: NavLink[];
   image: {
     url: string;
-    alternativeText: string | null;
     name: string;
+    alternativeText: string | null;
+  };
+  image2: {
+    url: string;
+    name: string;
+    alternativeText: string | null;
   };
 }
 

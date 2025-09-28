@@ -7,17 +7,30 @@ import Link from "next/link";
 export function Hero(data: Readonly<HeroProps>) {
   if (!data) return null;
 
-  const { heading, text, buttonLink, image } = data;
+  const { heading, text, buttonLink, image, image2 } = data;
 
   return (
     <>
-      <section className="container relative flex flex-col items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[90vh]">
-        <div className="flex flex-1 flex-col items-center gap-8 md:items-start md:gap-10">
-          <h1 className="max-w-2xl text-center font-heading text-4xl font-semibold sm:text-5xl sm:leading-tight md:text-left">
+      <section className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[92vh]">
+        <div className="absolute -left-10 top-2/3 -translate-y-1/2 w-80 h-96 lg:w-96 lg:h-[300px] z-20">
+          <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
+            <StrapiImage
+              src={image.url}
+              alt={image.name || "Coffee preparation"}
+              priority
+              fill
+              sizes="(max-width: 768px) 320px, 400px"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 -z-10 bg-primary/20 [filter:blur(180px)]" />
+          </div>
+        </div>
+        <div className="flex absolute z-30 flex-col justify-center items-center gap-8 md:gap-10 text-center">
+          <h1 className="max-w-2xl text-center font-heading text-4xl font-semibold sm:text-5xl sm:leading-tight">
             {heading}
           </h1>
-          <p className="text-muted-foreground max-w-md text-center text-lg md:text-left">{text}</p>
-          <div className="flex w-full max-w-md flex-wrap justify-center gap-4 md:justify-start">
+          <p className="text-muted-foreground max-w-md text-center text-lg">{text}</p>
+          <div className="flex w-full max-w-md flex-wrap justify-center gap-4">
             {buttonLink &&
               buttonLink.map((link, i) => (
                 <Button
@@ -34,24 +47,20 @@ export function Hero(data: Readonly<HeroProps>) {
               ))}
           </div>
         </div>
-        <div className="relative flex-1 w-full h-80 md:h-96 lg:h-[500px]">
-          <StrapiImage
-            src={image.url}
-            alt={image.name || "Hero image"}
-            priority
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
-            className="rounded-xl border border-border shadow-lg object-cover"
-          />
-          <div className="absolute inset-0 -z-10 bg-primary/20 [filter:blur(180px)]" />
+        <div className="absolute -right-20 top-1/3 -translate-y-1/2 w-80 h-96 lg:w-96 lg:h-[300px] z-20">
+          <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
+            <StrapiImage
+              src={image2.url}
+              alt={image2.name || "Hero image"}
+              priority
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
+              className="rounded-xl border border-border shadow-lg object-cover"
+            />
+            <div className="absolute inset-0 z-50 bg-primary/20 [filter:blur(180px)]" />
+          </div>
         </div>
       </section>
-      <div className="relative">
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-muted-foreground/80">
-          <ChevronDown className="h-8 w-8 animate-bounce" aria-hidden="true" />
-          <span className="sr-only">Scroll down</span>
-        </div>
-      </div>
     </>
   );
 }

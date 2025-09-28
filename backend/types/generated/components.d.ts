@@ -244,6 +244,7 @@ export interface LayoutHero extends Struct.ComponentSchema {
     buttonLink: Schema.Attribute.Component<'elements.link', true>;
     heading: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images'>;
+    image2: Schema.Attribute.Media<'images'>;
     text: Schema.Attribute.Text;
   };
 }
