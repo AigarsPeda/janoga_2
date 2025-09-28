@@ -86,17 +86,17 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="group relative flex flex-col gap-5 rounded-xl bg-neutral-900/40 p-6 backdrop-blur border border-border/60 shadow-sm max-w-2xl mx-auto w-full"
+      className="group relative flex flex-col gap-6 rounded-xl bg-neutral-900/30 p-8 backdrop-blur border-neutral-700/40 shadow-lg max-w-2xl mx-auto w-full min-h-[460px] m-0"
       noValidate
     >
-      <div className="grid w-full gap-5 sm:grid-cols-2">
+      <div className="grid w-full gap-6 sm:grid-cols-2">
         {fields.map((field) => {
           const id = `form-${field.id}`;
           const baseInputClasses =
-            "w-full rounded-md border border-border/60 bg-neutral-900/70 px-4 py-3 text-sm text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-primary transition disabled:opacity-50";
+            "w-full rounded-md border border-neutral-700/60 bg-neutral-800/50 px-4 py-3 text-sm text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/80 focus:bg-neutral-800/80 hover:bg-neutral-800/70 transition-all duration-200 disabled:opacity-50";
           const hasError = !!errors[field.id];
           const errorClasses = hasError
-            ? " border-red-500 focus:ring-red-500 focus:border-red-500"
+            ? " border-red-400/80 focus:ring-red-400/50 focus:border-red-400/80 bg-red-950/20"
             : "";
           return (
             <div
@@ -107,7 +107,7 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
             >
               <label
                 htmlFor={id}
-                className="mb-1 text-xs font-medium tracking-wide text-neutral-200"
+                className="mb-2 text-sm font-medium tracking-wide text-neutral-100"
               >
                 {field.label || field.placeholder}
                 {field.isRequired && <span className="ml-1 text-red-400">*</span>}
