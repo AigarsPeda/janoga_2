@@ -11,7 +11,7 @@ export function Hero(data: Readonly<HeroProps>) {
 
   return (
     <>
-      <section className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[92vh]">
+      <section className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[89vh]">
         <div className="absolute -left-10 top-2/3 -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20">
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
@@ -61,6 +61,11 @@ export function Hero(data: Readonly<HeroProps>) {
           </div>
         </div>
       </section>
+
+      {/* Animated ChevronDown at bottom */}
+      <div className="flex justify-center pb-8">
+        <ChevronDown className="w-8 h-8 text-muted-foreground animate-bounce" />
+      </div>
     </>
   );
 }
