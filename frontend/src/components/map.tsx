@@ -144,7 +144,7 @@ const MapComponent = ({ address }: MyMapProps | { address: string }) => {
   return (
     <div
       style={{ width: "100%" }}
-      className="rounded-xl overflow-hidden shadow-lg border border-border/60"
+      className="rounded-xl overflow-hidden shadow-lg border-border/60"
     >
       {isGeocoding && <div style={{ padding: "0.5rem 0" }}>Locating "{address}"…</div>}
       {error && (
@@ -168,7 +168,7 @@ const MapComponent = ({ address }: MyMapProps | { address: string }) => {
         {/* AdvancedMarkerElement is created via useEffect, no JSX component needed */}
       </GoogleMap>
       {address && (
-        <div className="p-4 bg-background border-t border-border/60">
+        <div className="p-4 bg-neutral-900/30 border-t border-border/60">
           <div className="flex items-start gap-2">
             <div>
               <div className="flex items-start gap-2 mb-3">

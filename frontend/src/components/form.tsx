@@ -86,7 +86,7 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="group relative flex flex-col gap-6 rounded-xl bg-neutral-900/30 p-8 backdrop-blur border-neutral-700/40 shadow-lg max-w-2xl mx-auto w-full min-h-[568px] m-0"
+      className="group relative flex flex-col gap-6 rounded-xl bg-neutral-900/30 p-8 backdrop-blur border-neutral-700/40 shadow-lg max-w-2xl mx-auto w-full min-h-[564px] m-0"
       noValidate
     >
       <div className="flex flex-col w-full gap-6">
