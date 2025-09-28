@@ -94,7 +94,7 @@ export function Hero(data: Readonly<HeroProps>) {
 
         {/* Main content */}
         <div className="flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 text-center z-30 px-4 md:px-0 md:absolute">
-          <h1 className="max-w-3xl text-center font-heading text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight">
+          <h1 className="max-w-4xl text-center font-heading text-5xl sm:text-7xl md:text-7xl font-semibold leading-tight">
             {heading}
           </h1>
           <p className="text-muted-foreground max-w-sm sm:max-w-md text-center text-base sm:text-lg">
