@@ -35,7 +35,7 @@ const defaultMapZoom = 15;
 //   mapId: "b4341bc58b07a93d",
 // };
 
-const MapComponent = ({ address }: MyMapProps) => {
+const MapComponent = ({ address }: MyMapProps | { address: string }) => {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
@@ -142,7 +142,10 @@ const MapComponent = ({ address }: MyMapProps) => {
   }
 
   return (
-    <div style={{ width: "100%" }}>
+    <div
+      style={{ width: "100%" }}
+      className="rounded-xl overflow-hidden shadow-lg border border-border/60"
+    >
       {isGeocoding && <div style={{ padding: "0.5rem 0" }}>Locating "{address}"…</div>}
       {error && (
         <div style={{ color: "#b00", fontSize: 12, marginBottom: 4 }}>
@@ -159,7 +162,7 @@ const MapComponent = ({ address }: MyMapProps) => {
           zoomControl: true,
           gestureHandling: "auto",
           mapTypeId: "roadmap",
-          mapId: "DEMO_MAP_ID", // Required for AdvancedMarkerElement
+          mapId: "645d9f609f2f0a986ee4a052", // b4341bc58b07a93d
         }}
       >
         {/* AdvancedMarkerElement is created via useEffect, no JSX component needed */}

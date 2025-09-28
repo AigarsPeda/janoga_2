@@ -7,6 +7,7 @@ type ComponentType =
   | "layout.menu-info"
   | "layout.card-grid"
   | "layout.price-grid"
+  | "layout.side-by-side"
   | "layout.feature-card"
   | "layout.call-to-action"
   | "layout.client-carousel"
@@ -37,6 +38,7 @@ export type Block =
   | DeliveryProps
   | CardGridProps
   | PriceGridProps
+  | SideBySideProps
   | FeatureCardProps
   | CallToActionProps
   | ClientCarouselProps
@@ -174,18 +176,25 @@ export interface MenuInfoProps extends Base<"layout.menu-info"> {
   }[];
 }
 
+export type Field = {
+  id: string;
+  label: string;
+  type: string;
+  placeholder?: string;
+  isRequired: boolean;
+};
+
 export interface FormProps extends Base<"layout.form"> {
   submitButton: NavLink;
   recipientEmail: string;
-  fields: {
-    id: string;
-    label: string;
-    type: string;
-    placeholder?: string;
-    isRequired: boolean;
-  }[];
+  fields: Field[];
 }
 
 export interface MyMapProps extends Base<"layout.map"> {
   address: string;
+}
+
+export interface SideBySideProps extends Base<"layout.side-by-side"> {
+  map: { id: string; address: string };
+  form: { id: string; recipientEmail: string; fields: Field[]; submitButton: NavLink };
 }

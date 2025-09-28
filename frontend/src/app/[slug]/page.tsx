@@ -14,6 +14,7 @@ import Menu from "@/components/menu";
 import { MenuInfo } from "@/components/menu-info";
 import { Form } from "@/components/form";
 import { MapComponent } from "@/components/map";
+import { SideBySide } from "@/components/layout.side-by-side";
 
 interface StaticParamsProps {
   id: number;
@@ -115,6 +116,16 @@ async function loader(slug: string) {
           "layout.map": {
             populate: "*",
           },
+          "layout.side-by-side": {
+            populate: {
+              map: {
+                populate: "*",
+              },
+              form: {
+                populate: "*",
+              },
+            },
+          },
         },
       },
     },
@@ -151,6 +162,8 @@ function BlockRenderer(block: Block) {
       return <Form key={block.id} {...block} />;
     case "layout.map":
       return <MapComponent key={block.id} {...block} />;
+    case "layout.side-by-side":
+      return <SideBySide key={block.id} {...block} />;
     default:
       return null;
   }

@@ -301,6 +301,17 @@ export interface LayoutSectionHeading extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutSideBySide extends Struct.ComponentSchema {
+  collectionName: 'components_layout_side_by_sides';
+  info: {
+    displayName: 'Side by side';
+  };
+  attributes: {
+    form: Schema.Attribute.Component<'layout.form', false>;
+    map: Schema.Attribute.Component<'layout.map', false>;
+  };
+}
+
 export interface LayoutTopNav extends Struct.ComponentSchema {
   collectionName: 'components_layout_top_navs';
   info: {
@@ -343,6 +354,7 @@ declare module '@strapi/strapi' {
       'layout.menu-info': LayoutMenuInfo;
       'layout.price-grid': LayoutPriceGrid;
       'layout.section-heading': LayoutSectionHeading;
+      'layout.side-by-side': LayoutSideBySide;
       'layout.top-nav': LayoutTopNav;
     }
   }

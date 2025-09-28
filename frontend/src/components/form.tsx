@@ -1,4 +1,5 @@
 "use client";
+
 import { FormProps } from "@/types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -21,7 +22,13 @@ function buildRules(field: FormProps["fields"][number]) {
 
 type DynamicFormValues = Record<string, string>;
 
-export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProps>) {
+type FormField = {
+  fields: FormProps["fields"];
+  submitButton: FormProps["submitButton"];
+  recipientEmail: FormProps["recipientEmail"];
+};
+
+export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProps> | FormField) {
   const {
     reset,
     register,
@@ -100,7 +107,7 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
             >
               <label
                 htmlFor={id}
-                className="mb-1 text-xs font-medium tracking-wide text-neutral-400"
+                className="mb-1 text-xs font-medium tracking-wide text-neutral-200"
               >
                 {field.label || field.placeholder}
                 {field.isRequired && <span className="ml-1 text-red-400">*</span>}

@@ -34,7 +34,8 @@
         "layout.menu",
         "layout.menu-info",
         "layout.form",
-        "layout.map"
+        "layout.map",
+        "layout.side-by-side"
       ]
     }
   }
