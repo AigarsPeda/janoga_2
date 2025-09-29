@@ -72,12 +72,12 @@ export function Hero(data: Readonly<HeroProps>) {
     <>
       <section
         ref={sectionRef}
-        className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 pt-20 sm:gap-14 md:flex-row md:min-h-[89vh]"
+        className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 md:pt-32 pt-10 sm:gap-14 md:flex-row md:min-h-[89vh] isolate"
       >
         {/* Left image - hidden on mobile */}
         <div
           ref={leftImageRef}
-          className="hidden md:block absolute -left-15 top-[55%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20"
+          className="hidden md:block absolute -left-5 top-[55%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20"
         >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
@@ -93,13 +93,11 @@ export function Hero(data: Readonly<HeroProps>) {
         </div>
 
         {/* Main content */}
-        <div className="flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 text-center z-30 px-4 md:px-0 md:absolute">
-          <h1 className="max-w-4xl text-center font-heading text-5xl sm:text-7xl md:text-7xl font-semibold leading-tight">
+        <div className="flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 text-center z-30 px-4 md:px-0 md:absolute mix-blend-difference text-white transition-colors duration-300">
+          <h1 className="max-w-4xl text-center font-heading text-5xl sm:text-7xl md:text-7xl font-semibold leading-tight will-change-auto">
             {heading}
           </h1>
-          <p className="text-muted-foreground max-w-sm sm:max-w-md text-center text-base sm:text-lg">
-            {text}
-          </p>
+          <p className="max-w-sm sm:max-w-md text-center text-base sm:text-lg opacity-90">{text}</p>
           <div className="flex w-full max-w-sm sm:max-w-md flex-wrap justify-center gap-3 sm:gap-4">
             {buttonLink &&
               buttonLink.map((link, i) => (
@@ -108,7 +106,7 @@ export function Hero(data: Readonly<HeroProps>) {
                   size="lg"
                   variant={link.isPrimary ? "default" : "outline"}
                   asChild
-                  className="h-11 sm:h-12 md:h-14 cursor-pointer border-border text-sm sm:text-base px-6 sm:px-8 md:px-10"
+                  className="h-11 sm:h-12 md:h-14 cursor-pointer border-border text-sm sm:text-base px-6 sm:px-8 md:px-10 mix-blend-normal"
                 >
                   <Link href={link.href} target={link.isExternal ? "_blank" : "_self"}>
                     {link.text}
@@ -121,7 +119,7 @@ export function Hero(data: Readonly<HeroProps>) {
         {/* Right image - hidden on mobile */}
         <div
           ref={rightImageRef}
-          className="hidden md:block absolute -right-15 top-[25%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20"
+          className="hidden md:block absolute -right-15 top-[10%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20"
         >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
