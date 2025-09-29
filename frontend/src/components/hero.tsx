@@ -147,7 +147,7 @@ export function Hero(data: Readonly<HeroProps>) {
         {/* Left image - hidden on mobile */}
         <div
           ref={leftImageRef}
-          className="hidden md:block absolute -left-5 top-[55%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
+          className="hidden md:block absolute -left-0 top-[53%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
           data-hero-image
         >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
@@ -168,7 +168,7 @@ export function Hero(data: Readonly<HeroProps>) {
           ref={contentRef}
           className="flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 text-center z-30 px-4 md:px-0 md:absolute mix-blend-difference text-white transition-colors duration-300 opacity-0"
         >
-          <h1 className="max-w-4xl text-center font-heading text-5xl sm:text-7xl md:text-7xl font-semibold leading-tight will-change-auto">
+          <h1 className="max-w-3xl text-center font-heading text-5xl sm:text-7xl md:text-7xl font-semibold leading-tight will-change-auto">
             {heading}
           </h1>
           <p className="max-w-sm sm:max-w-md text-center text-base sm:text-lg opacity-90">{text}</p>
@@ -193,7 +193,7 @@ export function Hero(data: Readonly<HeroProps>) {
         {/* Right image - hidden on mobile */}
         <div
           ref={rightImageRef}
-          className="hidden md:block absolute -right-15 top-[10%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
+          className="hidden md:block absolute -right-5 top-[11%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
           data-hero-image
         >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
