@@ -41,18 +41,30 @@ export function Hero(data: Readonly<HeroProps>) {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
+      // Image animation configuration
+      const imageFadeDuration = 0.7;
+      const imageStagger = 0.16; // for 2 images total ~0.86s
+      const imagesTotal = images.length
+        ? imageFadeDuration + imageStagger * (images.length - 1)
+        : 0;
+      const midPoint = imagesTotal / 2; // point where text begins
+
       if (images.length) {
-        // Set initial off-screen position (no layout shift because opacity 0)
         gsap.set(images, { y: 40 });
-        tl.to(images, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.16,
-          onComplete: () => images.forEach((el) => el.classList.remove("opacity-0")),
-        });
+        tl.to(
+          images,
+          {
+            opacity: 1,
+            y: 0,
+            duration: imageFadeDuration,
+            stagger: imageStagger,
+            onComplete: () => images.forEach((el) => el.classList.remove("opacity-0")),
+          },
+          0,
+        );
       }
 
+      // Reveal the content wrapper right before staggering inner elements (slightly before midpoint for smoother blend)
       tl.to(
         contentWrapper,
         {
@@ -60,7 +72,7 @@ export function Hero(data: Readonly<HeroProps>) {
           duration: 0.01,
           onComplete: () => contentWrapper.classList.remove("opacity-0"),
         },
-        images.length ? "-=0.2" : 0,
+        images.length ? Math.max(midPoint - 0.08, 0) : 0,
       );
 
       if (contentElements.length) {
@@ -73,7 +85,7 @@ export function Hero(data: Readonly<HeroProps>) {
             stagger: 0.06,
             clearProps: "opacity,transform",
           },
-          "-=0.15",
+          images.length ? midPoint : 0.05,
         );
       }
     }, sectionRef);
