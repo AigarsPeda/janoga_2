@@ -50,18 +50,24 @@ export function Hero(data: Readonly<HeroProps>) {
       const midPoint = imagesTotal / 2; // point where text begins
 
       if (images.length) {
-        gsap.set(images, { y: 40 });
-        tl.to(
-          images,
-          {
-            opacity: 1,
-            y: 0,
-            duration: imageFadeDuration,
-            stagger: imageStagger,
-            onComplete: () => images.forEach((el) => el.classList.remove("opacity-0")),
-          },
-          0,
-        );
+        // Determine rotations: assume right image is visually on top (higher on page)
+        // rotations array aligned with images array order [leftImage, rightImage]
+        const rotations = images.map((img, idx) => (idx === 1 ? 5 : -5)); // degrees
+        gsap.set(images, { y: 40, rotation: 0 });
+        images.forEach((img, idx) => {
+          tl.to(
+            img,
+            {
+              opacity: 1,
+              y: 0,
+              rotation: rotations[idx],
+              duration: imageFadeDuration,
+              ease: "power2.out",
+              onComplete: () => img.classList.remove("opacity-0"),
+            },
+            idx * imageStagger,
+          );
+        });
       }
 
       // Reveal the content wrapper right before staggering inner elements (slightly before midpoint for smoother blend)
@@ -147,7 +153,7 @@ export function Hero(data: Readonly<HeroProps>) {
         {/* Left image - hidden on mobile */}
         <div
           ref={leftImageRef}
-          className="hidden md:block absolute -left-0 top-[53%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
+          className="hidden md:block absolute -left-8 top-[53%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
           data-hero-image
         >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
@@ -193,7 +199,7 @@ export function Hero(data: Readonly<HeroProps>) {
         {/* Right image - hidden on mobile */}
         <div
           ref={rightImageRef}
-          className="hidden md:block absolute -right-5 top-[11%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
+          className="hidden md:block absolute -right-14 top-[11%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
           data-hero-image
         >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
