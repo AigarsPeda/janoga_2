@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { HeroProps } from "@/types";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -21,7 +21,65 @@ export function Hero(data: Readonly<HeroProps>) {
   // Refs for parallax elements
   const leftImageRef = useRef<HTMLDivElement>(null);
   const rightImageRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+
+  // Initial entrance animation: images fade/slide in, then text elements stagger
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const leftImage = leftImageRef.current;
+    const rightImage = rightImageRef.current;
+    const contentWrapper = contentRef.current;
+    if (!contentWrapper) return;
+
+    const images = [leftImage, rightImage].filter(Boolean) as HTMLDivElement[];
+    const contentElements: Element[] = Array.from(
+      contentWrapper.querySelectorAll("h1, p, a, button, .hero-stagger"),
+    );
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+      if (images.length) {
+        // Set initial off-screen position (no layout shift because opacity 0)
+        gsap.set(images, { y: 40 });
+        tl.to(images, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.16,
+          onComplete: () => images.forEach((el) => el.classList.remove("opacity-0")),
+        });
+      }
+
+      tl.to(
+        contentWrapper,
+        {
+          opacity: 1,
+          duration: 0.01,
+          onComplete: () => contentWrapper.classList.remove("opacity-0"),
+        },
+        images.length ? "-=0.2" : 0,
+      );
+
+      if (contentElements.length) {
+        tl.from(
+          contentElements,
+          {
+            opacity: 0,
+            y: 28,
+            duration: 0.5,
+            stagger: 0.06,
+            clearProps: "opacity,transform",
+          },
+          "-=0.15",
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -77,7 +135,8 @@ export function Hero(data: Readonly<HeroProps>) {
         {/* Left image - hidden on mobile */}
         <div
           ref={leftImageRef}
-          className="hidden md:block absolute -left-5 top-[55%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20"
+          className="hidden md:block absolute -left-5 top-[55%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
+          data-hero-image
         >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
@@ -93,7 +152,10 @@ export function Hero(data: Readonly<HeroProps>) {
         </div>
 
         {/* Main content */}
-        <div className="flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 text-center z-30 px-4 md:px-0 md:absolute mix-blend-difference text-white transition-colors duration-300">
+        <div
+          ref={contentRef}
+          className="flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 text-center z-30 px-4 md:px-0 md:absolute mix-blend-difference text-white transition-colors duration-300 opacity-0"
+        >
           <h1 className="max-w-4xl text-center font-heading text-5xl sm:text-7xl md:text-7xl font-semibold leading-tight will-change-auto">
             {heading}
           </h1>
@@ -119,7 +181,8 @@ export function Hero(data: Readonly<HeroProps>) {
         {/* Right image - hidden on mobile */}
         <div
           ref={rightImageRef}
-          className="hidden md:block absolute -right-15 top-[10%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20"
+          className="hidden md:block absolute -right-15 top-[10%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
+          data-hero-image
         >
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
             <StrapiImage
