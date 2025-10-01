@@ -51,7 +51,8 @@ export function ImageModal({ images, initialIndex, open, onOpenChange }: ImageMo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-[95vw] sm:max-w-7xl w-full h-[95vh] sm:h-[90vh] p-0 bg-black/95 border-none overflow-hidden"
+        /* Full height on mobile so image can use full viewport */
+        className="max-w-[95vw] sm:max-w-7xl w-full h-screen sm:h-[90vh] p-0 bg-black/95 border-none overflow-hidden"
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">
@@ -73,29 +74,33 @@ export function ImageModal({ images, initialIndex, open, onOpenChange }: ImageMo
           </div>
 
           {/* Carousel - Main image area */}
-          <div className="flex-1 flex items-center justify-center overflow-hidden min-h-0 max-h-[calc(100%-200px)]">
+          <div className="flex-1 flex items-center justify-center overflow-hidden min-h-0">
             <Carousel
               setApi={setApi}
-              className="w-full h-full max-h-[calc(100%-180px)] sm:max-h-[calc(100%-130px)]"
+              className="w-full h-full flex"
               opts={{
                 loop: true,
                 startIndex: initialIndex,
               }}
             >
-              <CarouselContent className="h-full -ml-0">
+              <CarouselContent className="h-full -ml-0 flex items-center">
                 {images.map((img, index) => (
-                  <CarouselItem key={img.image.id} className="h-full pl-0">
-                    <div className="flex items-center justify-center h-full w-full px-8 sm:px-12 py-4">
+                  <CarouselItem
+                    key={img.image.id}
+                    className="h-full pl-0 flex items-center justify-center"
+                  >
+                    <div className="flex items-center justify-center h-full w-full px-2 py-2 sm:px-12 sm:py-6">
                       <div className="relative w-full h-full flex items-center justify-center">
                         <StrapiImage
                           src={img.image.url}
                           alt={img.name || "Gallery Image"}
                           width={img.image.width}
                           height={img.image.height}
-                          className="max-w-full max-h-full w-auto h-auto object-contain"
+                          className="select-none max-w-full max-h-full w-auto h-auto object-contain mx-auto"
+                          /* On mobile we subtract approximate thumbnail strip (110px incl. padding & counter area); on larger screens subtract less */
                           style={{
                             maxWidth: "100%",
-                            maxHeight: "100%",
+                            maxHeight: "calc(100vh - 150px)", // mobile full-screen adjustment
                             width: "auto",
                             height: "auto",
                           }}
