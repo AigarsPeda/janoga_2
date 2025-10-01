@@ -71,14 +71,16 @@ export default async function SinglePost({ params }: Props) {
           <p className="text-muted-foreground">
             Publicēts {formatDate(post.publishedAt)} - {post.category.text}
           </p>
-          <StrapiImage
-            src={post.image.url}
-            alt={post.image.alternativeText || "Blog post image"}
-            width={800}
-            height={600}
-            priority
-            className="w-full rounded-lg mt-8"
-          />
+          <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-lg max-h-[70vh]">
+            <StrapiImage
+              src={post.image.url}
+              alt={post.image.alternativeText || "Blog post image"}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 960px"
+              className="object-cover"
+            />
+          </div>
         </header>
       </div>
       {post.blocks && post.blocks.length > 0 && post.blocks.map(BlockRenderer)}
