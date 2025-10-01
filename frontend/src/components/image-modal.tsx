@@ -50,52 +50,56 @@ export function ImageModal({ images, initialIndex, open, onOpenChange }: ImageMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-7xl w-full h-[90vh] p-0 bg-black/95 border-none">
+      <DialogContent
+        className="max-w-[95vw] sm:max-w-7xl w-full h-[95vh] sm:h-[90vh] p-0 bg-black/95 border-none overflow-hidden"
+        showCloseButton={false}
+      >
         <DialogTitle className="sr-only">
           Image Gallery - Viewing image {current + 1} of {images.length}
         </DialogTitle>
         <div className="relative w-full h-full flex flex-col">
           {/* Close button */}
-          {/* <button
+          <button
             onClick={() => onOpenChange(false)}
-            className="absolute top-4 right-4 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-colors"
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 z-50 rounded-full bg-black/50 p-1.5 sm:p-2 text-white hover:bg-black/70 transition-colors"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5 sm:h-6 sm:w-6" />
             <span className="sr-only">Close</span>
-          </button> */}
+          </button>
 
           {/* Image counter */}
-          {/* <div className="absolute top-4 left-4 z-50 bg-black/50 px-4 py-2 rounded-full text-white text-sm font-medium">
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-50 bg-black/50 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-white text-xs sm:text-sm font-medium">
             {current + 1} / {images.length}
-          </div> */}
+          </div>
 
-          {/* Carousel */}
-          <div className="flex-1 flex items-center justify-center p-8">
+          {/* Carousel - Main image area */}
+          <div className="flex-1 flex items-center justify-center overflow-hidden min-h-0 max-h-[calc(100%-200px)]">
             <Carousel
               setApi={setApi}
-              className="w-full h-full"
+              className="w-full h-full max-h-[calc(100%-180px)] sm:max-h-[calc(100%-130px)]"
               opts={{
                 loop: true,
                 startIndex: initialIndex,
               }}
             >
-              <CarouselContent className="h-full">
+              <CarouselContent className="h-full -ml-0">
                 {images.map((img, index) => (
-                  <CarouselItem key={img.image.id} className="h-full">
-                    <div className="flex items-center justify-center h-full w-full">
-                      <div className="relative max-w-full max-h-full">
+                  <CarouselItem key={img.image.id} className="h-full pl-0">
+                    <div className="flex items-center justify-center h-full w-full px-8 sm:px-12 py-4">
+                      <div className="relative w-full h-full flex items-center justify-center">
                         <StrapiImage
                           src={img.image.url}
                           alt={img.name || "Gallery Image"}
                           width={img.image.width}
                           height={img.image.height}
-                          className="max-w-full max-h-[80vh] w-auto h-auto object-contain"
+                          className="max-w-full max-h-full w-auto h-auto object-contain"
+                          style={{
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                            width: "auto",
+                            height: "auto",
+                          }}
                         />
-                        {/* {img.name && (
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                            <p className="text-white text-lg font-medium">{img.name}</p>
-                          </div>
-                        )} */}
                       </div>
                     </div>
                   </CarouselItem>
@@ -103,22 +107,22 @@ export function ImageModal({ images, initialIndex, open, onOpenChange }: ImageMo
               </CarouselContent>
 
               {/* Navigation buttons */}
-              <CarouselPrevious className="left-4 h-12 w-12 bg-black/50 border-none text-white hover:bg-black/70 hover:text-white" />
-              <CarouselNext className="right-4 h-12 w-12 bg-black/50 border-none text-white hover:bg-black/70 hover:text-white" />
+              <CarouselPrevious className="left-1 sm:left-4 h-8 w-8 sm:h-12 sm:w-12 bg-black/50 border-none text-white hover:bg-black/70 hover:text-white" />
+              <CarouselNext className="right-1 sm:right-4 h-8 w-8 sm:h-12 sm:w-12 bg-black/50 border-none text-white hover:bg-black/70 hover:text-white" />
             </Carousel>
           </div>
 
-          {/* Thumbnail strip (optional - can be removed if not needed) */}
-          <div className="bg-black/80 p-4 overflow-x-auto">
-            <div className="flex gap-2 justify-center">
+          {/* Thumbnail strip */}
+          <div className="bg-black/80 p-2 sm:p-3 overflow-x-auto flex-shrink-0 border-t border-white/10">
+            <div className="flex gap-2 sm:gap-3 justify-center">
               {images.map((img, index) => (
                 <button
                   key={img.image.id}
                   onClick={() => api?.scrollTo(index)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all ${
+                  className={`flex-shrink-0 w-14 h-14 sm:w-20 sm:h-20 rounded-md overflow-hidden transition-all ${
                     current === index
-                      ? "ring-2 ring-white scale-110"
-                      : "opacity-50 hover:opacity-100"
+                      ? "ring-2 ring-white opacity-100"
+                      : "opacity-60 hover:opacity-100"
                   }`}
                 >
                   <StrapiImage
