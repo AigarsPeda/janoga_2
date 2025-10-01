@@ -588,6 +588,7 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    blocks: Schema.Attribute.DynamicZone<['layout.image-gallery']>;
     category: Schema.Attribute.Relation<'oneToOne', 'api::category.category'>;
     content: Schema.Attribute.RichText;
     createdAt: Schema.Attribute.DateTime;

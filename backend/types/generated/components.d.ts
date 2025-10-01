@@ -42,6 +42,17 @@ export interface ElementsField extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsImage extends Struct.ComponentSchema {
+  collectionName: 'components_elements_images';
+  info: {
+    displayName: 'Image';
+  };
+  attributes: {
+    image: Schema.Attribute.Media<'images'>;
+    name: Schema.Attribute.String;
+  };
+}
+
 export interface ElementsInfoItem extends Struct.ComponentSchema {
   collectionName: 'components_elements_info_items';
   info: {
@@ -249,6 +260,16 @@ export interface LayoutHero extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutImageGallery extends Struct.ComponentSchema {
+  collectionName: 'components_layout_image_galleries';
+  info: {
+    displayName: 'Image Gallery';
+  };
+  attributes: {
+    images: Schema.Attribute.Component<'elements.image', true>;
+  };
+}
+
 export interface LayoutMap extends Struct.ComponentSchema {
   collectionName: 'components_layout_maps';
   info: {
@@ -333,6 +354,7 @@ declare module '@strapi/strapi' {
       'elements.card': ElementsCard;
       'elements.feature': ElementsFeature;
       'elements.field': ElementsField;
+      'elements.image': ElementsImage;
       'elements.info-item': ElementsInfoItem;
       'elements.item': ElementsItem;
       'elements.link': ElementsLink;
@@ -350,6 +372,7 @@ declare module '@strapi/strapi' {
       'layout.footer': LayoutFooter;
       'layout.form': LayoutForm;
       'layout.hero': LayoutHero;
+      'layout.image-gallery': LayoutImageGallery;
       'layout.map': LayoutMap;
       'layout.menu': LayoutMenu;
       'layout.menu-info': LayoutMenuInfo;

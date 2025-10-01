@@ -1,9 +1,10 @@
-import React from "react";
-import qs from "qs";
-import { Metadata } from "next";
-import { formatDate, getStrapiURL } from "@/lib/utils";
 import { MarkdownText } from "@/components/markdown-text";
+import { MasonryGallery } from "@/components/masonry-gallery";
 import { StrapiImage } from "@/components/strapi-image";
+import { formatDate, getStrapiURL } from "@/lib/utils";
+import { Block } from "@/types";
+import { Metadata } from "next";
+import qs from "qs";
 
 interface Props {
   params: {
@@ -25,6 +26,17 @@ async function loader(slug: string) {
       category: {
         fields: ["text"],
       },
+      blocks: {
+        on: {
+          "layout.image-gallery": {
+            populate: {
+              images: {
+                populate: "*",
+              },
+            },
+          },
+        },
+      },
     },
     filters: {
       slug: { $eq: slug },
@@ -37,7 +49,7 @@ async function loader(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await loader(params.slug);
   const { title, description } = data?.data[0];
-  console.log(title, description);
+
   return {
     title: title,
     description: description,
@@ -46,7 +58,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SinglePost({ params }: Props) {
   const data = await loader(params.slug);
   const post = data?.data[0];
+
   if (!post) return null;
+
+  console.log("post", post);
 
   return (
     <article>
@@ -54,7 +69,7 @@ export default async function SinglePost({ params }: Props) {
         <header className="container mx-auto my-10">
           <h1 className="text-6xl font-bold tracking-tighter sm:text-5xl mb-4">{post.title}</h1>
           <p className="text-muted-foreground">
-            Posted on {formatDate(post.publishedAt)} - {post.category.text}
+            Publicēts {formatDate(post.publishedAt)} - {post.category.text}
           </p>
           <StrapiImage
             src={post.image.url}
@@ -66,10 +81,22 @@ export default async function SinglePost({ params }: Props) {
           />
         </header>
       </div>
-
+      {post.blocks && post.blocks.length > 0 && post.blocks.map(BlockRenderer)}
       <div className="container mx-auto max-w-4xl text-base leading-7">
         <MarkdownText content={post.content} />
       </div>
     </article>
   );
+}
+
+function BlockRenderer(block: Block, index: number) {
+  console.dir(block.__component, { depth: null });
+  console.log(block, "Block Component");
+
+  switch (block.__component) {
+    case "layout.image-gallery":
+      return <MasonryGallery key={index} {...block} />;
+    default:
+      return null;
+  }
 }

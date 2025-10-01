@@ -9,6 +9,7 @@ type ComponentType =
   | "layout.price-grid"
   | "layout.side-by-side"
   | "layout.feature-card"
+  | "layout.image-gallery"
   | "layout.call-to-action"
   | "layout.client-carousel"
   | "layout.section-heading"
@@ -41,6 +42,7 @@ export type Block =
   | SideBySideProps
   | FeatureCardProps
   | CallToActionProps
+  | ImageGalleryProps
   | ClientCarouselProps
   | SectionHeadingProps
   | ContentWithImageProps;
@@ -201,4 +203,16 @@ export interface MyMapProps extends Base<"layout.map"> {
 export interface SideBySideProps extends Base<"layout.side-by-side"> {
   map: { id: string; address: string };
   form: { id: string; recipientEmail: string; fields: Field[]; submitButton: NavLink };
+}
+
+export interface ImageGalleryProps extends Base<"layout.image-gallery"> {
+  images: {
+    name: string;
+    image: {
+      id: string;
+      url: string;
+      width: number;
+      height: number;
+    };
+  }[];
 }

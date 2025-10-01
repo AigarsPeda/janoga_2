@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_layout_image_galleries",
+  "info": {
+    "displayName": "Image Gallery"
+  },
+  "options": {},
+  "attributes": {
+    "images": {
+      "type": "component",
+      "component": "elements.image",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

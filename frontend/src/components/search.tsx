@@ -1,7 +1,8 @@
 "use client";
+
+import { Input } from "@/components/ui/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
-import { Input } from "@/components/ui/input";
 
 export function Search() {
   const searchParams = useSearchParams();
@@ -22,7 +23,7 @@ export function Search() {
   }, 300);
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-xl mx-4">
       <Input
         type="text"
         placeholder="Search"

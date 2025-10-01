@@ -39,6 +39,7 @@ async function loader(page: number, queryString: string, category: string) {
   const baseUrl = getStrapiURL();
 
   const url = new URL(path, baseUrl);
+
   url.search = qs.stringify({
     populate: {
       image: {
@@ -62,7 +63,9 @@ async function loader(page: number, queryString: string, category: string) {
       page: page,
     },
   });
+
   const data = await fetchData(url.href);
+
   return data;
 }
 
@@ -75,14 +78,14 @@ export default async function BlogRoute({ searchParams }: SearchParamsProps) {
   const posts = data?.data;
   return (
     <section className="container flex flex-col items-center gap-6 py-24 sm:gap-7">
-      <div className="flex flex-col gap-3">
+      {/* <div className="flex flex-col gap-3">
         <span className="font-bold uppercase text-primary text-center">Articles</span>
         <h2 className="font-heading text-3xl font-semibold sm:text-4xl text-center">Our Blog</h2>
-      </div>
-      <p className="text-lg text-muted-foreground max-w-2xl text-center">
+      </div> */}
+      {/* <p className="text-lg text-muted-foreground max-w-2xl text-center">
         Checkout some of our cool articles. We write about the latest trends in tech, design and
         much more.
-      </p>
+      </p> */}
       <CategorySelect />
       <Search />
       <div className="mt-6 grid auto-rows-fr grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
@@ -105,7 +108,7 @@ export default async function BlogRoute({ searchParams }: SearchParamsProps) {
                     <p className="mb-auto text-muted-foreground">{item.description}</p>
                     <div className="flex items-center gap-3">
                       <span className="rounded-full outline-1 outline-primary text-primary px-3 py-0.5 text-sm">
-                        {item.category.text}
+                        {item.category?.text}
                       </span>
                       <span className="text-sm text-muted-foreground">
                         {formatDate(item.publishedAt)}

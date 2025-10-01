@@ -24,7 +24,7 @@ export async function CategorySelect() {
           {text}
         </CategoryButton>
       ))}
-      <CategoryButton value="">all</CategoryButton>
+      <CategoryButton value="">Viss</CategoryButton>
     </div>
   );
 }
