@@ -38,7 +38,6 @@ async function loader(page: number, queryString: string, category: string) {
   const path = "/api/posts";
   const baseUrl = getStrapiURL();
 
-
   const url = new URL(path, baseUrl);
   url.search = qs.stringify({
     populate: {
@@ -81,7 +80,8 @@ export default async function BlogRoute({ searchParams }: SearchParamsProps) {
         <h2 className="font-heading text-3xl font-semibold sm:text-4xl text-center">Our Blog</h2>
       </div>
       <p className="text-lg text-muted-foreground max-w-2xl text-center">
-        Checkout some of our cool articles. We write about the latest trends in tech, design and much more.
+        Checkout some of our cool articles. We write about the latest trends in tech, design and
+        much more.
       </p>
       <CategorySelect />
       <Search />
@@ -93,9 +93,10 @@ export default async function BlogRoute({ searchParams }: SearchParamsProps) {
                 <CardContent className="flex h-full flex-col items-start gap-5 px-0">
                   <div className="relative h-52 w-full">
                     <StrapiImage
-                      alt={item.image.alternativeText}
+                      alt={item.image.alternativeText || "Blog post image"}
                       src={item.image.url}
                       fill
+                      sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
                       className="object-cover rounded-t-lg"
                     />
                   </div>
@@ -103,10 +104,12 @@ export default async function BlogRoute({ searchParams }: SearchParamsProps) {
                     <h4 className="text-lg font-semibold">{item.title}</h4>
                     <p className="mb-auto text-muted-foreground">{item.description}</p>
                     <div className="flex items-center gap-3">
-                      <span className="rounded-full outline outline-1 outline-primary text-primary px-3 py-0.5 text-sm">
+                      <span className="rounded-full outline-1 outline-primary text-primary px-3 py-0.5 text-sm">
                         {item.category.text}
                       </span>
-                      <span className="text-sm text-muted-foreground">{formatDate(item.publishedAt)}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {formatDate(item.publishedAt)}
+                      </span>
                     </div>
                   </div>
                 </CardContent>

@@ -11,8 +11,6 @@ interface Props {
   };
 }
 
-
-
 async function loader(slug: string) {
   const { fetchData } = await import("@/lib/fetch");
   const path = "/api/posts";
@@ -60,7 +58,7 @@ export default async function SinglePost({ params }: Props) {
           </p>
           <StrapiImage
             src={post.image.url}
-            alt={post.image.alternativeText}
+            alt={post.image.alternativeText || "Blog post image"}
             width={800}
             height={600}
             priority
