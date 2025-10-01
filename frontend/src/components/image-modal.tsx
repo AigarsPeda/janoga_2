@@ -118,7 +118,7 @@ export function ImageModal({ images, initialIndex, open, onOpenChange }: ImageMo
           </div>
 
           {/* Thumbnail strip */}
-          <div className="bg-black/80 p-2 sm:p-3 overflow-x-auto flex-shrink-0 border-t border-white/10">
+          {/* <div className="bg-black/80 p-2 sm:p-3 overflow-x-auto flex-shrink-0 border-t border-white/10 hidden">
             <div className="flex gap-2 sm:gap-3 justify-center">
               {images.map((img, index) => (
                 <button
@@ -140,7 +140,7 @@ export function ImageModal({ images, initialIndex, open, onOpenChange }: ImageMo
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </DialogContent>
     </Dialog>
