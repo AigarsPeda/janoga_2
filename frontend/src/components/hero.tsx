@@ -18,21 +18,32 @@ export function Hero(data: Readonly<HeroProps>) {
 
   const { heading, text, buttonLink, image, image2 } = data;
 
-  // Refs for parallax elements
-  const leftImageRef = useRef<HTMLDivElement>(null);
-  const rightImageRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const decorRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const leftImageRef = useRef<HTMLDivElement>(null);
+  const rightImageRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollToNextDiv = () => {
+    const section = sectionRef.current;
+    if (section) {
+      const nextDiv = section.nextElementSibling;
+      if (nextDiv) {
+        const offsetTop = nextDiv.getBoundingClientRect().top + window.scrollY - 100; // Adjusted offset
+        window.scrollTo({ top: offsetTop, behavior: "smooth" });
+      }
+    }
+  };
 
   // Initial entrance animation: images fade/slide in, then text elements stagger
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
 
+    const decor = decorRef.current;
     const leftImage = leftImageRef.current;
     const rightImage = rightImageRef.current;
     const contentWrapper = contentRef.current;
-    const decor = decorRef.current;
+
     if (!contentWrapper) return;
 
     const images = [leftImage, rightImage].filter(Boolean) as HTMLDivElement[];
@@ -175,7 +186,7 @@ export function Hero(data: Readonly<HeroProps>) {
                     priority
                     fill
                     sizes="(max-width: 1024px) 208px, 256px"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700"
                   />
                   {/* Subtle overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/5" />
@@ -205,7 +216,7 @@ export function Hero(data: Readonly<HeroProps>) {
                       size="lg"
                       variant={link.isPrimary ? "default" : "outline"}
                       asChild
-                      className={`h-12 sm:h-14 cursor-pointer text-base font-medium px-8 sm:px-10 rounded-full transition-all duration-300 ${
+                      className={`h-12 sm:h-14 cursor-pointer text-base font-medium px-8 sm:px-10 rounded-xl transition-all duration-300 ${
                         link.isPrimary
                           ? "shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02]"
                           : "hover:bg-muted/50"
@@ -235,7 +246,7 @@ export function Hero(data: Readonly<HeroProps>) {
                     priority
                     fill
                     sizes="(max-width: 1024px) 208px, 256px"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700"
                   />
                   {/* Subtle overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/5" />
@@ -257,10 +268,10 @@ export function Hero(data: Readonly<HeroProps>) {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-xs text-muted-foreground uppercase tracking-widest">
-            Uzzināt vairāk
-          </span>
-          <ChevronDown className="w-5 h-5 text-muted-foreground animate-bounce" />
+          <ChevronDown
+            className="w-5 h-5 text-muted-foreground animate-bounce cursor-pointer"
+            onClick={handleScrollToNextDiv}
+          />
         </div>
       </section>
     </>
