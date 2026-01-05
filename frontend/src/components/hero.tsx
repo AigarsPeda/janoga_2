@@ -23,6 +23,7 @@ export function Hero(data: Readonly<HeroProps>) {
   const rightImageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const decorRef = useRef<HTMLDivElement>(null);
 
   // Initial entrance animation: images fade/slide in, then text elements stagger
   useLayoutEffect(() => {
@@ -31,6 +32,7 @@ export function Hero(data: Readonly<HeroProps>) {
     const leftImage = leftImageRef.current;
     const rightImage = rightImageRef.current;
     const contentWrapper = contentRef.current;
+    const decor = decorRef.current;
     if (!contentWrapper) return;
 
     const images = [leftImage, rightImage].filter(Boolean) as HTMLDivElement[];
@@ -39,30 +41,44 @@ export function Hero(data: Readonly<HeroProps>) {
     );
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      // Animate decorative gradient
+      if (decor) {
+        gsap.set(decor, { scale: 0.8, opacity: 0 });
+        tl.to(
+          decor,
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 1.2,
+            ease: "power2.out",
+          },
+          0,
+        );
+      }
 
       // Image animation configuration
-      const imageFadeDuration = 0.7;
-      const imageStagger = 0.16; // for 2 images total ~0.86s
+      const imageFadeDuration = 0.8;
+      const imageStagger = 0.2;
       const imagesTotal = images.length
         ? imageFadeDuration + imageStagger * (images.length - 1)
         : 0;
-      const midPoint = imagesTotal / 2; // point where text begins
+      const midPoint = imagesTotal / 2;
 
       if (images.length) {
-        // Determine rotations: assume right image is visually on top (higher on page)
-        // rotations array aligned with images array order [leftImage, rightImage]
-        const rotations = images.map((img, idx) => (idx === 1 ? 5 : -5)); // degrees
-        gsap.set(images, { y: 40, rotation: 0 });
+        const rotations = images.map((img, idx) => (idx === 1 ? 6 : -6));
+        gsap.set(images, { y: 60, rotation: 0, scale: 0.9 });
         images.forEach((img, idx) => {
           tl.to(
             img,
             {
               opacity: 1,
               y: 0,
+              scale: 1,
               rotation: rotations[idx],
               duration: imageFadeDuration,
-              ease: "power2.out",
+              ease: "power3.out",
               onComplete: () => img.classList.remove("opacity-0"),
             },
             idx * imageStagger,
@@ -70,7 +86,6 @@ export function Hero(data: Readonly<HeroProps>) {
         });
       }
 
-      // Reveal the content wrapper right before staggering inner elements (slightly before midpoint for smoother blend)
       tl.to(
         contentWrapper,
         {
@@ -86,9 +101,9 @@ export function Hero(data: Readonly<HeroProps>) {
           contentElements,
           {
             opacity: 0,
-            y: 28,
-            duration: 0.5,
-            stagger: 0.06,
+            y: 40,
+            duration: 0.6,
+            stagger: 0.08,
             clearProps: "opacity,transform",
           },
           images.length ? midPoint : 0.05,
@@ -108,7 +123,6 @@ export function Hero(data: Readonly<HeroProps>) {
 
     if (!leftImage || !rightImage || !section) return;
 
-    // Create parallax animations
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
@@ -118,27 +132,9 @@ export function Hero(data: Readonly<HeroProps>) {
       },
     });
 
-    // Left image moves slower (parallax effect)
-    tl.to(
-      leftImage,
-      {
-        yPercent: -20,
-        ease: "none",
-      },
-      0,
-    );
+    tl.to(leftImage, { yPercent: -15, ease: "none" }, 0);
+    tl.to(rightImage, { yPercent: 15, ease: "none" }, 0);
 
-    // Right image moves in opposite direction
-    tl.to(
-      rightImage,
-      {
-        yPercent: 20,
-        ease: "none",
-      },
-      0,
-    );
-
-    // Cleanup
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
@@ -148,78 +144,125 @@ export function Hero(data: Readonly<HeroProps>) {
     <>
       <section
         ref={sectionRef}
-        className="container mx-auto text-center relative flex flex-col justify-center items-center gap-10 md:pb-28 pb-20 md:pt-32 pt-10 sm:gap-14 md:flex-row md:min-h-[89vh] isolate"
+        className="relative min-h-[95svh] flex flex-col justify-center items-center overflow-hidden"
       >
-        {/* Left image - hidden on mobile */}
+        {/* Background gradient decoration */}
         <div
-          ref={leftImageRef}
-          className="hidden md:block absolute -left-8 top-[53%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
-          data-hero-image
+          ref={decorRef}
+          className="absolute inset-0 opacity-0 pointer-events-none"
+          aria-hidden="true"
         >
-          <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
-            <StrapiImage
-              src={image.url}
-              alt={image.name || "Coffee preparation"}
-              priority
-              fill
-              sizes="240px, 288px"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 -z-10 bg-primary/20 [filter:blur(180px)]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl" />
+          <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-2xl" />
+        </div>
+
+        {/* Main container */}
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[65svh] py-12 md:py-16 pb-24">
+            {/* Left image */}
+            <div
+              ref={leftImageRef}
+              className="hidden lg:flex lg:col-span-3 justify-center lg:justify-end opacity-0 will-change-transform"
+              data-hero-image
+            >
+              <div className="relative w-52 xl:w-64 aspect-[3/4] group">
+                {/* Glow effect behind image */}
+                <div className="absolute -inset-4 bg-gradient-to-br from-primary/30 to-primary/10 rounded-2xl blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+                  <StrapiImage
+                    src={image.url}
+                    alt={image.name || "Hero image"}
+                    priority
+                    fill
+                    sizes="(max-width: 1024px) 208px, 256px"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Subtle overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/5" />
+                </div>
+              </div>
+            </div>
+
+            <div
+              ref={contentRef}
+              className="lg:col-span-6 flex flex-col justify-center items-center text-center gap-6 sm:gap-8 opacity-0"
+            >
+              <h1 className="max-w-2xl font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight">
+                <span className="bg-gradient-to-br from-foreground via-foreground to-foreground/70 bg-clip-text">
+                  {heading}
+                </span>
+              </h1>
+
+              <p className="max-w-lg text-muted-foreground text-base sm:text-lg md:text-xl leading-relaxed">
+                {text}
+              </p>
+
+              <div className="flex flex-col sm:flex-row w-full max-w-md justify-center gap-3 sm:gap-4 pt-2">
+                {buttonLink &&
+                  buttonLink.map((link, i) => (
+                    <Button
+                      key={`link-${i}-${link.text}`}
+                      size="lg"
+                      variant={link.isPrimary ? "default" : "outline"}
+                      asChild
+                      className={`h-12 sm:h-14 cursor-pointer text-base font-medium px-8 sm:px-10 rounded-full transition-all duration-300 ${
+                        link.isPrimary
+                          ? "shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02]"
+                          : "hover:bg-muted/50"
+                      }`}
+                    >
+                      <Link href={link.href} target={link.isExternal ? "_blank" : "_self"}>
+                        {link.text}
+                      </Link>
+                    </Button>
+                  ))}
+              </div>
+            </div>
+
+            {/* Right image */}
+            <div
+              ref={rightImageRef}
+              className="hidden lg:flex lg:col-span-3 justify-center lg:justify-start opacity-0 will-change-transform"
+              data-hero-image
+            >
+              <div className="relative w-52 xl:w-64 aspect-[3/4] group -mt-20">
+                {/* Glow effect behind image */}
+                <div className="absolute -inset-4 bg-gradient-to-tl from-primary/30 to-primary/10 rounded-2xl blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+                  <StrapiImage
+                    src={image2.url}
+                    alt={image2.name || "Hero image"}
+                    priority
+                    fill
+                    sizes="(max-width: 1024px) 208px, 256px"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Subtle overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/5" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Main content */}
-        <div
-          ref={contentRef}
-          className="flex flex-col justify-center items-center gap-6 sm:gap-8 md:gap-10 text-center z-30 px-4 md:px-0 md:absolute mix-blend-difference text-white transition-colors duration-300 opacity-0"
-        >
-          <h1 className="max-w-3xl text-center font-heading text-5xl sm:text-7xl md:text-7xl font-semibold leading-tight will-change-auto">
-            {heading}
-          </h1>
-          <p className="max-w-sm sm:max-w-md text-center text-base sm:text-lg opacity-90">{text}</p>
-          <div className="flex w-full max-w-sm sm:max-w-md flex-wrap justify-center gap-3 sm:gap-4">
-            {buttonLink &&
-              buttonLink.map((link, i) => (
-                <Button
-                  key={`link-${i}-${link.text}`}
-                  size="lg"
-                  variant={link.isPrimary ? "default" : "outline"}
-                  asChild
-                  className="h-11 sm:h-12 md:h-14 cursor-pointer border-border text-sm sm:text-base px-6 sm:px-8 md:px-10 mix-blend-normal"
-                >
-                  <Link href={link.href} target={link.isExternal ? "_blank" : "_self"}>
-                    {link.text}
-                  </Link>
-                </Button>
-              ))}
+        {/* Mobile images - show as overlapping cards */}
+        <div className="lg:hidden absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -left-16 top-20 w-32 h-40 rounded-xl overflow-hidden opacity-20 rotate-[-12deg]">
+            <StrapiImage src={image.url} alt="" fill className="object-cover" />
+          </div>
+          <div className="absolute -right-16 bottom-32 w-32 h-40 rounded-xl overflow-hidden opacity-20 rotate-[12deg]">
+            <StrapiImage src={image2.url} alt="" fill className="object-cover" />
           </div>
         </div>
 
-        {/* Right image - hidden on mobile */}
-        <div
-          ref={rightImageRef}
-          className="hidden md:block absolute -right-14 top-[11%] -translate-y-1/2 w-60 lg:w-72 aspect-[4/5] z-20 opacity-0 will-change-transform"
-          data-hero-image
-        >
-          <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
-            <StrapiImage
-              src={image2.url}
-              alt={image2.name || "Hero image"}
-              priority
-              fill
-              sizes="(max-width: 768px) 240px, 288px"
-              className="rounded-xl border border-border shadow-lg object-cover"
-            />
-            <div className="absolute inset-0 z-50 bg-primary/20 [filter:blur(180px)]" />
-          </div>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <span className="text-xs text-muted-foreground uppercase tracking-widest">
+            Uzzināt vairāk
+          </span>
+          <ChevronDown className="w-5 h-5 text-muted-foreground animate-bounce" />
         </div>
       </section>
-
-      {/* Animated ChevronDown at bottom */}
-      <div className="flex justify-center pb-6 sm:pb-8">
-        <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground animate-bounce" />
-      </div>
     </>
   );
 }
