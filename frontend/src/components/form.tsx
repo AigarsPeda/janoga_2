@@ -158,8 +158,8 @@ export function Form({ fields, submitButton, recipientEmail }: Readonly<FormProp
 
       <input
         type="hidden"
-        value={recipientEmail}
-        {...register("recipientEmail", { value: recipientEmail })}
+        value={recipientEmail ?? ""}
+        {...register("recipientEmail", { value: recipientEmail ?? "" })}
       />
     </form>
   );

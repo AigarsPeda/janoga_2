@@ -15,6 +15,10 @@ import { MenuInfo } from "@/components/menu-info";
 import { Form } from "@/components/form";
 import { MapComponent } from "@/components/map";
 import { SideBySide } from "@/components/layout.side-by-side";
+import { i18n, type Locale } from "../../../../i18n-config";
+
+// Allow dynamic params not returned by generateStaticParams
+export const dynamicParams = true;
 
 interface StaticParamsProps {
   id: number;
@@ -27,20 +31,26 @@ export async function generateStaticParams() {
   const path = "/api/pages";
   const baseUrl = getStrapiURL();
 
-  const url = new URL(path, baseUrl);
+  const params: { locale: string; slug: string }[] = [];
 
-  url.search = qs.stringify({
-    fields: ["slug"],
-  });
+  for (const locale of i18n.locales) {
+    const url = new URL(path, baseUrl);
+    url.search = qs.stringify({
+      fields: ["slug"],
+      locale: locale,
+    });
 
-  const pages = await fetchData(url.href);
+    const pages = await fetchData(url.href);
 
-  return pages.data.map((page: Readonly<StaticParamsProps>) => ({
-    slug: page.slug,
-  }));
+    pages.data.forEach((page: Readonly<StaticParamsProps>) => {
+      params.push({ locale, slug: page.slug });
+    });
+  }
+
+  return params;
 }
 
-async function loader(slug: string) {
+async function loader(slug: string, locale: string) {
   const { fetchData } = await import("@/lib/fetch");
   const path = "/api/pages";
   const baseUrl = getStrapiURL();
@@ -135,6 +145,7 @@ async function loader(slug: string) {
     filters: {
       slug: slug,
     },
+    locale: locale,
   });
 
   const url = new URL(path, baseUrl);
@@ -144,8 +155,6 @@ async function loader(slug: string) {
 }
 
 function BlockRenderer(block: Block) {
-  console.log("PAGE BLOCKS:", block);
-  // console.log(block.__component, "From BlockRenderer");
   switch (block.__component) {
     case "layout.hero":
       return <Hero key={block.id} {...block} />;
@@ -172,12 +181,16 @@ function BlockRenderer(block: Block) {
   }
 }
 
-export default async function PageBySlugRoute({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function PageBySlugRoute({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: Locale }>;
+}) {
+  const { slug, locale } = await params;
 
   if (!slug) notFound();
 
-  const data = await loader(slug);
+  const data = await loader(slug, locale);
   const pageEntry = data?.data?.[0];
 
   if (!pageEntry) notFound();

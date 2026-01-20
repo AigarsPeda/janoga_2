@@ -4,6 +4,17 @@ import Link from "next/link";
 import { MobileNavbar } from "@/components/mobile-navbar";
 import { Button } from "@/components/ui/button";
 import { cn, getStrapiURL } from "@/lib/utils";
+import { LocaleSwitcher } from "@/components/locale-switcher";
+
+interface StrapiLocale {
+  id: number;
+  documentId: string;
+  name: string;
+  code: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface HeaderProps {
   data: {
@@ -15,17 +26,34 @@ interface HeaderProps {
       name: string;
     } | null;
   };
+  locales?: StrapiLocale[];
+  currentLocale?: string;
 }
 
-export function Header({ data }: Readonly<HeaderProps>) {
+export function Header({ data, locales, currentLocale = "lv" }: Readonly<HeaderProps>) {
   if (!data) return null;
 
   const baseUrl = getStrapiURL();
   const { logoText, navItems, cta } = data;
 
+  // Helper function to add locale prefix to internal links
+  const getLocalizedHref = (href: string, isExternal?: boolean) => {
+    if (
+      isExternal ||
+      href.startsWith("http") ||
+      href.startsWith("mailto:") ||
+      href.startsWith("tel:")
+    ) {
+      return href;
+    }
+    // Ensure href starts with /
+    const path = href.startsWith("/") ? href : `/${href}`;
+    return `/${currentLocale}${path}`;
+  };
+
   return (
     <header className="container flex items-center justify-between gap-10 py-4">
-      <Link href="/" className="flex items-center gap-3">
+      <Link href={`/${currentLocale}`} className="flex items-center gap-3">
         {data.logo?.url && (
           <img
             src={baseUrl + data.logo.url}
@@ -40,7 +68,7 @@ export function Header({ data }: Readonly<HeaderProps>) {
           {navItems &&
             navItems.map((item, i) => (
               <Link
-                href={item.href}
+                href={getLocalizedHref(item.href, item.isExternal)}
                 className={cn("font-medium text-muted-foreground hover:text-foreground", {
                   "text-primary": item.isPrimary,
                 })}
@@ -51,11 +79,18 @@ export function Header({ data }: Readonly<HeaderProps>) {
               </Link>
             ))}
         </nav>
+        {locales && locales.length > 1 && (
+          <LocaleSwitcher
+            locales={locales}
+            currentLocale={currentLocale}
+            className="hidden md:flex"
+          />
+        )}
         {cta && (
           <div className="hidden items-center gap-2 md:flex">
             <Button asChild>
               <Link
-                href={cta.href}
+                href={getLocalizedHref(cta.href, cta.isExternal)}
                 className="cursor-pointer"
                 target={cta.isExternal ? "_blank" : "_self"}
               >
@@ -73,17 +108,23 @@ export function Header({ data }: Readonly<HeaderProps>) {
                 <Link
                   // key={item.text}
                   key={`navItems-link-${i}-${item.text}`}
-                  href={item.href}
+                  href={getLocalizedHref(item.href, item.isExternal)}
                   className="flex w-full cursor-pointer items-center rounded-md p-2 font-medium text-muted-foreground hover:text-foreground"
                 >
                   {item.text}
                 </Link>
               ))}
 
+            {locales && locales.length > 1 && (
+              <div className="pt-2 border-t mt-2">
+                <LocaleSwitcher locales={locales} currentLocale={currentLocale} />
+              </div>
+            )}
+
             {cta && (
               <Button asChild size="lg" className="mt-2 w-full">
                 <Link
-                  href={cta.href}
+                  href={getLocalizedHref(cta.href, cta.isExternal)}
                   className="cursor-pointer"
                   target={cta.isExternal ? "_blank" : "_self"}
                 >

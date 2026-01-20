@@ -7,13 +7,15 @@ import { PaginationComponent } from "@/components/pagination";
 import { getStrapiURL } from "@/lib/utils";
 import { CategorySelect } from "@/components/category-select";
 import { formatDate } from "@/lib/utils";
+import type { Locale } from "../../../../i18n-config";
 
 interface SearchParamsProps {
-  searchParams?: {
+  searchParams?: Promise<{
     page?: string;
     query?: string;
     category?: string;
-  };
+  }>;
+  params: Promise<{ locale: Locale }>;
 }
 
 interface PostProps {
@@ -33,7 +35,7 @@ interface PostProps {
   };
 }
 
-async function loader(page: number, queryString: string, category: string) {
+async function loader(page: number, queryString: string, category: string, locale: string) {
   const { fetchData } = await import("@/lib/fetch");
   const path = "/api/posts";
   const baseUrl = getStrapiURL();
@@ -57,6 +59,7 @@ async function loader(page: number, queryString: string, category: string) {
         { content: { $containsi: queryString } },
       ],
     },
+    locale: locale,
 
     pagination: {
       pageSize: 9,
@@ -69,11 +72,13 @@ async function loader(page: number, queryString: string, category: string) {
   return data;
 }
 
-export default async function BlogRoute({ searchParams }: SearchParamsProps) {
-  const currentPage = Number(searchParams?.page) || 1;
-  const query = searchParams?.query ?? "";
-  const category = searchParams?.category ?? "";
-  const data = await loader(currentPage, query, category);
+export default async function BlogRoute({ searchParams, params }: SearchParamsProps) {
+  const { locale } = await params;
+  const searchParamsData = await searchParams;
+  const currentPage = Number(searchParamsData?.page) || 1;
+  const query = searchParamsData?.query ?? "";
+  const category = searchParamsData?.category ?? "";
+  const data = await loader(currentPage, query, category, locale);
   const total = data?.meta.pagination.pageCount;
   const posts = data?.data;
   return (

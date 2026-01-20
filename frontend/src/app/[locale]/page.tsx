@@ -11,7 +11,7 @@ import { Pricing } from "@/components/pricing";
 import { SectionHeading } from "@/components/section-heading";
 import ClientCarousel from "@/components/client-carousel";
 import { CallToAction } from "@/components/call-to-action";
-import { getLocale } from "@/lib/actions/locale";
+import type { Locale } from "../../../i18n-config";
 
 async function loader(locale: string) {
   const { fetchData } = await import("@/lib/fetch");
@@ -87,9 +87,6 @@ async function loader(locale: string) {
 }
 
 function BlockRenderer(block: Block, index: number) {
-  console.dir(block.__component, { depth: null });
-  // console.dir(block, { depth: null });
-  console.log(block, "Block Component");
   switch (block.__component) {
     case "layout.hero":
       return <Hero key={index} {...block} />;
@@ -112,16 +109,12 @@ function BlockRenderer(block: Block, index: number) {
   }
 }
 
-export default async function Home() {
-  const locale = await getLocale();
+export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params;
   const data = await loader(locale);
   const blocks = data?.data?.blocks;
 
   if (!blocks) return null;
 
-  return (
-    <div>
-      {blocks ? blocks.map((block: Block, index: number) => BlockRenderer(block, index)) : null}
-    </div>
-  );
+  return <div>{blocks.map((block: Block, index: number) => BlockRenderer(block, index))}</div>;
 }

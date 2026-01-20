@@ -5,14 +5,16 @@ import { formatDate, getStrapiURL } from "@/lib/utils";
 import { Block } from "@/types";
 import { Metadata } from "next";
 import qs from "qs";
+import type { Locale } from "../../../../../i18n-config";
 
 interface Props {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+    locale: Locale;
+  }>;
 }
 
-async function loader(slug: string) {
+async function loader(slug: string, locale: string) {
   const { fetchData } = await import("@/lib/fetch");
   const path = "/api/posts";
   const baseUrl = getStrapiURL();
@@ -41,14 +43,16 @@ async function loader(slug: string) {
     filters: {
       slug: { $eq: slug },
     },
+    locale: locale,
   });
   const data = await fetchData(url.href);
   return data;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const data = await loader(params.slug);
-  const { title, description } = data?.data[0];
+  const { slug, locale } = await params;
+  const data = await loader(slug, locale);
+  const { title, description } = data?.data[0] ?? {};
 
   return {
     title: title,
@@ -56,7 +60,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 export default async function SinglePost({ params }: Props) {
-  const data = await loader(params.slug);
+  const { slug, locale } = await params;
+  const data = await loader(slug, locale);
   const post = data?.data[0];
 
   if (!post) return null;
