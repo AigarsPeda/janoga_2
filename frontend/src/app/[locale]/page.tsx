@@ -11,7 +11,34 @@ import { Pricing } from "@/components/pricing";
 import { SectionHeading } from "@/components/section-heading";
 import ClientCarousel from "@/components/client-carousel";
 import { CallToAction } from "@/components/call-to-action";
-import type { Locale } from "../../../i18n-config";
+import { i18n, type Locale } from "../../../i18n-config";
+
+const blocksPopulate = {
+  blocks: {
+    on: {
+      "layout.hero": {
+        populate: {
+          image: { fields: ["url", "alternativeText", "name"] },
+          image2: { fields: ["url", "alternativeText", "name"] },
+          buttonLink: { populate: "*" },
+        },
+      },
+      "layout.card-grid": { populate: "*" },
+      "layout.section-heading": { populate: "*" },
+      "layout.content-with-image": {
+        populate: { image: { fields: ["url", "alternativeText", "name"] } },
+      },
+      "layout.price-grid": { populate: { priceCard: { populate: "*" } } },
+      "layout.feature-card": { populate: { items: { populate: "*" } } },
+      "layout.client-carousel": {
+        populate: {
+          clients: { populate: { image: { fields: ["url", "alternativeText", "name"] } } },
+        },
+      },
+      "layout.call-to-action": { populate: "*" },
+    },
+  },
+};
 
 async function loader(locale: string) {
   const { fetchData } = await import("@/lib/fetch");
@@ -19,70 +46,25 @@ async function loader(locale: string) {
   const baseUrl = getStrapiURL();
 
   const query = qs.stringify({
-    populate: {
-      blocks: {
-        on: {
-          "layout.hero": {
-            populate: {
-              image: {
-                fields: ["url", "alternativeText", "name"],
-              },
-              image2: {
-                fields: ["url", "alternativeText", "name"],
-              },
-              buttonLink: {
-                populate: "*",
-              },
-            },
-          },
-          "layout.card-grid": {
-            populate: "*",
-          },
-          "layout.section-heading": {
-            populate: "*",
-          },
-          "layout.content-with-image": {
-            populate: {
-              image: {
-                fields: ["url", "alternativeText", "name"],
-              },
-            },
-          },
-          "layout.price-grid": {
-            populate: {
-              priceCard: {
-                populate: "*",
-              },
-            },
-          },
-          "layout.feature-card": {
-            populate: {
-              items: {
-                populate: "*",
-              },
-            },
-          },
-          "layout.client-carousel": {
-            populate: {
-              clients: {
-                populate: {
-                  image: {
-                    fields: ["url", "alternativeText", "name"],
-                  },
-                },
-              },
-            },
-          },
-          "layout.call-to-action": { populate: "*" },
-        },
-      },
-    },
+    populate: blocksPopulate,
     locale: locale,
   });
 
   const url = new URL(path, baseUrl);
   url.search = query;
   const data = await fetchData(url.href);
+
+  // Fallback to default locale if no content found
+  if (!data?.data?.blocks && locale !== i18n.defaultLocale) {
+    const fallbackQuery = qs.stringify({
+      populate: blocksPopulate,
+      locale: i18n.defaultLocale,
+    });
+    const fallbackUrl = new URL(path, baseUrl);
+    fallbackUrl.search = fallbackQuery;
+    return await fetchData(fallbackUrl.href);
+  }
+
   return data;
 }
 

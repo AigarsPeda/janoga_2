@@ -5,7 +5,7 @@ import { formatDate, getStrapiURL } from "@/lib/utils";
 import { Block } from "@/types";
 import { Metadata } from "next";
 import qs from "qs";
-import type { Locale } from "../../../../../i18n-config";
+import { i18n, type Locale } from "../../../../../i18n-config";
 
 interface Props {
   params: Promise<{
@@ -14,6 +14,18 @@ interface Props {
   }>;
 }
 
+const postPopulate = {
+  image: { fields: ["url", "alternativeText", "name"] },
+  category: { fields: ["text"] },
+  blocks: {
+    on: {
+      "layout.image-gallery": {
+        populate: { images: { populate: "*" } },
+      },
+    },
+  },
+};
+
 async function loader(slug: string, locale: string) {
   const { fetchData } = await import("@/lib/fetch");
   const path = "/api/posts";
@@ -21,31 +33,23 @@ async function loader(slug: string, locale: string) {
 
   const url = new URL(path, baseUrl);
   url.search = qs.stringify({
-    populate: {
-      image: {
-        fields: ["url", "alternativeText", "name"],
-      },
-      category: {
-        fields: ["text"],
-      },
-      blocks: {
-        on: {
-          "layout.image-gallery": {
-            populate: {
-              images: {
-                populate: "*",
-              },
-            },
-          },
-        },
-      },
-    },
-    filters: {
-      slug: { $eq: slug },
-    },
+    populate: postPopulate,
+    filters: { slug: { $eq: slug } },
     locale: locale,
   });
   const data = await fetchData(url.href);
+
+  // Fallback to default locale if no post found
+  if ((!data?.data || data.data.length === 0) && locale !== i18n.defaultLocale) {
+    const fallbackUrl = new URL(path, baseUrl);
+    fallbackUrl.search = qs.stringify({
+      populate: postPopulate,
+      filters: { slug: { $eq: slug } },
+      locale: i18n.defaultLocale,
+    });
+    return await fetchData(fallbackUrl.href);
+  }
+
   return data;
 }
 
@@ -65,8 +69,6 @@ export default async function SinglePost({ params }: Props) {
   const post = data?.data[0];
 
   if (!post) return null;
-
-  console.log("post", post);
 
   return (
     <article>

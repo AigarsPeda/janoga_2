@@ -7,7 +7,7 @@ import { PaginationComponent } from "@/components/pagination";
 import { getStrapiURL } from "@/lib/utils";
 import { CategorySelect } from "@/components/category-select";
 import { formatDate } from "@/lib/utils";
-import type { Locale } from "../../../../i18n-config";
+import { i18n, type Locale } from "../../../../i18n-config";
 
 interface SearchParamsProps {
   searchParams?: Promise<{
@@ -68,6 +68,28 @@ async function loader(page: number, queryString: string, category: string, local
   });
 
   const data = await fetchData(url.href);
+
+  // Fallback to default locale if no posts found
+  if ((!data?.data || data.data.length === 0) && locale !== i18n.defaultLocale) {
+    const fallbackUrl = new URL(path, baseUrl);
+    fallbackUrl.search = qs.stringify({
+      populate: {
+        image: { fields: ["url", "alternativeText", "name"] },
+        category: { fields: ["text"] },
+      },
+      filters: {
+        category: category.length !== 0 ? { text: { $eq: category } } : {},
+        $or: [
+          { title: { $containsi: queryString } },
+          { description: { $containsi: queryString } },
+          { content: { $containsi: queryString } },
+        ],
+      },
+      locale: i18n.defaultLocale,
+      pagination: { pageSize: 9, page: page },
+    });
+    return await fetchData(fallbackUrl.href);
+  }
 
   return data;
 }

@@ -1,20 +1,17 @@
-import type { Block } from "@/types";
-
-import qs from "qs";
-import { getStrapiURL } from "@/lib/utils";
-
-import { Hero } from "@/components/hero";
 import { CardGrid } from "@/components/card-grid";
-import { SectionHeading } from "@/components/section-heading";
 import ContentWithImage from "@/components/content-with-image";
-import { steps } from "framer-motion";
 import { Delivery } from "@/components/delivery";
-import { notFound } from "next/navigation";
+import { Form } from "@/components/form";
+import { Hero } from "@/components/hero";
+import { SideBySide } from "@/components/layout.side-by-side";
+import { MapComponent } from "@/components/map";
 import Menu from "@/components/menu";
 import { MenuInfo } from "@/components/menu-info";
-import { Form } from "@/components/form";
-import { MapComponent } from "@/components/map";
-import { SideBySide } from "@/components/layout.side-by-side";
+import { SectionHeading } from "@/components/section-heading";
+import { getStrapiURL } from "@/lib/utils";
+import type { Block } from "@/types";
+import { notFound } from "next/navigation";
+import qs from "qs";
 import { i18n, type Locale } from "../../../../i18n-config";
 
 // Allow dynamic params not returned by generateStaticParams
@@ -50,107 +47,67 @@ export async function generateStaticParams() {
   return params;
 }
 
+// Shared populate config for pages
+const pagePopulate = {
+  blocks: {
+    on: {
+      "layout.hero": {
+        populate: {
+          image: { fields: ["url", "alternativeText", "name"] },
+          image2: { fields: ["url", "alternativeText", "name"] },
+          buttonLink: { populate: "*" },
+        },
+      },
+      "layout.card-grid": { populate: "*" },
+      "layout.section-heading": { populate: "*" },
+      "layout.content-with-image": {
+        populate: { image: { fields: ["url", "alternativeText", "name"] } },
+      },
+      "layout.feature-card": { populate: { items: { populate: "*" } } },
+      "layout.delivery": { populate: { steps: { populate: "*" } } },
+      "layout.menu": {
+        populate: {
+          days: { populate: { item: { populate: "*" } } },
+          buttonLink: { populate: "*" },
+        },
+      },
+      "layout.menu-info": { populate: { items: { populate: "*" } } },
+      "layout.form": { populate: "*" },
+      "layout.map": { populate: "*" },
+      "layout.side-by-side": {
+        populate: { map: { populate: "*" }, form: { populate: "*" } },
+      },
+    },
+  },
+};
+
 async function loader(slug: string, locale: string) {
   const { fetchData } = await import("@/lib/fetch");
   const path = "/api/pages";
   const baseUrl = getStrapiURL();
 
   const query = qs.stringify({
-    populate: {
-      blocks: {
-        on: {
-          "layout.hero": {
-            populate: {
-              image: {
-                fields: ["url", "alternativeText", "name"],
-              },
-              image2: {
-                fields: ["url", "alternativeText", "name"],
-              },
-              buttonLink: {
-                populate: "*",
-              },
-              // topLink: {
-              //   populate: "*",
-              // },
-            },
-          },
-          "layout.card-grid": {
-            populate: "*",
-          },
-          "layout.section-heading": {
-            populate: "*",
-          },
-          "layout.content-with-image": {
-            populate: {
-              image: {
-                fields: ["url", "alternativeText", "name"],
-              },
-            },
-          },
-          "layout.feature-card": {
-            populate: {
-              items: {
-                populate: "*",
-              },
-            },
-          },
-          "layout.delivery": {
-            populate: {
-              steps: {
-                populate: "*",
-              },
-            },
-          },
-          "layout.menu": {
-            populate: {
-              days: {
-                populate: {
-                  item: {
-                    populate: "*",
-                  },
-                },
-              },
-              buttonLink: {
-                populate: "*",
-              },
-            },
-          },
-          "layout.menu-info": {
-            populate: {
-              items: {
-                populate: "*",
-              },
-            },
-          },
-          "layout.form": {
-            populate: "*",
-          },
-          "layout.map": {
-            populate: "*",
-          },
-          "layout.side-by-side": {
-            populate: {
-              map: {
-                populate: "*",
-              },
-              form: {
-                populate: "*",
-              },
-            },
-          },
-        },
-      },
-    },
-    filters: {
-      slug: slug,
-    },
+    populate: pagePopulate,
+    filters: { slug: slug },
     locale: locale,
   });
 
   const url = new URL(path, baseUrl);
   url.search = query;
   const data = await fetchData(url.href);
+
+  // Fallback to default locale if no page found
+  if ((!data?.data || data.data.length === 0) && locale !== i18n.defaultLocale) {
+    const fallbackQuery = qs.stringify({
+      populate: pagePopulate,
+      filters: { slug: slug },
+      locale: i18n.defaultLocale,
+    });
+    const fallbackUrl = new URL(path, baseUrl);
+    fallbackUrl.search = fallbackQuery;
+    return await fetchData(fallbackUrl.href);
+  }
+
   return data;
 }
 

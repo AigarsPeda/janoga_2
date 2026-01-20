@@ -1,15 +1,11 @@
-import "../globals.css";
-import qs from "qs";
-import { getStrapiURL } from "@/lib/utils";
-
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+import { cn, getStrapiURL } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter, Nunito } from "next/font/google";
-
-import { cn } from "@/lib/utils";
-
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import qs from "qs";
 import { i18n, type Locale } from "../../../i18n-config";
+import "../globals.css";
 
 const fontSans = Inter({
   variable: "--font-sans",
@@ -35,6 +31,11 @@ export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ locale }));
 }
 
+const globalPopulate = {
+  topNav: { populate: "*" },
+  footer: { populate: "*" },
+};
+
 async function loader(locale: string) {
   const { fetchData } = await import("@/lib/fetch");
   const baseUrl = getStrapiURL();
@@ -42,14 +43,7 @@ async function loader(locale: string) {
   // Fetch global data
   const globalPath = "/api/global";
   const query = qs.stringify({
-    populate: {
-      topNav: {
-        populate: "*",
-      },
-      footer: {
-        populate: "*",
-      },
-    },
+    populate: globalPopulate,
     locale: locale,
   });
 
@@ -59,7 +53,18 @@ async function loader(locale: string) {
   // Fetch available locales from Strapi i18n plugin
   const localesUrl = new URL("/api/i18n/locales", baseUrl);
 
-  const globalData = await fetchData(globalUrl.href);
+  let globalData = await fetchData(globalUrl.href);
+
+  // Fallback to default locale if no global data found
+  if (!globalData?.data?.topNav && locale !== i18n.defaultLocale) {
+    const fallbackQuery = qs.stringify({
+      populate: globalPopulate,
+      locale: i18n.defaultLocale,
+    });
+    const fallbackUrl = new URL(globalPath, baseUrl);
+    fallbackUrl.search = fallbackQuery;
+    globalData = await fetchData(fallbackUrl.href);
+  }
 
   // Locales endpoint may require permissions - handle gracefully
   let localesData = [];
