@@ -49,6 +49,7 @@ async function loader() {
   const url = new URL(path, baseUrl);
   url.search = query;
   const data = await fetchData(url.href);
+  console.log("GLOBAL DATA:", data);
   return data;
 }
 
