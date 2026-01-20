@@ -27,6 +27,14 @@ function getLocale(request: NextRequest): string {
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const response = NextResponse.next();
+
+  // Allow Strapi admin panel to embed this site in an iframe for preview
+  const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337";
+  response.headers.set(
+    "Content-Security-Policy",
+    `frame-ancestors 'self' ${strapiUrl}`
+  );
 
   // Skip static files and api routes
   if (
@@ -35,7 +43,7 @@ export async function middleware(request: NextRequest) {
     pathname.includes(".") ||
     pathname.startsWith("/connect")
   ) {
-    return NextResponse.next();
+    return response;
   }
 
   // Check if pathname already has a locale
@@ -48,7 +56,12 @@ export async function middleware(request: NextRequest) {
     const locale = getLocale(request);
     const newUrl = new URL(`/${locale}${pathname}`, request.url);
     newUrl.search = request.nextUrl.search;
-    return NextResponse.redirect(newUrl);
+    const redirectResponse = NextResponse.redirect(newUrl);
+    redirectResponse.headers.set(
+      "Content-Security-Policy",
+      `frame-ancestors 'self' ${strapiUrl}`
+    );
+    return redirectResponse;
   }
 
   // Extract locale from path for dashboard protection
@@ -59,11 +72,16 @@ export async function middleware(request: NextRequest) {
   if (pathWithoutLocale.startsWith("/dashboard")) {
     const user = await getUserMeLoader();
     if (user.ok === false) {
-      return NextResponse.redirect(new URL(`/${locale}`, request.url));
+      const redirectResponse = NextResponse.redirect(new URL(`/${locale}`, request.url));
+      redirectResponse.headers.set(
+        "Content-Security-Policy",
+        `frame-ancestors 'self' ${strapiUrl}`
+      );
+      return redirectResponse;
     }
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
