@@ -1,7 +1,7 @@
 // Function to generate preview pathname based on content type and document
 const getPreviewPathname = (
   uid: string,
-  { locale, document }: { locale?: string; document: any }
+  { locale, document }: { locale?: string; document: any },
 ): string | null => {
   const { slug } = document;
 

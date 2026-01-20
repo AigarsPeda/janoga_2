@@ -31,10 +31,7 @@ export async function middleware(request: NextRequest) {
 
   // Allow Strapi admin panel to embed this site in an iframe for preview
   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337";
-  response.headers.set(
-    "Content-Security-Policy",
-    `frame-ancestors 'self' ${strapiUrl}`
-  );
+  response.headers.set("Content-Security-Policy", `frame-ancestors 'self' ${strapiUrl}`);
 
   // Skip static files and api routes
   if (
@@ -57,10 +54,7 @@ export async function middleware(request: NextRequest) {
     const newUrl = new URL(`/${locale}${pathname}`, request.url);
     newUrl.search = request.nextUrl.search;
     const redirectResponse = NextResponse.redirect(newUrl);
-    redirectResponse.headers.set(
-      "Content-Security-Policy",
-      `frame-ancestors 'self' ${strapiUrl}`
-    );
+    redirectResponse.headers.set("Content-Security-Policy", `frame-ancestors 'self' ${strapiUrl}`);
     return redirectResponse;
   }
 
@@ -75,7 +69,7 @@ export async function middleware(request: NextRequest) {
       const redirectResponse = NextResponse.redirect(new URL(`/${locale}`, request.url));
       redirectResponse.headers.set(
         "Content-Security-Policy",
-        `frame-ancestors 'self' ${strapiUrl}`
+        `frame-ancestors 'self' ${strapiUrl}`,
       );
       return redirectResponse;
     }
