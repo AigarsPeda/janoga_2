@@ -1,13 +1,13 @@
 {
   "scripts": {
-    "frontend": "yarn dev --prefix ../frontend/",
-    "backend": "yarn dev --prefix ../backend/",
-    "setup:frontend": "cd frontend && yarn && node ../copy-env.js ./",
-    "setup:backend": "cd backend && yarn && node ../copy-env.js ./",
-    "setup": "yarn install && yarn setup:frontend && yarn setup:backend",
-    "dev": ". ~/.nvm/nvm.sh && nvm use 20.18.0 && yarn concurrently \"cd backend && yarn dev\" \"cd frontend && yarn dev\"",
-    "seed": "cd backend && yarn strapi import -f ../seed-data.tar.gz --force",
-    "export": "cd backend && yarn strapi export --no-encrypt -f ../seed-data",
+    "frontend": "npm run dev --prefix ../frontend/",
+    "backend": "npm run dev --prefix ../backend/",
+    "setup:frontend": "cd frontend && npm install && node ../copy-env.js ./",
+    "setup:backend": "cd backend && npm install && node ../copy-env.js ./",
+    "setup": "npm install && npm run setup:frontend && npm run setup:backend",
+    "dev": ". ~/.nvm/nvm.sh && nvm use 20.18.0 && npx concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "seed": "cd backend && npx strapi import -f ../seed-data.tar.gz --force",
+    "export": "cd backend && npx strapi export --no-encrypt -f ../seed-data",
     "repo:upstream": "git fetch upstream && git merge upstream/main"
   },
   "dependencies": {
