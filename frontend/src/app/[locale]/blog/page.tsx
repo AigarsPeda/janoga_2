@@ -2,10 +2,8 @@ import qs from "qs";
 import Link from "next/link";
 import { StrapiImage } from "@/components/strapi-image";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search } from "@/components/search";
 import { PaginationComponent } from "@/components/pagination";
 import { getStrapiURL } from "@/lib/utils";
-import { CategorySelect } from "@/components/category-select";
 import { formatDate } from "@/lib/utils";
 import { i18n, type Locale } from "../../../../i18n-config";
 
@@ -113,8 +111,8 @@ export default async function BlogRoute({ searchParams, params }: SearchParamsPr
         Checkout some of our cool articles. We write about the latest trends in tech, design and
         much more.
       </p> */}
-      <CategorySelect />
-      <Search />
+      {/* <CategorySelect />
+      <Search /> */}
       <div className="mt-6 grid auto-rows-fr grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
         {posts &&
           posts.map((item: PostProps) => (
