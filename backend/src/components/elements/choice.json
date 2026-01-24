@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_elements_choices",
+  "info": {
+    "displayName": "Choice"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "config": {}
+}

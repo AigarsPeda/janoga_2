@@ -603,6 +603,7 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
         'layout.form',
         'layout.map',
         'layout.side-by-side',
+        'layout.calculator',
       ]
     > &
       Schema.Attribute.SetPluginOptions<{

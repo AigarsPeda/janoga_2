@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_layout_calculators",
+  "info": {
+    "displayName": "Calculator"
+  },
+  "options": {},
+  "attributes": {
+    "step": {
+      "type": "component",
+      "component": "elements.calculator-step",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

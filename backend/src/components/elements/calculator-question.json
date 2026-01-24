@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_elements_calculator_questions",
+  "info": {
+    "displayName": "CalculatorQuestion"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "config": {}
+}

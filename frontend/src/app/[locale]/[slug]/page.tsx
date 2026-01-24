@@ -1,3 +1,4 @@
+import { Calculator } from "@/components/calculator";
 import { CardGrid } from "@/components/card-grid";
 import ContentWithImage from "@/components/content-with-image";
 import { Delivery } from "@/components/delivery";
@@ -77,6 +78,20 @@ const pagePopulate = {
       "layout.side-by-side": {
         populate: { map: { populate: "*" }, form: { populate: "*" } },
       },
+      "layout.calculator": {
+        populate: {
+          step: {
+            populate: {
+              multichoice: {
+                populate: {
+                  choice: { populate: "*" },
+                },
+              },
+              question: { populate: "*" },
+            },
+          },
+        },
+      },
     },
   },
 };
@@ -133,6 +148,8 @@ function BlockRenderer(block: Block) {
       return <MapComponent key={block.id} {...block} />;
     case "layout.side-by-side":
       return <SideBySide key={block.id} {...block} />;
+    case "layout.calculator":
+      return <Calculator key={block.id} {...block} />;
     default:
       return null;
   }

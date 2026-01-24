@@ -1,5 +1,29 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface ElementsCalculatorQuestion extends Struct.ComponentSchema {
+  collectionName: 'components_elements_calculator_questions';
+  info: {
+    displayName: 'CalculatorQuestion';
+  };
+  attributes: {
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ElementsCalculatorStep extends Struct.ComponentSchema {
+  collectionName: 'components_elements_calculator_steps';
+  info: {
+    displayName: 'CalculatorStep';
+  };
+  attributes: {
+    multichoice: Schema.Attribute.Component<
+      'layout.calculator-multichoice-step',
+      false
+    >;
+    question: Schema.Attribute.Component<'elements.calculator-question', true>;
+  };
+}
+
 export interface ElementsCard extends Struct.ComponentSchema {
   collectionName: 'components_elements_cards';
   info: {
@@ -11,6 +35,16 @@ export interface ElementsCard extends Struct.ComponentSchema {
       ['Frame', 'Download', 'Globe', 'Sparkles', 'LayoutPanelLeft', 'Palette']
     >;
     text: Schema.Attribute.Text;
+  };
+}
+
+export interface ElementsChoice extends Struct.ComponentSchema {
+  collectionName: 'components_elements_choices';
+  info: {
+    displayName: 'Choice';
+  };
+  attributes: {
+    name: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -142,6 +176,28 @@ export interface ElementsStep extends Struct.ComponentSchema {
     icon: Schema.Attribute.Enumeration<
       ['phone', 'truck', 'money', 'dish', 'menu']
     >;
+  };
+}
+
+export interface LayoutCalculator extends Struct.ComponentSchema {
+  collectionName: 'components_layout_calculators';
+  info: {
+    displayName: 'Calculator';
+  };
+  attributes: {
+    step: Schema.Attribute.Component<'elements.calculator-step', true>;
+  };
+}
+
+export interface LayoutCalculatorMultichoiceStep
+  extends Struct.ComponentSchema {
+  collectionName: 'components_layout_calculator_multichoice_steps';
+  info: {
+    displayName: 'CalculatorMultichoiceStep';
+  };
+  attributes: {
+    choice: Schema.Attribute.Component<'elements.choice', true>;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -351,7 +407,10 @@ export interface LayoutTopNav extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'elements.calculator-question': ElementsCalculatorQuestion;
+      'elements.calculator-step': ElementsCalculatorStep;
       'elements.card': ElementsCard;
+      'elements.choice': ElementsChoice;
       'elements.feature': ElementsFeature;
       'elements.field': ElementsField;
       'elements.image': ElementsImage;
@@ -362,6 +421,8 @@ declare module '@strapi/strapi' {
       'elements.menu-info': ElementsMenuInfo;
       'elements.price-card': ElementsPriceCard;
       'elements.step': ElementsStep;
+      'layout.calculator': LayoutCalculator;
+      'layout.calculator-multichoice-step': LayoutCalculatorMultichoiceStep;
       'layout.call-to-action': LayoutCallToAction;
       'layout.card-grid': LayoutCardGrid;
       'layout.client-carousel': LayoutClientCarousel;

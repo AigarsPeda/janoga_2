@@ -7,6 +7,7 @@ type ComponentType =
   | "layout.menu-info"
   | "layout.card-grid"
   | "layout.price-grid"
+  | "layout.calculator"
   | "layout.side-by-side"
   | "layout.feature-card"
   | "layout.image-gallery"
@@ -39,6 +40,7 @@ export type Block =
   | DeliveryProps
   | CardGridProps
   | PriceGridProps
+  | CalculatorProps
   | SideBySideProps
   | FeatureCardProps
   | CallToActionProps
@@ -215,4 +217,30 @@ export interface ImageGalleryProps extends Base<"layout.image-gallery"> {
       height: number;
     };
   }[];
+}
+
+export interface CalculatorChoice {
+  id: number;
+  name: string;
+}
+
+export interface CalculatorMultichoice {
+  id: number;
+  question: string;
+  choice?: CalculatorChoice[];
+}
+
+export interface CalculatorQuestion {
+  id: number;
+  question: string;
+}
+
+export interface CalculatorStep {
+  id: number;
+  multichoice?: CalculatorMultichoice;
+  question?: CalculatorQuestion[];
+}
+
+export interface CalculatorProps extends Base<"layout.calculator"> {
+  step?: CalculatorStep[];
 }
