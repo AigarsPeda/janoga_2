@@ -35,6 +35,33 @@ export interface ElementsChoice extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsContact extends Struct.ComponentSchema {
+  collectionName: 'components_elements_contacts';
+  info: {
+    displayName: 'Contact';
+  };
+  attributes: {
+    field: Schema.Attribute.Component<'elements.contact-field', true> &
+      Schema.Attribute.Required;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface ElementsContactField extends Struct.ComponentSchema {
+  collectionName: 'components_elements_contact_fields';
+  info: {
+    displayName: 'ContactField';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    placeholder: Schema.Attribute.String;
+    required: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    type: Schema.Attribute.Enumeration<['text', 'email', 'phone', 'textarea']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'text'>;
+  };
+}
+
 export interface ElementsDatePicker extends Struct.ComponentSchema {
   collectionName: 'components_elements_date_pickers';
   info: {
@@ -129,6 +156,7 @@ export interface ElementsFormStep extends Struct.ComponentSchema {
         'elements.dropdown',
         'elements.yes-no',
         'elements.file-upload',
+        'elements.contact',
       ]
     > &
       Schema.Attribute.Required &
@@ -549,6 +577,8 @@ declare module '@strapi/strapi' {
       'elements.card': ElementsCard;
       'elements.checkbox': ElementsCheckbox;
       'elements.choice': ElementsChoice;
+      'elements.contact': ElementsContact;
+      'elements.contact-field': ElementsContactField;
       'elements.date-picker': ElementsDatePicker;
       'elements.dropdown': ElementsDropdown;
       'elements.email': ElementsEmail;

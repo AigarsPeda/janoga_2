@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import type {
   CalculatorElement,
   Checkbox,
+  Contact,
   DatePicker,
   Dropdown,
   Email,
@@ -28,7 +29,7 @@ import { DayPicker } from "react-day-picker";
 
 import "react-day-picker/style.css";
 
-type FormValues = Record<string, string | string[] | number | Date | File | null>;
+type FormValues = Record<string, string | string[] | number | Date | File | Record<string, string> | null>;
 
 export function StepForm(props: Readonly<StepFormProps>) {
   const {
@@ -86,6 +87,19 @@ export function StepForm(props: Readonly<StepFormProps>) {
     return stepData.element.every((element) => {
       const key = `${element.__component}-${element.id}`;
       const value = formValues[key];
+
+      // Special handling for ContactElement - check required fields
+      if (element.__component === "elements.contact") {
+        const contactElement = element as Contact;
+        const contactValues = (value as Record<string, string>) || {};
+
+        // Check if all required fields are filled
+        return (contactElement.field || []).every((field) => {
+          if (!field.required) return true;
+          const fieldValue = contactValues[String(field.id)];
+          return fieldValue !== undefined && fieldValue.trim() !== "";
+        });
+      }
 
       if (value === undefined || value === null) return false;
       if (typeof value === "string" && value.trim() === "") return false;
@@ -361,6 +375,14 @@ function ElementRenderer({ element, value, onChange }: ElementRendererProps) {
           element={element as FileUpload}
         />
       );
+    case "elements.contact":
+      return (
+        <ContactElement
+          element={element as Contact}
+          value={value as Record<string, string>}
+          onChange={onChange}
+        />
+      );
     default:
       return null;
   }
@@ -368,7 +390,7 @@ function ElementRenderer({ element, value, onChange }: ElementRendererProps) {
 
 const questionLabelClass = "block text-2xl font-medium text-neutral-100 mb-6 mt-6";
 const inputBaseClass =
-  "w-full rounded-lg border border-neutral-700/60 bg-neutral-800/50 px-4 py-3 text-sm text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/80 transition-all duration-200";
+  "w-full rounded-lg border border-neutral-700/60 bg-neutral-800/50 px-4 py-3 text-sm text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/80 transition-all duration-200 autofill:shadow-[inset_0_0_0px_1000px_rgb(38,38,38)] autofill:[-webkit-text-fill-color:#f5f5f5]";
 
 function MultiChoiceElement({
   element,
@@ -865,6 +887,59 @@ function FileUploadElement({
             </p>
           </>
         )}
+      </div>
+    </div>
+  );
+}
+
+function ContactElement({
+  element,
+  value,
+  onChange,
+}: {
+  element: Contact;
+  value: Record<string, string>;
+  onChange: (val: Record<string, string>) => void;
+}) {
+  const values = value || {};
+
+  const updateField = (fieldId: string, fieldValue: string) => {
+    onChange({ ...values, [fieldId]: fieldValue });
+  };
+
+  return (
+    <div>
+      {element.title && <h3 className={questionLabelClass}>{element.title}</h3>}
+      <div className="space-y-4">
+        {element.field?.map((field) => (
+          <div key={field.id}>
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
+              {field.label}
+              {field.required && <span className="text-red-400 ml-1">*</span>}
+            </label>
+            {field.type === "textarea" ? (
+              <textarea
+                value={values[String(field.id)] || ""}
+                onChange={(e) => updateField(String(field.id), e.target.value)}
+                placeholder={field.placeholder}
+                required={field.required}
+                className={cn(inputBaseClass, "min-h-[100px] resize-y max-w-md")}
+              />
+            ) : (
+              <input
+                type={field.type === "phone" ? "tel" : field.type}
+                value={values[String(field.id)] || ""}
+                onChange={(e) => updateField(String(field.id), e.target.value)}
+                placeholder={field.placeholder}
+                required={field.required}
+                autoComplete={
+                  field.type === "email" ? "email" : field.type === "phone" ? "tel" : undefined
+                }
+                className={cn(inputBaseClass, "max-w-md")}
+              />
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_elements_contact_fields",
+  "info": {
+    "displayName": "ContactField"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["text", "email", "phone", "textarea"],
+      "default": "text",
+      "required": true
+    },
+    "placeholder": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "config": {}
+}

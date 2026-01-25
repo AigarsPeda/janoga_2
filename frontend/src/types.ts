@@ -310,6 +310,21 @@ export interface FileUpload {
   maxSize?: number;
 }
 
+export interface ContactField {
+  id: number;
+  label: string;
+  type: "text" | "email" | "phone" | "textarea";
+  placeholder?: string;
+  required?: boolean;
+}
+
+export interface Contact {
+  __component: "elements.contact";
+  id: number;
+  title?: string;
+  field?: ContactField[];
+}
+
 export type CalculatorElement =
   | MultiChoice
   | Question
@@ -321,7 +336,8 @@ export type CalculatorElement =
   | Phone
   | Dropdown
   | YesNo
-  | FileUpload;
+  | FileUpload
+  | Contact;
 
 export interface FormStep {
   id: number;

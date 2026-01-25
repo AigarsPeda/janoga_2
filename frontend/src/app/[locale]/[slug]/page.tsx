@@ -117,6 +117,9 @@ const pagePopulate = {
                   "elements.file-upload": {
                     populate: "*",
                   },
+                  "elements.contact": {
+                    populate: { field: { populate: "*" } },
+                  },
                 },
               },
             },

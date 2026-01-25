@@ -25,7 +25,8 @@
         "elements.phone",
         "elements.dropdown",
         "elements.yes-no",
-        "elements.file-upload"
+        "elements.file-upload",
+        "elements.contact"
       ],
       "max": 1,
       "min": 1,

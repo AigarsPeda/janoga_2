@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_elements_contacts",
+  "info": {
+    "displayName": "Contact"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "field": {
+      "type": "component",
+      "component": "elements.contact-field",
+      "repeatable": true,
+      "required": true
+    }
+  },
+  "config": {}
+}
