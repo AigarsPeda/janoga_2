@@ -266,6 +266,7 @@ export interface ElementsQuestion extends Struct.ComponentSchema {
       Schema.Attribute.DefaultTo<'text'>;
     placeholder: Schema.Attribute.String;
     question: Schema.Attribute.String & Schema.Attribute.Required;
+    unit: Schema.Attribute.String;
   };
 }
 

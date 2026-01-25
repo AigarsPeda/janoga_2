@@ -237,6 +237,7 @@ export interface Question {
   question: string;
   inputType: "text" | "number";
   placeholder?: string;
+  unit?: string;
 }
 
 export interface Checkbox {

@@ -198,8 +198,8 @@ export function StepForm(props: Readonly<StepFormProps>) {
               <div className="space-y-6">
                 {steps[previousStep].element?.map((element) => (
                   <ElementRenderer
-                    key={`${element.__component}-${element.id}`}
                     element={element}
+                    key={`${element.__component}-${element.id}`}
                     value={formValues[`${element.__component}-${element.id}`]}
                     onChange={(val) => updateValue(`${element.__component}-${element.id}`, val)}
                   />
@@ -230,8 +230,8 @@ export function StepForm(props: Readonly<StepFormProps>) {
             <div className="space-y-6">
               {currentStepData.element?.map((element) => (
                 <ElementRenderer
-                  key={`${element.__component}-${element.id}`}
                   element={element}
+                  key={`${element.__component}-${element.id}`}
                   value={formValues[`${element.__component}-${element.id}`]}
                   onChange={(val) => updateValue(`${element.__component}-${element.id}`, val)}
                 />
@@ -243,33 +243,33 @@ export function StepForm(props: Readonly<StepFormProps>) {
         {/* Navigation */}
         <div className="px-8 pb-8 flex justify-between items-center">
           <Button
+            className="gap-2"
             variant="outline"
             onClick={prevStep}
             disabled={currentStep === 0 || isAnimating}
-            className="gap-2"
           >
             <ChevronLeft className="w-4 h-4" />
             {backButtonLabel}
           </Button>
 
-          <span className="text-sm text-muted-foreground">
+          {/* <span className="text-sm text-muted-foreground">
             {currentStep + 1} / {totalSteps}
-          </span>
+          </span> */}
 
           {currentStep === totalSteps - 1 ? (
             <Button
+              className="gap-2"
               onClick={handleSubmit}
               disabled={isAnimating || (!allowSkipSteps && !currentStepComplete)}
-              className="gap-2"
             >
               {submitButtonLabel}
               <Check className="w-4 h-4" />
             </Button>
           ) : (
             <Button
+              className="gap-2"
               onClick={nextStep}
               disabled={isAnimating || (!allowSkipSteps && !currentStepComplete)}
-              className="gap-2"
             >
               {nextButtonLabel}
               <ChevronRight className="w-4 h-4" />
@@ -356,9 +356,9 @@ function ElementRenderer({ element, value, onChange }: ElementRendererProps) {
     case "elements.file-upload":
       return (
         <FileUploadElement
-          element={element as FileUpload}
-          value={value as File | null}
           onChange={onChange}
+          value={value as File | null}
+          element={element as FileUpload}
         />
       );
     default:
@@ -366,7 +366,7 @@ function ElementRenderer({ element, value, onChange }: ElementRendererProps) {
   }
 }
 
-const questionLabelClass = "block text-lg font-medium text-neutral-100 mb-6 mt-6";
+const questionLabelClass = "block text-2xl font-medium text-neutral-100 mb-6 mt-6";
 const inputBaseClass =
   "w-full rounded-lg border border-neutral-700/60 bg-neutral-800/50 px-4 py-3 text-sm text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/80 transition-all duration-200";
 
@@ -426,13 +426,22 @@ function QuestionElement({
   return (
     <div>
       <label className={questionLabelClass}>{element.question}</label>
-      <input
-        type={element.inputType}
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={element.placeholder}
-        className={inputBaseClass}
-      />
+      <div className="flex items-center gap-3">
+        <input
+          value={value || ""}
+          type={element.inputType}
+          placeholder={element.placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          className={cn(
+            inputBaseClass,
+            element.unit && "flex-1",
+            element.inputType === "number" && "max-w-[200px]",
+          )}
+        />
+        {element.unit && (
+          <span className="text-sm text-neutral-400 whitespace-nowrap">{element.unit}</span>
+        )}
+      </div>
     </div>
   );
 }
@@ -565,7 +574,7 @@ function DatePickerElement({
             type="button"
             className={cn(
               inputBaseClass,
-              "flex items-center justify-between cursor-pointer",
+              "flex items-center justify-between cursor-pointer max-w-[280px]",
               !value && "text-neutral-400",
             )}
           >
