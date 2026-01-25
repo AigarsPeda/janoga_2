@@ -316,3 +316,8 @@
   @apply bg-yellow-100 border-yellow-500 text-yellow-700 px-4 py-2 rounded-lg mb-4;
 }
 
+
+.rdp-chevron {
+  stroke: var(--color-neutral-100);
+  fill: var(--color-neutral-100) !important;
+}

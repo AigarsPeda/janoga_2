@@ -379,7 +379,11 @@ export function StepForm(props: Readonly<StepFormProps>) {
               <Button
                 className="gap-2"
                 onClick={handleSubmit}
-                disabled={isAnimating || submitStatus === "submitting" || (!allowSkipSteps && !currentStepComplete)}
+                disabled={
+                  isAnimating ||
+                  submitStatus === "submitting" ||
+                  (!allowSkipSteps && !currentStepComplete)
+                }
               >
                 {submitStatus === "submitting" ? "Nosūta..." : submitButtonLabel}
                 {submitStatus !== "submitting" && <Check className="w-4 h-4" />}
@@ -447,10 +451,10 @@ function ElementRenderer({ element, value, onChange, locale }: ElementRendererPr
     case "elements.date-picker":
       return (
         <DatePickerElement
-          element={element as DatePicker}
-          value={value as Date}
-          onChange={onChange}
           locale={locale}
+          onChange={onChange}
+          value={value as Date}
+          element={element as DatePicker}
         />
       );
     case "elements.textarea":
@@ -504,15 +508,15 @@ function ElementRenderer({ element, value, onChange, locale }: ElementRendererPr
 
 const questionLabelClass = "block text-2xl font-medium text-neutral-100 mb-6 mt-6";
 const inputBaseClass =
-  "w-full rounded-lg border border-neutral-700/60 bg-neutral-800/50 px-4 py-3 text-sm text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/80 transition-all duration-200 autofill:shadow-[inset_0_0_0px_1000px_rgb(38,38,38)] autofill:[-webkit-text-fill-color:#f5f5f5]";
+  "w-full rounded-lg border border-neutral-700/60 bg-neutral-800/50 px-4 py-3 text-sm text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/80 transition-all duration-200 autofill:shadow-[inset_0_0_0px_1000px_rgb(38,38,38)] autofill:[-webkit-text-fill-color:#f5f5f5] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [-moz-appearance:textfield]";
 
 function MultiChoiceElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: MultiChoice;
   value: string;
+  element: MultiChoice;
   onChange: (val: string) => void;
 }) {
   return (
@@ -717,7 +721,9 @@ function DatePickerElement({
               !value && "text-neutral-400",
             )}
           >
-            {value ? format(value, "PPP", { locale: dateLocale }) : element.placeholder || "Izvēlieties datumu"}
+            {value
+              ? format(value, "PPP", { locale: dateLocale })
+              : element.placeholder || "Izvēlieties datumu"}
             <Calendar className="w-5 h-5 text-neutral-400" />
           </button>
         </Popover.Trigger>
@@ -738,16 +744,25 @@ function DatePickerElement({
               }}
               classNames={{
                 root: "text-neutral-100",
-                month_caption: "text-neutral-100 font-semibold mb-2",
-                weekday: "text-neutral-400 text-xs font-medium",
-                day: "w-9 h-9 text-sm rounded-lg hover:bg-neutral-800 transition-colors",
-                selected: "!bg-primary !text-primary-foreground font-semibold",
+                month: "relative",
+                month_caption: "text-neutral-100 font-semibold text-center mb-4 py-1",
+                nav: "absolute top-0 left-0 right-0 flex items-center justify-between z-20",
+                button_previous:
+                  "p-2 rounded-lg hover:bg-neutral-700 text-white cursor-pointer relative z-30",
+                button_next:
+                  "p-2 rounded-lg hover:bg-neutral-700 text-white cursor-pointer relative z-30",
+                month_grid: "w-full border-collapse",
+                weekdays: "grid grid-cols-7",
+                weekday:
+                  "text-neutral-400 text-xs font-medium w-9 h-9 flex items-center justify-center",
+                week: "grid grid-cols-7",
+                day: "w-9 h-9 text-sm flex items-center justify-center",
+                day_button:
+                  "w-9 h-9 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-center cursor-pointer",
+                selected: "!bg-primary !text-primary-foreground font-semibold rounded-lg",
                 today: "text-primary font-bold",
                 outside: "text-neutral-600",
                 disabled: "text-neutral-600 opacity-50",
-                nav: "flex items-center justify-between mb-2",
-                button_previous: "p-2 rounded-lg hover:bg-neutral-800 text-neutral-300",
-                button_next: "p-2 rounded-lg hover:bg-neutral-800 text-neutral-300",
               }}
             />
             <Popover.Arrow className="fill-neutral-700" />
