@@ -331,4 +331,8 @@ export interface FormStep {
 
 export interface StepFormProps extends Base<"layout.step-form"> {
   step?: FormStep[];
+  backButtonLabel?: string;
+  nextButtonLabel?: string;
+  submitButtonLabel?: string;
+  allowSkipSteps?: boolean;
 }

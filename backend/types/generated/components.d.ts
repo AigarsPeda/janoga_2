@@ -519,7 +519,12 @@ export interface LayoutStepForm extends Struct.ComponentSchema {
     displayName: 'StepForm';
   };
   attributes: {
+    allowSkipSteps: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    backButtonLabel: Schema.Attribute.String;
+    nextButtonLabel: Schema.Attribute.String;
     step: Schema.Attribute.Component<'elements.form-step', true>;
+    submitButtonLabel: Schema.Attribute.String;
   };
 }
 

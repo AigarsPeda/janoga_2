@@ -9,6 +9,19 @@
       "type": "component",
       "component": "elements.form-step",
       "repeatable": true
+    },
+    "backButtonLabel": {
+      "type": "string"
+    },
+    "nextButtonLabel": {
+      "type": "string"
+    },
+    "submitButtonLabel": {
+      "type": "string"
+    },
+    "allowSkipSteps": {
+      "type": "boolean",
+      "default": false
     }
   },
   "config": {}
