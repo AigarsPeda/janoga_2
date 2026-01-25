@@ -137,7 +137,65 @@ export function StepForm(props: Readonly<StepFormProps>) {
   };
 
   const handleSubmit = () => {
-    console.log("Form submitted:", formValues);
+    console.log("════════════════════════════════════════");
+    console.log("📋 FORM SUBMISSION");
+    console.log("════════════════════════════════════════");
+
+    steps.forEach((step) => {
+      step.element?.forEach((element) => {
+        const key = `${element.__component}-${element.id}`;
+        const value = formValues[key];
+
+        if (value === undefined || value === null) return;
+
+        // Get question text
+        const question =
+          (element as { question?: string }).question ||
+          (element as { title?: string }).title ||
+          key;
+
+        // Format answer based on element type
+        let answer: string;
+
+        if (element.__component === "elements.multi-choice" || element.__component === "elements.dropdown") {
+          const choices = (element as MultiChoice | Dropdown).choice || [];
+          const selectedChoice = choices.find((c) => String(c.id) === value);
+          answer = selectedChoice?.name || String(value);
+        } else if (element.__component === "elements.checkbox") {
+          const choices = (element as Checkbox).choice || [];
+          const selectedValues = value as string[];
+          answer = selectedValues
+            .map((v) => choices.find((c) => String(c.id) === v)?.name || v)
+            .join(", ");
+        } else if (element.__component === "elements.yes-no") {
+          const yesNo = element as YesNo;
+          answer = value === "yes" ? (yesNo.yesLabel || "Jā") : (yesNo.noLabel || "Nē");
+        } else if (element.__component === "elements.date-picker") {
+          answer = value instanceof Date ? format(value, "PPP") : String(value);
+        } else if (element.__component === "elements.file-upload") {
+          answer = value instanceof File ? value.name : String(value);
+        } else if (element.__component === "elements.contact") {
+          const contactElement = element as Contact;
+          const contactValues = value as Record<string, string>;
+          const fields = contactElement.field || [];
+          answer = fields
+            .map((f) => `${f.label}: ${contactValues[String(f.id)] || "-"}`)
+            .join(", ");
+        } else {
+          answer = String(value);
+        }
+
+        // Add unit if present
+        const unit = (element as { unit?: string }).unit;
+        if (unit) {
+          answer = `${answer} ${unit}`;
+        }
+
+        console.log(`${question} - ${answer}`);
+      });
+    });
+
+    console.log("════════════════════════════════════════");
   };
 
   return (
