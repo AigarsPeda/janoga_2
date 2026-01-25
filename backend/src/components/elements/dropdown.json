@@ -1,13 +1,16 @@
 {
-  "collectionName": "components_layout_calculator_multichoice_steps",
+  "collectionName": "components_elements_dropdowns",
   "info": {
-    "displayName": "CalculatorMultichoiceStep"
+    "displayName": "Dropdown"
   },
   "options": {},
   "attributes": {
     "question": {
       "type": "string",
       "required": true
+    },
+    "placeholder": {
+      "type": "string"
     },
     "choice": {
       "type": "component",

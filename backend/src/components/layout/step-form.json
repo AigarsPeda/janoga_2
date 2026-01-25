@@ -1,13 +1,13 @@
 {
-  "collectionName": "components_layout_calculators",
+  "collectionName": "components_layout_step_forms",
   "info": {
-    "displayName": "Calculator"
+    "displayName": "StepForm"
   },
   "options": {},
   "attributes": {
     "step": {
       "type": "component",
-      "component": "elements.calculator-step",
+      "component": "elements.form-step",
       "repeatable": true
     }
   },

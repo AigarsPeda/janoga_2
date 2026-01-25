@@ -55,7 +55,8 @@
         "layout.form",
         "layout.map",
         "layout.side-by-side",
-        "layout.calculator"
+        "layout.step-form",
+        "elements.form-step"
       ]
     }
   }

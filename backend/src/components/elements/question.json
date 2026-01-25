@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_elements_questions",
+  "info": {
+    "displayName": "Question"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "inputType": {
+      "type": "enumeration",
+      "enum": ["text", "number"],
+      "default": "text",
+      "required": true
+    },
+    "placeholder": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

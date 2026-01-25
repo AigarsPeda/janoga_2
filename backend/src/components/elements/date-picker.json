@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_elements_date_pickers",
+  "info": {
+    "displayName": "DatePicker"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "placeholder": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

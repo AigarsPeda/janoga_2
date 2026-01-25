@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_elements_multi_choices",
+  "info": {
+    "displayName": "MultiChoice"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "choice": {
+      "type": "component",
+      "component": "elements.choice",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

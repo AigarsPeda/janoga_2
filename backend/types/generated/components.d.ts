@@ -1,29 +1,5 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
-export interface ElementsCalculatorQuestion extends Struct.ComponentSchema {
-  collectionName: 'components_elements_calculator_questions';
-  info: {
-    displayName: 'CalculatorQuestion';
-  };
-  attributes: {
-    question: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
-export interface ElementsCalculatorStep extends Struct.ComponentSchema {
-  collectionName: 'components_elements_calculator_steps';
-  info: {
-    displayName: 'CalculatorStep';
-  };
-  attributes: {
-    multichoice: Schema.Attribute.Component<
-      'layout.calculator-multichoice-step',
-      false
-    >;
-    question: Schema.Attribute.Component<'elements.calculator-question', true>;
-  };
-}
-
 export interface ElementsCard extends Struct.ComponentSchema {
   collectionName: 'components_elements_cards';
   info: {
@@ -38,6 +14,17 @@ export interface ElementsCard extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsCheckbox extends Struct.ComponentSchema {
+  collectionName: 'components_elements_checkboxes';
+  info: {
+    displayName: 'Checkbox';
+  };
+  attributes: {
+    choice: Schema.Attribute.Component<'elements.choice', true>;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface ElementsChoice extends Struct.ComponentSchema {
   collectionName: 'components_elements_choices';
   info: {
@@ -45,6 +32,40 @@ export interface ElementsChoice extends Struct.ComponentSchema {
   };
   attributes: {
     name: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ElementsDatePicker extends Struct.ComponentSchema {
+  collectionName: 'components_elements_date_pickers';
+  info: {
+    displayName: 'DatePicker';
+  };
+  attributes: {
+    placeholder: Schema.Attribute.String;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ElementsDropdown extends Struct.ComponentSchema {
+  collectionName: 'components_elements_dropdowns';
+  info: {
+    displayName: 'Dropdown';
+  };
+  attributes: {
+    choice: Schema.Attribute.Component<'elements.choice', true>;
+    placeholder: Schema.Attribute.String;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ElementsEmail extends Struct.ComponentSchema {
+  collectionName: 'components_elements_emails';
+  info: {
+    displayName: 'Email';
+  };
+  attributes: {
+    placeholder: Schema.Attribute.String;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -73,6 +94,52 @@ export interface ElementsField extends Struct.ComponentSchema {
     type: Schema.Attribute.Enumeration<
       ['string', 'number', 'e-mail', 'textField']
     >;
+  };
+}
+
+export interface ElementsFileUpload extends Struct.ComponentSchema {
+  collectionName: 'components_elements_file_uploads';
+  info: {
+    displayName: 'FileUpload';
+  };
+  attributes: {
+    allowedTypes: Schema.Attribute.String;
+    maxSize: Schema.Attribute.Integer;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ElementsFormStep extends Struct.ComponentSchema {
+  collectionName: 'components_elements_form_steps';
+  info: {
+    displayName: 'FormStep';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    element: Schema.Attribute.DynamicZone<
+      [
+        'elements.multi-choice',
+        'elements.question',
+        'elements.checkbox',
+        'elements.slider',
+        'elements.date-picker',
+        'elements.textarea',
+        'elements.email',
+        'elements.phone',
+        'elements.dropdown',
+        'elements.yes-no',
+        'elements.file-upload',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1;
+          min: 1;
+        },
+        number
+      >;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -150,6 +217,28 @@ export interface ElementsMenuInfo extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsMultiChoice extends Struct.ComponentSchema {
+  collectionName: 'components_elements_multi_choices';
+  info: {
+    displayName: 'MultiChoice';
+  };
+  attributes: {
+    choice: Schema.Attribute.Component<'elements.choice', true>;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ElementsPhone extends Struct.ComponentSchema {
+  collectionName: 'components_elements_phones';
+  info: {
+    displayName: 'Phone';
+  };
+  attributes: {
+    placeholder: Schema.Attribute.String;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface ElementsPriceCard extends Struct.ComponentSchema {
   collectionName: 'components_elements_price_cards';
   info: {
@@ -166,6 +255,38 @@ export interface ElementsPriceCard extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsQuestion extends Struct.ComponentSchema {
+  collectionName: 'components_elements_questions';
+  info: {
+    displayName: 'Question';
+  };
+  attributes: {
+    inputType: Schema.Attribute.Enumeration<['text', 'number']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'text'>;
+    placeholder: Schema.Attribute.String;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ElementsSlider extends Struct.ComponentSchema {
+  collectionName: 'components_elements_sliders';
+  info: {
+    displayName: 'Slider';
+  };
+  attributes: {
+    max: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<100>;
+    min: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+    step: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1>;
+    unit: Schema.Attribute.String;
+  };
+}
+
 export interface ElementsStep extends Struct.ComponentSchema {
   collectionName: 'components_elements_steps';
   info: {
@@ -179,25 +300,27 @@ export interface ElementsStep extends Struct.ComponentSchema {
   };
 }
 
-export interface LayoutCalculator extends Struct.ComponentSchema {
-  collectionName: 'components_layout_calculators';
+export interface ElementsTextarea extends Struct.ComponentSchema {
+  collectionName: 'components_elements_textareas';
   info: {
-    displayName: 'Calculator';
+    displayName: 'Textarea';
   };
   attributes: {
-    step: Schema.Attribute.Component<'elements.calculator-step', true>;
+    maxLength: Schema.Attribute.Integer;
+    placeholder: Schema.Attribute.String;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
-export interface LayoutCalculatorMultichoiceStep
-  extends Struct.ComponentSchema {
-  collectionName: 'components_layout_calculator_multichoice_steps';
+export interface ElementsYesNo extends Struct.ComponentSchema {
+  collectionName: 'components_elements_yes_nos';
   info: {
-    displayName: 'CalculatorMultichoiceStep';
+    displayName: 'YesNo';
   };
   attributes: {
-    choice: Schema.Attribute.Component<'elements.choice', true>;
+    noLabel: Schema.Attribute.String & Schema.Attribute.DefaultTo<'No'>;
     question: Schema.Attribute.String & Schema.Attribute.Required;
+    yesLabel: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Yes'>;
   };
 }
 
@@ -390,6 +513,16 @@ export interface LayoutSideBySide extends Struct.ComponentSchema {
   };
 }
 
+export interface LayoutStepForm extends Struct.ComponentSchema {
+  collectionName: 'components_layout_step_forms';
+  info: {
+    displayName: 'StepForm';
+  };
+  attributes: {
+    step: Schema.Attribute.Component<'elements.form-step', true>;
+  };
+}
+
 export interface LayoutTopNav extends Struct.ComponentSchema {
   collectionName: 'components_layout_top_navs';
   info: {
@@ -407,22 +540,30 @@ export interface LayoutTopNav extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
-      'elements.calculator-question': ElementsCalculatorQuestion;
-      'elements.calculator-step': ElementsCalculatorStep;
       'elements.card': ElementsCard;
+      'elements.checkbox': ElementsCheckbox;
       'elements.choice': ElementsChoice;
+      'elements.date-picker': ElementsDatePicker;
+      'elements.dropdown': ElementsDropdown;
+      'elements.email': ElementsEmail;
       'elements.feature': ElementsFeature;
       'elements.field': ElementsField;
+      'elements.file-upload': ElementsFileUpload;
+      'elements.form-step': ElementsFormStep;
       'elements.image': ElementsImage;
       'elements.info-item': ElementsInfoItem;
       'elements.item': ElementsItem;
       'elements.link': ElementsLink;
       'elements.logo': ElementsLogo;
       'elements.menu-info': ElementsMenuInfo;
+      'elements.multi-choice': ElementsMultiChoice;
+      'elements.phone': ElementsPhone;
       'elements.price-card': ElementsPriceCard;
+      'elements.question': ElementsQuestion;
+      'elements.slider': ElementsSlider;
       'elements.step': ElementsStep;
-      'layout.calculator': LayoutCalculator;
-      'layout.calculator-multichoice-step': LayoutCalculatorMultichoiceStep;
+      'elements.textarea': ElementsTextarea;
+      'elements.yes-no': ElementsYesNo;
       'layout.call-to-action': LayoutCallToAction;
       'layout.card-grid': LayoutCardGrid;
       'layout.client-carousel': LayoutClientCarousel;
@@ -440,6 +581,7 @@ declare module '@strapi/strapi' {
       'layout.price-grid': LayoutPriceGrid;
       'layout.section-heading': LayoutSectionHeading;
       'layout.side-by-side': LayoutSideBySide;
+      'layout.step-form': LayoutStepForm;
       'layout.top-nav': LayoutTopNav;
     }
   }

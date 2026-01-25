@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_elements_yes_nos",
+  "info": {
+    "displayName": "YesNo"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "yesLabel": {
+      "type": "string",
+      "default": "Yes"
+    },
+    "noLabel": {
+      "type": "string",
+      "default": "No"
+    }
+  },
+  "config": {}
+}

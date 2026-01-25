@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_elements_checkboxes",
+  "info": {
+    "displayName": "Checkbox"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "choice": {
+      "type": "component",
+      "component": "elements.choice",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

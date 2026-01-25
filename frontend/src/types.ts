@@ -7,7 +7,7 @@ type ComponentType =
   | "layout.menu-info"
   | "layout.card-grid"
   | "layout.price-grid"
-  | "layout.calculator"
+  | "layout.step-form"
   | "layout.side-by-side"
   | "layout.feature-card"
   | "layout.image-gallery"
@@ -40,7 +40,7 @@ export type Block =
   | DeliveryProps
   | CardGridProps
   | PriceGridProps
-  | CalculatorProps
+  | StepFormProps
   | SideBySideProps
   | FeatureCardProps
   | CallToActionProps
@@ -224,23 +224,111 @@ export interface CalculatorChoice {
   name: string;
 }
 
-export interface CalculatorMultichoice {
+export interface MultiChoice {
+  __component: "elements.multi-choice";
   id: number;
   question: string;
   choice?: CalculatorChoice[];
 }
 
-export interface CalculatorQuestion {
+export interface Question {
+  __component: "elements.question";
   id: number;
   question: string;
+  inputType: "text" | "number";
+  placeholder?: string;
 }
 
-export interface CalculatorStep {
+export interface Checkbox {
+  __component: "elements.checkbox";
   id: number;
-  multichoice?: CalculatorMultichoice;
-  question?: CalculatorQuestion[];
+  question: string;
+  choice?: CalculatorChoice[];
 }
 
-export interface CalculatorProps extends Base<"layout.calculator"> {
-  step?: CalculatorStep[];
+export interface Slider {
+  __component: "elements.slider";
+  id: number;
+  question: string;
+  min: number;
+  max: number;
+  step?: number;
+  unit?: string;
+}
+
+export interface DatePicker {
+  __component: "elements.date-picker";
+  id: number;
+  question: string;
+  placeholder?: string;
+}
+
+export interface Textarea {
+  __component: "elements.textarea";
+  id: number;
+  question: string;
+  placeholder?: string;
+  maxLength?: number;
+}
+
+export interface Email {
+  __component: "elements.email";
+  id: number;
+  question: string;
+  placeholder?: string;
+}
+
+export interface Phone {
+  __component: "elements.phone";
+  id: number;
+  question: string;
+  placeholder?: string;
+}
+
+export interface Dropdown {
+  __component: "elements.dropdown";
+  id: number;
+  question: string;
+  placeholder?: string;
+  choice?: CalculatorChoice[];
+}
+
+export interface YesNo {
+  __component: "elements.yes-no";
+  id: number;
+  question: string;
+  yesLabel?: string;
+  noLabel?: string;
+}
+
+export interface FileUpload {
+  __component: "elements.file-upload";
+  id: number;
+  question: string;
+  allowedTypes?: string;
+  maxSize?: number;
+}
+
+export type CalculatorElement =
+  | MultiChoice
+  | Question
+  | Checkbox
+  | Slider
+  | DatePicker
+  | Textarea
+  | Email
+  | Phone
+  | Dropdown
+  | YesNo
+  | FileUpload;
+
+export interface FormStep {
+  id: number;
+  title: string;
+  description?: string;
+  element?: CalculatorElement[];
+}
+
+export interface StepFormProps extends Base<"layout.step-form"> {
+  step?: FormStep[];
 }

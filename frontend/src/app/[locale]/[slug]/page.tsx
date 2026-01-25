@@ -1,4 +1,4 @@
-import { Calculator } from "@/components/calculator";
+import { StepForm } from "@/components/step-form";
 import { CardGrid } from "@/components/card-grid";
 import ContentWithImage from "@/components/content-with-image";
 import { Delivery } from "@/components/delivery";
@@ -78,16 +78,47 @@ const pagePopulate = {
       "layout.side-by-side": {
         populate: { map: { populate: "*" }, form: { populate: "*" } },
       },
-      "layout.calculator": {
+      "layout.step-form": {
         populate: {
           step: {
             populate: {
-              multichoice: {
-                populate: {
-                  choice: { populate: "*" },
+              element: {
+                on: {
+                  "elements.multi-choice": {
+                    populate: { choice: { populate: "*" } },
+                  },
+                  "elements.question": {
+                    populate: "*",
+                  },
+                  "elements.checkbox": {
+                    populate: { choice: { populate: "*" } },
+                  },
+                  "elements.slider": {
+                    populate: "*",
+                  },
+                  "elements.date-picker": {
+                    populate: "*",
+                  },
+                  "elements.textarea": {
+                    populate: "*",
+                  },
+                  "elements.email": {
+                    populate: "*",
+                  },
+                  "elements.phone": {
+                    populate: "*",
+                  },
+                  "elements.dropdown": {
+                    populate: { choice: { populate: "*" } },
+                  },
+                  "elements.yes-no": {
+                    populate: "*",
+                  },
+                  "elements.file-upload": {
+                    populate: "*",
+                  },
                 },
               },
-              question: { populate: "*" },
             },
           },
         },
@@ -148,8 +179,8 @@ function BlockRenderer(block: Block) {
       return <MapComponent key={block.id} {...block} />;
     case "layout.side-by-side":
       return <SideBySide key={block.id} {...block} />;
-    case "layout.calculator":
-      return <Calculator key={block.id} {...block} />;
+    case "layout.step-form":
+      return <StepForm key={block.id} {...block} />;
     default:
       return null;
   }

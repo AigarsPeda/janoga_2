@@ -1,13 +1,16 @@
 {
-  "collectionName": "components_elements_calculator_questions",
+  "collectionName": "components_elements_emails",
   "info": {
-    "displayName": "CalculatorQuestion"
+    "displayName": "Email"
   },
   "options": {},
   "attributes": {
     "question": {
       "type": "string",
       "required": true
+    },
+    "placeholder": {
+      "type": "string"
     }
   },
   "config": {}

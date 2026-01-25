@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_elements_phones",
+  "info": {
+    "displayName": "Phone"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "placeholder": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}
