@@ -16,24 +16,18 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 
 interface MenuCardProps extends MenuProps {
-  title?: string;
   note?: string;
-}
-
-function formatPrice(price: string | number) {
-  if (typeof price === "number") return price.toFixed(price % 1 === 0 ? 0 : 2);
-  return price;
+  title?: string;
 }
 
 // Icon map for kinds (case-insensitive). Extend as needed.
 const kindIconMap: Record<string, LucideIcon> = {
   soup: Soup,
-  main: UtensilsCrossed,
-  dessert: IceCream,
   salad: Salad,
   drinks: Coffee,
-  //   drink: Coffee,
+  dessert: IceCream,
   drink: GlassWater,
+  main: UtensilsCrossed,
 };
 
 function getKindIcon(kind: string | undefined): LucideIcon {
@@ -42,7 +36,6 @@ function getKindIcon(kind: string | undefined): LucideIcon {
 }
 
 export default function Menu({ days, note, buttonLink }: MenuCardProps) {
-  console.log("buttonLink", buttonLink);
   return (
     <div className="w-full flex justify-center">
       <div
@@ -62,7 +55,6 @@ export default function Menu({ days, note, buttonLink }: MenuCardProps) {
                 {cat.heading}
               </h3>
               {(() => {
-                // Group items by their first-seen kind preserving appearance order
                 const order: string[] = [];
                 const groups: Record<string, typeof cat.item> = {};
                 cat.item.forEach((it) => {
@@ -122,9 +114,13 @@ export default function Menu({ days, note, buttonLink }: MenuCardProps) {
           )}
         </div>
 
-        {/* Subtle outer glow similar to mockup */}
         <div className="pointer-events-none absolute inset-0 -z-10 rounded-[2.5rem] bg-gradient-to-b from-neutral-900/10 to-neutral-900/0" />
       </div>
     </div>
   );
+}
+
+function formatPrice(price: string | number) {
+  if (typeof price === "number") return price.toFixed(price % 1 === 0 ? 0 : 2);
+  return price;
 }

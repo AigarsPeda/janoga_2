@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type {
-  CalculatorElement,
   Checkbox,
   Contact,
   DatePicker,
@@ -14,6 +13,7 @@ import type {
   Phone,
   Question,
   Slider,
+  StepFormElement,
   StepFormProps,
   Textarea,
   YesNo,
@@ -23,7 +23,7 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { format } from "date-fns";
-import { lv, enUS } from "date-fns/locale";
+import { enUS, lv } from "date-fns/locale";
 import { Calendar, Check, ChevronDown, ChevronLeft, ChevronRight, Upload, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
@@ -230,9 +230,8 @@ export function StepForm(props: Readonly<StepFormProps>) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
+    <div className="container mx-auto px-4 md:py-12 py-5 max-w-4xl md:min-h-[83vh]">
       <div className="rounded-2xl bg-neutral-900/40 backdrop-blur-sm border border-neutral-700/40 shadow-xl overflow-hidden">
-        {/* Step Indicators - Compact on mobile */}
         <div className="px-6 pt-6 pb-4">
           {/* Mobile: Compact view */}
           <div className="flex flex-col items-center gap-3 md:hidden">
@@ -397,7 +396,9 @@ export function StepForm(props: Readonly<StepFormProps>) {
                     {submitStatus !== "submitting" && <Check className="w-4 h-4" />}
                   </Button>
                   {submitStatus === "error" && (
-                    <span className="text-sm text-red-400">{errorMsg || "Kļūda nosūtot ziņojumu"}</span>
+                    <span className="text-sm text-red-400">
+                      {errorMsg || "Kļūda nosūtot ziņojumu"}
+                    </span>
                   )}
                 </>
               )}
@@ -419,36 +420,36 @@ export function StepForm(props: Readonly<StepFormProps>) {
 }
 
 interface ElementRendererProps {
-  element: CalculatorElement;
+  locale?: string;
+  element: StepFormElement;
   value: FormValues[string];
   onChange: (value: FormValues[string]) => void;
-  locale?: string;
 }
 
-function ElementRenderer({ element, value, onChange, locale }: ElementRendererProps) {
+function ElementRenderer({ value, locale, element, onChange }: ElementRendererProps) {
   switch (element.__component) {
     case "elements.multi-choice":
       return (
         <MultiChoiceElement
-          element={element as MultiChoice}
-          value={value as string}
           onChange={onChange}
+          value={value as string}
+          element={element as MultiChoice}
         />
       );
     case "elements.question":
       return (
         <QuestionElement
-          element={element as Question}
-          value={value as string}
           onChange={onChange}
+          value={value as string}
+          element={element as Question}
         />
       );
     case "elements.checkbox":
       return (
         <CheckboxElement
-          element={element as Checkbox}
-          value={value as string[]}
           onChange={onChange}
+          value={value as string[]}
+          element={element as Checkbox}
         />
       );
     case "elements.slider":
@@ -467,9 +468,9 @@ function ElementRenderer({ element, value, onChange, locale }: ElementRendererPr
     case "elements.textarea":
       return (
         <TextareaElement
-          element={element as Textarea}
-          value={value as string}
           onChange={onChange}
+          value={value as string}
+          element={element as Textarea}
         />
       );
     case "elements.email":
@@ -483,9 +484,9 @@ function ElementRenderer({ element, value, onChange, locale }: ElementRendererPr
     case "elements.dropdown":
       return (
         <DropdownElement
-          element={element as Dropdown}
-          value={value as string}
           onChange={onChange}
+          value={value as string}
+          element={element as Dropdown}
         />
       );
     case "elements.yes-no":
@@ -503,9 +504,9 @@ function ElementRenderer({ element, value, onChange, locale }: ElementRendererPr
     case "elements.contact":
       return (
         <ContactElement
+          onChange={onChange}
           element={element as Contact}
           value={value as Record<string, string>}
-          onChange={onChange}
         />
       );
     default:
@@ -562,12 +563,12 @@ function MultiChoiceElement({
 }
 
 function QuestionElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: Question;
   value: string;
+  element: Question;
   onChange: (val: string) => void;
 }) {
   return (
@@ -594,12 +595,12 @@ function QuestionElement({
 }
 
 function CheckboxElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: Checkbox;
   value: string[];
+  element: Checkbox;
   onChange: (val: string[]) => void;
 }) {
   const selectedValues = value || [];
@@ -620,9 +621,9 @@ function CheckboxElement({
           const isChecked = selectedValues.includes(String(choice.id));
           return (
             <div
-              key={choice.id}
-              role="button"
               tabIndex={0}
+              role="button"
+              key={choice.id}
               onClick={() => toggleValue(String(choice.id))}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
@@ -655,12 +656,12 @@ function CheckboxElement({
 }
 
 function SliderElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: Slider;
   value: number;
+  element: Slider;
   onChange: (val: number) => void;
 }) {
   const currentValue = value ?? element.min;
@@ -670,11 +671,11 @@ function SliderElement({
       <label className={questionLabelClass}>{element.question}</label>
       <div className="px-2">
         <SliderPrimitive.Root
-          value={[currentValue]}
-          onValueChange={([val]) => onChange(val)}
           min={element.min}
           max={element.max}
+          value={[currentValue]}
           step={element.step || 1}
+          onValueChange={([val]) => onChange(val)}
           className="relative flex items-center select-none touch-none w-full h-5"
         >
           <SliderPrimitive.Track className="bg-neutral-700 relative grow rounded-full h-2">
@@ -702,15 +703,15 @@ function SliderElement({
 }
 
 function DatePickerElement({
-  element,
   value,
+  element,
   onChange,
   locale = "lv",
 }: {
-  element: DatePicker;
   value: Date;
-  onChange: (val: Date) => void;
   locale?: string;
+  element: DatePicker;
+  onChange: (val: Date) => void;
 }) {
   const [open, setOpen] = useState(false);
   const dateLocale = locale === "lv" ? lv : enUS;
@@ -781,12 +782,12 @@ function DatePickerElement({
 }
 
 function TextareaElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: Textarea;
   value: string;
+  element: Textarea;
   onChange: (val: string) => void;
 }) {
   return (
@@ -794,9 +795,9 @@ function TextareaElement({
       <label className={questionLabelClass}>{element.question}</label>
       <textarea
         value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={element.placeholder}
         maxLength={element.maxLength}
+        placeholder={element.placeholder}
+        onChange={(e) => onChange(e.target.value)}
         className={cn(inputBaseClass, "min-h-[120px] resize-y")}
       />
       {element.maxLength && (
@@ -809,12 +810,12 @@ function TextareaElement({
 }
 
 function EmailElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: Email;
   value: string;
+  element: Email;
   onChange: (val: string) => void;
 }) {
   return (
@@ -823,22 +824,22 @@ function EmailElement({
       <input
         type="email"
         value={value || ""}
+        autoComplete="email"
+        className={inputBaseClass}
         onChange={(e) => onChange(e.target.value)}
         placeholder={element.placeholder || "jusu@epasts.lv"}
-        className={inputBaseClass}
-        autoComplete="email"
       />
     </div>
   );
 }
 
 function PhoneElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: Phone;
   value: string;
+  element: Phone;
   onChange: (val: string) => void;
 }) {
   return (
@@ -846,23 +847,23 @@ function PhoneElement({
       <label className={questionLabelClass}>{element.question}</label>
       <input
         type="tel"
+        autoComplete="tel"
         value={value || ""}
+        className={inputBaseClass}
         onChange={(e) => onChange(e.target.value)}
         placeholder={element.placeholder || "+371 20000000"}
-        className={inputBaseClass}
-        autoComplete="tel"
       />
     </div>
   );
 }
 
 function DropdownElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: Dropdown;
   value: string;
+  element: Dropdown;
   onChange: (val: string) => void;
 }) {
   return (
@@ -879,9 +880,9 @@ function DropdownElement({
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal>
           <SelectPrimitive.Content
-            className="z-50 overflow-hidden rounded-lg bg-neutral-900 border border-neutral-700 shadow-xl"
-            position="popper"
             sideOffset={4}
+            position="popper"
+            className="z-50 overflow-hidden rounded-lg bg-neutral-900 border border-neutral-700 shadow-xl"
           >
             <SelectPrimitive.Viewport className="p-1">
               {element.choice?.map((choice) => (
@@ -905,16 +906,16 @@ function DropdownElement({
 }
 
 function YesNoElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: YesNo;
   value: string;
+  element: YesNo;
   onChange: (val: string) => void;
 }) {
-  const yesLabel = element.yesLabel || "Jā";
   const noLabel = element.noLabel || "Nē";
+  const yesLabel = element.yesLabel || "Jā";
 
   return (
     <div>
@@ -950,12 +951,12 @@ function YesNoElement({
 }
 
 function FileUploadElement({
-  element,
   value,
+  element,
   onChange,
 }: {
-  element: FileUpload;
   value: File | null;
+  element: FileUpload;
   onChange: (val: File | null) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -963,10 +964,12 @@ function FileUploadElement({
 
   const handleFile = (file: File | undefined) => {
     if (!file) return;
+
     if (element.maxSize && file.size > element.maxSize * 1024 * 1024) {
       alert(`Faila izmērs nedrīkst pārsniegt ${element.maxSize}MB`);
       return;
     }
+
     onChange(file);
   };
 
@@ -980,13 +983,13 @@ function FileUploadElement({
     <div>
       <label className={questionLabelClass}>{element.question}</label>
       <div
+        onDrop={handleDrop}
+        onDragLeave={() => setDragOver(false)}
+        onClick={() => inputRef.current?.click()}
         onDragOver={(e) => {
           e.preventDefault();
           setDragOver(true);
         }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={handleDrop}
-        onClick={() => inputRef.current?.click()}
         className={cn(
           "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200",
           dragOver
@@ -995,11 +998,11 @@ function FileUploadElement({
         )}
       >
         <input
-          ref={inputRef}
           type="file"
+          ref={inputRef}
+          className="hidden"
           accept={element.allowedTypes}
           onChange={(e) => handleFile(e.target.files?.[0])}
-          className="hidden"
         />
         {value ? (
           <div className="flex items-center justify-center gap-3">
@@ -1033,8 +1036,8 @@ function FileUploadElement({
 }
 
 function ContactElement({
-  element,
   value,
+  element,
   onChange,
 }: {
   element: Contact;
@@ -1059,23 +1062,23 @@ function ContactElement({
             </label>
             {field.type === "textarea" ? (
               <textarea
+                required={field.required}
+                placeholder={field.placeholder}
                 value={values[String(field.id)] || ""}
                 onChange={(e) => updateField(String(field.id), e.target.value)}
-                placeholder={field.placeholder}
-                required={field.required}
                 className={cn(inputBaseClass, "min-h-[100px] resize-y max-w-md")}
               />
             ) : (
               <input
-                type={field.type === "phone" ? "tel" : field.type}
-                value={values[String(field.id)] || ""}
-                onChange={(e) => updateField(String(field.id), e.target.value)}
-                placeholder={field.placeholder}
                 required={field.required}
+                placeholder={field.placeholder}
+                value={values[String(field.id)] || ""}
+                className={cn(inputBaseClass, "max-w-md")}
+                type={field.type === "phone" ? "tel" : field.type}
+                onChange={(e) => updateField(String(field.id), e.target.value)}
                 autoComplete={
                   field.type === "email" ? "email" : field.type === "phone" ? "tel" : undefined
                 }
-                className={cn(inputBaseClass, "max-w-md")}
               />
             )}
           </div>

@@ -55,11 +55,11 @@ export interface FeatureCardProps extends Base<"layout.feature-card"> {
     icon: string;
     heading: string;
     description: string;
+    buttonLink?: NavLink;
     image?: {
       url: string;
       name: string;
     };
-    buttonLink?: NavLink;
   }[];
 }
 
@@ -82,28 +82,28 @@ export interface HeroProps extends Base<"layout.hero"> {
 export interface CardGridProps extends Base<"layout.card-grid"> {
   cardItems: {
     id: string;
-    heading: string;
     text: string;
     icon: string;
+    heading: string;
   }[];
 }
 
 export interface SectionHeadingProps extends Base<"layout.section-heading"> {
+  text: string;
   heading: string;
   subHeading: string;
-  text: string;
   centered?: boolean;
 }
 
 export interface ContentWithImageProps extends Base<"layout.content-with-image"> {
+  text: string;
+  heading: string;
   reverse: boolean;
+  subHeading: string;
   image: {
     url: string;
     name: string;
   };
-  heading: string;
-  subHeading: string;
-  text: string;
 }
 
 export interface PriceGridProps extends Base<"layout.price-grid"> {
@@ -127,8 +127,8 @@ export interface Client {
   isExternal: boolean;
   image: {
     url: string;
-    alternativeText: string | null;
     name: string;
+    alternativeText: string | null;
   };
 }
 
@@ -156,9 +156,9 @@ export type DishKind = "Soup" | "Main" | "Dessert" | "Side dish" | "Salad" | str
 
 export interface MenuItem {
   id: string;
+  kind: DishKind;
   description: string;
   price: string | number;
-  kind: DishKind;
 }
 
 export interface MenuDay {
@@ -178,24 +178,24 @@ export interface MenuInfoProps extends Base<"layout.menu-info"> {
     price: string | number;
     items: {
       id: string;
-      description: string;
       kind: DishKind;
+      description: string;
     };
   }[];
 }
 
 export type Field = {
   id: string;
-  label: string;
   type: string;
-  placeholder?: string;
+  label: string;
   isRequired: boolean;
+  placeholder?: string;
 };
 
 export interface FormProps extends Base<"layout.form"> {
+  fields: Field[];
   submitButton: NavLink;
   recipientEmail: string;
-  fields: Field[];
 }
 
 export interface MyMapProps extends Base<"layout.map"> {
@@ -234,10 +234,10 @@ export interface MultiChoice {
 export interface Question {
   __component: "elements.question";
   id: number;
-  question: string;
-  inputType: "text" | "number";
-  placeholder?: string;
   unit?: string;
+  question: string;
+  placeholder?: string;
+  inputType: "text" | "number";
 }
 
 export interface Checkbox {
@@ -250,11 +250,11 @@ export interface Checkbox {
 export interface Slider {
   __component: "elements.slider";
   id: number;
-  question: string;
   min: number;
   max: number;
   step?: number;
   unit?: string;
+  question: string;
 }
 
 export interface DatePicker {
@@ -268,8 +268,8 @@ export interface Textarea {
   __component: "elements.textarea";
   id: number;
   question: string;
-  placeholder?: string;
   maxLength?: number;
+  placeholder?: string;
 }
 
 export interface Email {
@@ -298,24 +298,24 @@ export interface YesNo {
   __component: "elements.yes-no";
   id: number;
   question: string;
-  yesLabel?: string;
   noLabel?: string;
+  yesLabel?: string;
 }
 
 export interface FileUpload {
   __component: "elements.file-upload";
   id: number;
   question: string;
-  allowedTypes?: string;
   maxSize?: number;
+  allowedTypes?: string;
 }
 
 export interface ContactField {
   id: number;
   label: string;
-  type: "text" | "email" | "phone" | "textarea";
-  placeholder?: string;
   required?: boolean;
+  placeholder?: string;
+  type: "text" | "email" | "phone" | "textarea";
 }
 
 export interface Contact {
@@ -325,7 +325,7 @@ export interface Contact {
   field?: ContactField[];
 }
 
-export type CalculatorElement =
+export type StepFormElement =
   | MultiChoice
   | Question
   | Checkbox
@@ -343,16 +343,16 @@ export interface FormStep {
   id: number;
   title: string;
   description?: string;
-  element?: CalculatorElement[];
+  element?: StepFormElement[];
 }
 
 export interface StepFormProps extends Base<"layout.step-form"> {
+  locale?: string;
   step?: FormStep[];
+  recipientEmail: string;
+  successMessage?: string;
+  allowSkipSteps?: boolean;
   backButtonLabel?: string;
   nextButtonLabel?: string;
   submitButtonLabel?: string;
-  successMessage?: string;
-  allowSkipSteps?: boolean;
-  recipientEmail: string;
-  locale?: string;
 }
