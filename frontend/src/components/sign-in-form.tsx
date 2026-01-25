@@ -53,6 +53,11 @@ export function SigninForm() {
               <Input id="password" name="password" type="password" placeholder="password" />
               <ZodErrors error={formState.zodErrors?.password} />
             </div>
+            <div className="flex justify-end">
+              <Link href="forgot-password" className="text-sm text-primary underline">
+                Forgot password?
+              </Link>
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col">
             <SubmitButton className="w-full" text="Sign In" loadingText="Loading" />

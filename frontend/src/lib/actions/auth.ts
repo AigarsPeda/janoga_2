@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import {
   registerUserService,
   loginUserService,
+  forgotPasswordService,
+  resetPasswordService,
 } from "@/lib/services/auth";
 
 const config = {
@@ -128,4 +130,121 @@ export async function loginUserAction(prevState: any, formData: FormData) {
 export async function logoutAction() {
   cookies().set("jwt", "", { ...config, maxAge: 0 });
   redirect("/");
+}
+
+const schemaForgotPassword = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address",
+  }),
+});
+
+export async function forgotPasswordAction(prevState: any, formData: FormData) {
+  const validatedFields = schemaForgotPassword.safeParse({
+    email: formData.get("email"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      ...prevState,
+      zodErrors: validatedFields.error.flatten().fieldErrors,
+      strapiErrors: null,
+      message: "Please enter a valid email address.",
+      success: false,
+    };
+  }
+
+  const responseData = await forgotPasswordService(validatedFields.data);
+
+  if (!responseData) {
+    return {
+      ...prevState,
+      strapiErrors: null,
+      zodErrors: null,
+      message: "Oops! Something went wrong. Please try again.",
+      success: false,
+    };
+  }
+
+  if (responseData.error) {
+    return {
+      ...prevState,
+      strapiErrors: responseData.error,
+      zodErrors: null,
+      message: "Failed to send reset email.",
+      success: false,
+    };
+  }
+
+  return {
+    ...prevState,
+    strapiErrors: null,
+    zodErrors: null,
+    message: "Password reset email sent! Check your inbox.",
+    success: true,
+  };
+}
+
+const schemaResetPassword = z
+  .object({
+    code: z.string().min(1, {
+      message: "Reset code is required",
+    }),
+    password: z.string().min(6).max(100, {
+      message: "Password must be between 6 and 100 characters",
+    }),
+    passwordConfirmation: z.string().min(6).max(100, {
+      message: "Password confirmation must be between 6 and 100 characters",
+    }),
+  })
+  .refine((data) => data.password === data.passwordConfirmation, {
+    message: "Passwords do not match",
+    path: ["passwordConfirmation"],
+  });
+
+export async function resetPasswordAction(prevState: any, formData: FormData) {
+  const validatedFields = schemaResetPassword.safeParse({
+    code: formData.get("code"),
+    password: formData.get("password"),
+    passwordConfirmation: formData.get("passwordConfirmation"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      ...prevState,
+      zodErrors: validatedFields.error.flatten().fieldErrors,
+      strapiErrors: null,
+      message: "Validation failed.",
+      success: false,
+    };
+  }
+
+  const responseData = await resetPasswordService(validatedFields.data);
+
+  if (!responseData) {
+    return {
+      ...prevState,
+      strapiErrors: null,
+      zodErrors: null,
+      message: "Oops! Something went wrong. Please try again.",
+      success: false,
+    };
+  }
+
+  if (responseData.error) {
+    return {
+      ...prevState,
+      strapiErrors: responseData.error,
+      zodErrors: null,
+      message: "Failed to reset password.",
+      success: false,
+    };
+  }
+
+  return {
+    ...prevState,
+    strapiErrors: null,
+    zodErrors: null,
+    message: "Password reset successfully! You can now sign in.",
+    success: true,
+  };
 }

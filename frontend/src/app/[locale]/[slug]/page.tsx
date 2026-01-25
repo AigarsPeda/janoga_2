@@ -160,7 +160,7 @@ async function loader(slug: string, locale: string) {
   return data;
 }
 
-function BlockRenderer(block: Block) {
+function BlockRenderer(block: Block, locale?: string) {
   switch (block.__component) {
     case "layout.hero":
       return <Hero key={block.id} {...block} />;
@@ -183,7 +183,7 @@ function BlockRenderer(block: Block) {
     case "layout.side-by-side":
       return <SideBySide key={block.id} {...block} />;
     case "layout.step-form":
-      return <StepForm key={block.id} {...block} />;
+      return <StepForm key={block.id} {...block} locale={locale} />;
     default:
       return null;
   }
@@ -207,5 +207,5 @@ export default async function PageBySlugRoute({
 
   if (!blocks || !Array.isArray(blocks)) return null;
 
-  return <div>{blocks.map((block) => BlockRenderer(block))}</div>;
+  return <div>{blocks.map((block) => BlockRenderer(block, locale))}</div>;
 }

@@ -23,6 +23,7 @@
   "dependencies": {
     "@strapi/plugin-cloud": "5.33.4",
     "@strapi/plugin-users-permissions": "5.33.4",
+    "@strapi/provider-email-nodemailer": "^5.33.4",
     "@strapi/strapi": "5.33.4",
     "better-sqlite3": "11.9.1",
     "react": "^19.1.0",
@@ -40,5 +41,14 @@
     "node": ">=18.0.0 <=20.x.x",
     "npm": ">=6.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "better-sqlite3",
+      "core-js-pure",
+      "esbuild",
+      "sharp"
+    ]
+  }
 }

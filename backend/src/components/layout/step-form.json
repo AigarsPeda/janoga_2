@@ -22,6 +22,10 @@
     "allowSkipSteps": {
       "type": "boolean",
       "default": false
+    },
+    "recipientEmail": {
+      "type": "string",
+      "required": true
     }
   },
   "config": {}

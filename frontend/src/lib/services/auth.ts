@@ -49,3 +49,49 @@ export async function loginUserService(userData: LoginUserProps) {
     throw error;
   }
 }
+
+interface ForgotPasswordProps {
+  email: string;
+}
+
+interface ResetPasswordProps {
+  code: string;
+  password: string;
+  passwordConfirmation: string;
+}
+
+export async function forgotPasswordService(data: ForgotPasswordProps) {
+  const url = new URL("/api/auth/forgot-password", baseUrl);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    return response.json();
+  } catch (error) {
+    console.error("Forgot Password Service Error:", error);
+  }
+}
+
+export async function resetPasswordService(data: ResetPasswordProps) {
+  const url = new URL("/api/auth/reset-password", baseUrl);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    return response.json();
+  } catch (error) {
+    console.error("Reset Password Service Error:", error);
+  }
+}

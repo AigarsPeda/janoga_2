@@ -23,29 +23,39 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { format } from "date-fns";
+import { lv, enUS } from "date-fns/locale";
 import { Calendar, Check, ChevronDown, ChevronLeft, ChevronRight, Upload, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
 
 import "react-day-picker/style.css";
 
-type FormValues = Record<string, string | string[] | number | Date | File | Record<string, string> | null>;
+type FormValues = Record<
+  string,
+  string | string[] | number | Date | File | Record<string, string> | null
+>;
 
 export function StepForm(props: Readonly<StepFormProps>) {
   const {
     step: steps,
-    backButtonLabel = "Atpakaļ",
-    nextButtonLabel = "Tālāk",
-    submitButtonLabel = "Iesniegt",
+    recipientEmail,
     allowSkipSteps = false,
+    nextButtonLabel = "Tālāk",
+    backButtonLabel = "Atpakaļ",
+    submitButtonLabel = "Iesniegt",
+    locale = "lv",
   } = props;
 
   const [currentStep, setCurrentStep] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [formValues, setFormValues] = useState<FormValues>({});
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [previousStep, setPreviousStep] = useState<number | null>(null);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const [animationPhase, setAnimationPhase] = useState<"idle" | "setup" | "animating">("idle");
-  const [formValues, setFormValues] = useState<FormValues>({});
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "submitting" | "success" | "error">(
+    "idle",
+  );
 
   // Trigger the animation after the initial positioning
   useLayoutEffect(() => {
@@ -136,10 +146,11 @@ export function StepForm(props: Readonly<StepFormProps>) {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("════════════════════════════════════════");
-    console.log("📋 FORM SUBMISSION");
-    console.log("════════════════════════════════════════");
+  const handleSubmit = async () => {
+    setSubmitStatus("submitting");
+    setErrorMsg(null);
+
+    const formData: Record<string, string> = {};
 
     steps.forEach((step) => {
       step.element?.forEach((element) => {
@@ -157,7 +168,10 @@ export function StepForm(props: Readonly<StepFormProps>) {
         // Format answer based on element type
         let answer: string;
 
-        if (element.__component === "elements.multi-choice" || element.__component === "elements.dropdown") {
+        if (
+          element.__component === "elements.multi-choice" ||
+          element.__component === "elements.dropdown"
+        ) {
           const choices = (element as MultiChoice | Dropdown).choice || [];
           const selectedChoice = choices.find((c) => String(c.id) === value);
           answer = selectedChoice?.name || String(value);
@@ -169,7 +183,7 @@ export function StepForm(props: Readonly<StepFormProps>) {
             .join(", ");
         } else if (element.__component === "elements.yes-no") {
           const yesNo = element as YesNo;
-          answer = value === "yes" ? (yesNo.yesLabel || "Jā") : (yesNo.noLabel || "Nē");
+          answer = value === "yes" ? yesNo.yesLabel || "Jā" : yesNo.noLabel || "Nē";
         } else if (element.__component === "elements.date-picker") {
           answer = value instanceof Date ? format(value, "PPP") : String(value);
         } else if (element.__component === "elements.file-upload") {
@@ -191,11 +205,27 @@ export function StepForm(props: Readonly<StepFormProps>) {
           answer = `${answer} ${unit}`;
         }
 
-        console.log(`${question} - ${answer}`);
+        formData[question] = answer;
       });
     });
 
-    console.log("════════════════════════════════════════");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, recipientEmail }),
+      });
+
+      if (response.ok) {
+        setSubmitStatus("success");
+      } else {
+        setSubmitStatus("error");
+        setErrorMsg("Neizdevās nosūtīt ziņojumu");
+      }
+    } catch (error) {
+      setSubmitStatus("error");
+      setErrorMsg(error instanceof Error ? error.message : "Kļūda nosūtot ziņojumu");
+    }
   };
 
   return (
@@ -288,6 +318,7 @@ export function StepForm(props: Readonly<StepFormProps>) {
                     key={`${element.__component}-${element.id}`}
                     value={formValues[`${element.__component}-${element.id}`]}
                     onChange={(val) => updateValue(`${element.__component}-${element.id}`, val)}
+                    locale={locale}
                   />
                 ))}
               </div>
@@ -320,6 +351,7 @@ export function StepForm(props: Readonly<StepFormProps>) {
                   key={`${element.__component}-${element.id}`}
                   value={formValues[`${element.__component}-${element.id}`]}
                   onChange={(val) => updateValue(`${element.__component}-${element.id}`, val)}
+                  locale={locale}
                 />
               ))}
             </div>
@@ -343,14 +375,22 @@ export function StepForm(props: Readonly<StepFormProps>) {
           </span> */}
 
           {currentStep === totalSteps - 1 ? (
-            <Button
-              className="gap-2"
-              onClick={handleSubmit}
-              disabled={isAnimating || (!allowSkipSteps && !currentStepComplete)}
-            >
-              {submitButtonLabel}
-              <Check className="w-4 h-4" />
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <Button
+                className="gap-2"
+                onClick={handleSubmit}
+                disabled={isAnimating || submitStatus === "submitting" || (!allowSkipSteps && !currentStepComplete)}
+              >
+                {submitStatus === "submitting" ? "Nosūta..." : submitButtonLabel}
+                {submitStatus !== "submitting" && <Check className="w-4 h-4" />}
+              </Button>
+              {submitStatus === "success" && (
+                <span className="text-sm text-green-400">Ziņojums nosūtīts veiksmīgi!</span>
+              )}
+              {submitStatus === "error" && (
+                <span className="text-sm text-red-400">{errorMsg || "Kļūda nosūtot ziņojumu"}</span>
+              )}
+            </div>
           ) : (
             <Button
               className="gap-2"
@@ -371,9 +411,10 @@ interface ElementRendererProps {
   element: CalculatorElement;
   value: FormValues[string];
   onChange: (value: FormValues[string]) => void;
+  locale?: string;
 }
 
-function ElementRenderer({ element, value, onChange }: ElementRendererProps) {
+function ElementRenderer({ element, value, onChange, locale }: ElementRendererProps) {
   switch (element.__component) {
     case "elements.multi-choice":
       return (
@@ -409,6 +450,7 @@ function ElementRenderer({ element, value, onChange }: ElementRendererProps) {
           element={element as DatePicker}
           value={value as Date}
           onChange={onChange}
+          locale={locale}
         />
       );
     case "elements.textarea":
@@ -652,12 +694,15 @@ function DatePickerElement({
   element,
   value,
   onChange,
+  locale = "lv",
 }: {
   element: DatePicker;
   value: Date;
   onChange: (val: Date) => void;
+  locale?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const dateLocale = locale === "lv" ? lv : enUS;
 
   return (
     <div>
@@ -672,7 +717,7 @@ function DatePickerElement({
               !value && "text-neutral-400",
             )}
           >
-            {value ? format(value, "PPP") : element.placeholder || "Izvēlieties datumu"}
+            {value ? format(value, "PPP", { locale: dateLocale }) : element.placeholder || "Izvēlieties datumu"}
             <Calendar className="w-5 h-5 text-neutral-400" />
           </button>
         </Popover.Trigger>
@@ -684,6 +729,7 @@ function DatePickerElement({
             <DayPicker
               mode="single"
               selected={value}
+              locale={dateLocale}
               onSelect={(date) => {
                 if (date) {
                   onChange(date);
