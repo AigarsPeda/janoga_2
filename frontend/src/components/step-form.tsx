@@ -143,9 +143,23 @@ export function StepForm(props: Readonly<StepFormProps>) {
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="rounded-2xl bg-neutral-900/40 backdrop-blur-sm border border-neutral-700/40 shadow-xl overflow-hidden">
-        {/* Step Indicators */}
+        {/* Step Indicators - Compact on mobile */}
         <div className="px-6 pt-6 pb-4">
-          <div className="flex items-center justify-center max-w-md mx-auto">
+          {/* Mobile: Compact view */}
+          <div className="flex flex-col items-center gap-3 md:hidden">
+            <span className="text-sm text-neutral-300">
+              {currentStep + 1} / {totalSteps}
+            </span>
+            <div className="w-full max-w-[200px] h-1.5 bg-neutral-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary rounded-full transition-all duration-300"
+                style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Desktop: Full indicators */}
+          <div className="hidden md:flex items-center justify-center max-w-md mx-auto">
             {steps.map((s, index) => {
               const canNavigate =
                 index < currentStep ||
