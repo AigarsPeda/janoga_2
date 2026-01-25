@@ -351,6 +351,7 @@ export interface StepFormProps extends Base<"layout.step-form"> {
   backButtonLabel?: string;
   nextButtonLabel?: string;
   submitButtonLabel?: string;
+  successMessage?: string;
   allowSkipSteps?: boolean;
   recipientEmail: string;
   locale?: string;

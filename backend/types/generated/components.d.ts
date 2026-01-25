@@ -555,6 +555,7 @@ export interface LayoutStepForm extends Struct.ComponentSchema {
     recipientEmail: Schema.Attribute.String & Schema.Attribute.Required;
     step: Schema.Attribute.Component<'elements.form-step', true>;
     submitButtonLabel: Schema.Attribute.String;
+    successMessage: Schema.Attribute.String;
   };
 }
 

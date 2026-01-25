@@ -26,6 +26,9 @@
     "recipientEmail": {
       "type": "string",
       "required": true
+    },
+    "successMessage": {
+      "type": "string"
     }
   },
   "config": {}

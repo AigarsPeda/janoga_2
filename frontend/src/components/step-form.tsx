@@ -43,6 +43,7 @@ export function StepForm(props: Readonly<StepFormProps>) {
     nextButtonLabel = "Tālāk",
     backButtonLabel = "Atpakaļ",
     submitButtonLabel = "Iesniegt",
+    successMessage = "Ziņojums nosūtīts veiksmīgi!",
     locale = "lv",
   } = props;
 
@@ -376,23 +377,29 @@ export function StepForm(props: Readonly<StepFormProps>) {
 
           {currentStep === totalSteps - 1 ? (
             <div className="flex flex-col sm:flex-row items-center gap-3">
-              <Button
-                className="gap-2"
-                onClick={handleSubmit}
-                disabled={
-                  isAnimating ||
-                  submitStatus === "submitting" ||
-                  (!allowSkipSteps && !currentStepComplete)
-                }
-              >
-                {submitStatus === "submitting" ? "Nosūta..." : submitButtonLabel}
-                {submitStatus !== "submitting" && <Check className="w-4 h-4" />}
-              </Button>
-              {submitStatus === "success" && (
-                <span className="text-sm text-green-400">Ziņojums nosūtīts veiksmīgi!</span>
-              )}
-              {submitStatus === "error" && (
-                <span className="text-sm text-red-400">{errorMsg || "Kļūda nosūtot ziņojumu"}</span>
+              {submitStatus === "success" ? (
+                <span className="text-sm text-green-400 flex items-center gap-2">
+                  <Check className="w-4 h-4" />
+                  {successMessage}
+                </span>
+              ) : (
+                <>
+                  <Button
+                    className="gap-2"
+                    onClick={handleSubmit}
+                    disabled={
+                      isAnimating ||
+                      submitStatus === "submitting" ||
+                      (!allowSkipSteps && !currentStepComplete)
+                    }
+                  >
+                    {submitStatus === "submitting" ? "Nosūta..." : submitButtonLabel}
+                    {submitStatus !== "submitting" && <Check className="w-4 h-4" />}
+                  </Button>
+                  {submitStatus === "error" && (
+                    <span className="text-sm text-red-400">{errorMsg || "Kļūda nosūtot ziņojumu"}</span>
+                  )}
+                </>
               )}
             </div>
           ) : (
