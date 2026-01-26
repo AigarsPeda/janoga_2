@@ -1254,12 +1254,18 @@ function MenuSelectionElement({
     sweet: "Saldais",
   };
 
-  if (!matchingRule || Object.keys(categoryLimits).length === 0) {
+  if (dishes.length === 0) {
     return null;
   }
 
-  // Get available categories from the rule
-  const availableCategories = Object.keys(categoryLimits);
+  // Get ALL unique categories from dishes (always show full menu)
+  const allCategories = [...new Set(dishes.map((dish) => dish.kind))];
+
+  // Sort categories in a logical order
+  const categoryOrder = ["first", "second", "sweet"];
+  const availableCategories = allCategories.sort(
+    (a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b),
+  );
 
   // Group dishes by category
   const dishesByCategory = availableCategories.reduce(
@@ -1276,10 +1282,11 @@ function MenuSelectionElement({
       <div className="space-y-6">
         {availableCategories.map((category) => {
           const categoryDishes = dishesByCategory[category];
-          const requiredCount = categoryLimits[category];
+          const requiredCount = categoryLimits[category] || 0;
           const currentTotal = getCategoryTotal(category);
+          const hasRequirement = requiredCount > 0;
           const remaining = requiredCount - currentTotal;
-          const isComplete = remaining <= 0;
+          const isComplete = !hasRequirement || remaining <= 0;
 
           if (categoryDishes.length === 0) return null;
 
@@ -1292,12 +1299,18 @@ function MenuSelectionElement({
                 <span
                   className={cn(
                     "text-sm font-medium",
-                    isComplete ? "text-green-400" : "text-amber-400",
+                    !hasRequirement
+                      ? "text-neutral-400"
+                      : isComplete
+                        ? "text-green-400"
+                        : "text-amber-400",
                   )}
                 >
-                  {isComplete
-                    ? `✓ ${currentTotal} izvēlēti`
-                    : `${currentTotal} / ${requiredCount} (vēl ${remaining})`}
+                  {!hasRequirement
+                    ? `${currentTotal} izvēlēti`
+                    : isComplete
+                      ? `✓ ${currentTotal} izvēlēti`
+                      : `${currentTotal} / ${requiredCount} (vēl ${remaining})`}
                 </span>
               </div>
               <div className="space-y-2">
@@ -1315,18 +1328,18 @@ function MenuSelectionElement({
                           : "border-neutral-700 bg-neutral-800/30",
                       )}
                     >
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <span className="text-neutral-100 font-medium">{dish.name}</span>
                         {dish.description && (
                           <p className="text-sm text-neutral-400 mt-1">{dish.description}</p>
                         )}
-                        {dish.price && (
-                          <span className="text-sm text-primary font-medium">
-                            €{dish.price.toFixed(2)}
-                          </span>
-                        )}
                       </div>
-                      <div className="flex items-center gap-3 ml-4">
+                      {dish.price != null && (
+                        <span className="text-sm text-primary font-medium whitespace-nowrap w-16 text-right mx-4">
+                          €{dish.price.toFixed(2)}
+                        </span>
+                      )}
+                      <div className="flex items-center gap-3">
                         <button
                           type="button"
                           onClick={() => updateDish(dishId, -1)}
