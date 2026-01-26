@@ -3,6 +3,7 @@ export default ({ env }) => ({
     config: {
       provider: "nodemailer",
       providerOptions: {
+        service: "Gmail",
         host: "smtp.gmail.com",
         port: 465,
         secure: true,
