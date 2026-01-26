@@ -120,6 +120,9 @@ const pagePopulate = {
                   "elements.contact": {
                     populate: { field: { populate: "*" } },
                   },
+                  "elements.menu-selection": {
+                    populate: { dishes: { populate: "*" } },
+                  },
                 },
               },
             },

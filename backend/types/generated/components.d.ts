@@ -73,6 +73,20 @@ export interface ElementsDatePicker extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsDish extends Struct.ComponentSchema {
+  collectionName: 'components_elements_dishes';
+  info: {
+    displayName: 'Dish';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    kind: Schema.Attribute.Enumeration<['first', 'second', 'sweet']> &
+      Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    price: Schema.Attribute.Decimal;
+  };
+}
+
 export interface ElementsDropdown extends Struct.ComponentSchema {
   collectionName: 'components_elements_dropdowns';
   info: {
@@ -157,6 +171,7 @@ export interface ElementsFormStep extends Struct.ComponentSchema {
         'elements.yes-no',
         'elements.file-upload',
         'elements.contact',
+        'elements.menu-selection',
       ]
     > &
       Schema.Attribute.Required &
@@ -245,6 +260,18 @@ export interface ElementsMenuInfo extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsMenuSelection extends Struct.ComponentSchema {
+  collectionName: 'components_elements_menu_selections';
+  info: {
+    displayName: 'MenuSelection';
+  };
+  attributes: {
+    config: Schema.Attribute.JSON & Schema.Attribute.Required;
+    dishes: Schema.Attribute.Component<'elements.dish', true>;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface ElementsMultiChoice extends Struct.ComponentSchema {
   collectionName: 'components_elements_multi_choices';
   info: {
@@ -253,6 +280,7 @@ export interface ElementsMultiChoice extends Struct.ComponentSchema {
   attributes: {
     choice: Schema.Attribute.Component<'elements.choice', true>;
     question: Schema.Attribute.String & Schema.Attribute.Required;
+    referenceId: Schema.Attribute.String;
   };
 }
 
@@ -294,6 +322,7 @@ export interface ElementsQuestion extends Struct.ComponentSchema {
       Schema.Attribute.DefaultTo<'text'>;
     placeholder: Schema.Attribute.String;
     question: Schema.Attribute.String & Schema.Attribute.Required;
+    referenceId: Schema.Attribute.String;
     unit: Schema.Attribute.String;
   };
 }
@@ -311,6 +340,7 @@ export interface ElementsSlider extends Struct.ComponentSchema {
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<0>;
     question: Schema.Attribute.String & Schema.Attribute.Required;
+    referenceId: Schema.Attribute.String;
     step: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1>;
     unit: Schema.Attribute.String;
   };
@@ -582,6 +612,7 @@ declare module '@strapi/strapi' {
       'elements.contact': ElementsContact;
       'elements.contact-field': ElementsContactField;
       'elements.date-picker': ElementsDatePicker;
+      'elements.dish': ElementsDish;
       'elements.dropdown': ElementsDropdown;
       'elements.email': ElementsEmail;
       'elements.feature': ElementsFeature;
@@ -594,6 +625,7 @@ declare module '@strapi/strapi' {
       'elements.link': ElementsLink;
       'elements.logo': ElementsLogo;
       'elements.menu-info': ElementsMenuInfo;
+      'elements.menu-selection': ElementsMenuSelection;
       'elements.multi-choice': ElementsMultiChoice;
       'elements.phone': ElementsPhone;
       'elements.price-card': ElementsPriceCard;

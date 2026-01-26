@@ -26,7 +26,8 @@
         "elements.dropdown",
         "elements.yes-no",
         "elements.file-upload",
-        "elements.contact"
+        "elements.contact",
+        "elements.menu-selection"
       ],
       "max": 1,
       "min": 1,

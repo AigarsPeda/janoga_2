@@ -9,6 +9,8 @@ import type {
   Dropdown,
   Email,
   FileUpload,
+  FormStep,
+  MenuSelection,
   MultiChoice,
   Phone,
   Question,
@@ -32,7 +34,7 @@ import "react-day-picker/style.css";
 
 type FormValues = Record<
   string,
-  string | string[] | number | Date | File | Record<string, string> | null
+  string | string[] | number | Date | File | Record<string, string> | Record<string, number> | null
 >;
 
 export function StepForm(props: Readonly<StepFormProps>) {
@@ -196,6 +198,19 @@ export function StepForm(props: Readonly<StepFormProps>) {
           answer = fields
             .map((f) => `${f.label}: ${contactValues[String(f.id)] || "-"}`)
             .join(", ");
+        } else if (element.__component === "elements.menu-selection") {
+          const menuElement = element as MenuSelection;
+          const menuValues = value as Record<string, number>;
+          const dishes = menuElement.dishes || [];
+
+          // Format as dish names with quantities
+          answer = Object.entries(menuValues)
+            .filter(([, count]) => count > 0)
+            .map(([dishId, count]) => {
+              const dish = dishes.find((d) => String(d.id) === dishId);
+              return dish ? `${dish.name}: ${count}` : `${dishId}: ${count}`;
+            })
+            .join(", ");
         } else {
           answer = String(value);
         }
@@ -319,6 +334,8 @@ export function StepForm(props: Readonly<StepFormProps>) {
                     value={formValues[`${element.__component}-${element.id}`]}
                     onChange={(val) => updateValue(`${element.__component}-${element.id}`, val)}
                     locale={locale}
+                    formValues={formValues}
+                    steps={steps}
                   />
                 ))}
               </div>
@@ -352,6 +369,8 @@ export function StepForm(props: Readonly<StepFormProps>) {
                   value={formValues[`${element.__component}-${element.id}`]}
                   onChange={(val) => updateValue(`${element.__component}-${element.id}`, val)}
                   locale={locale}
+                  formValues={formValues}
+                  steps={steps}
                 />
               ))}
             </div>
@@ -361,12 +380,7 @@ export function StepForm(props: Readonly<StepFormProps>) {
         {/* Navigation */}
         <div className="px-8 pb-8 flex justify-between items-center">
           {currentStep > 0 ? (
-            <Button
-              className="gap-2"
-              variant="outline"
-              onClick={prevStep}
-              disabled={isAnimating}
-            >
+            <Button className="gap-2" variant="outline" onClick={prevStep} disabled={isAnimating}>
               <ChevronLeft className="w-4 h-4" />
               {backButtonLabel}
             </Button>
@@ -428,9 +442,18 @@ interface ElementRendererProps {
   element: StepFormElement;
   value: FormValues[string];
   onChange: (value: FormValues[string]) => void;
+  formValues: FormValues;
+  steps: FormStep[];
 }
 
-function ElementRenderer({ value, locale, element, onChange }: ElementRendererProps) {
+function ElementRenderer({
+  value,
+  locale,
+  element,
+  onChange,
+  formValues,
+  steps,
+}: ElementRendererProps) {
   switch (element.__component) {
     case "elements.multi-choice":
       return (
@@ -511,6 +534,16 @@ function ElementRenderer({ value, locale, element, onChange }: ElementRendererPr
           onChange={onChange}
           element={element as Contact}
           value={value as Record<string, string>}
+        />
+      );
+    case "elements.menu-selection":
+      return (
+        <MenuSelectionElement
+          onChange={onChange as (val: Record<string, number>) => void}
+          element={element as MenuSelection}
+          value={value as Record<string, number>}
+          formValues={formValues}
+          steps={steps}
         />
       );
     default:
@@ -1087,6 +1120,244 @@ function ContactElement({
             )}
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// Value structure: { "dishId": quantity, ... }
+type MenuSelectionValue = Record<string, number>;
+
+function MenuSelectionElement({
+  value,
+  element,
+  onChange,
+  formValues,
+  steps,
+}: {
+  element: MenuSelection;
+  value: MenuSelectionValue;
+  onChange: (val: MenuSelectionValue) => void;
+  formValues: FormValues;
+  steps: FormStep[];
+}) {
+  const values = value || {};
+  const dishes = element.dishes || [];
+  const config = element.config || { rules: [] };
+  const hasInitialized = useRef(false);
+
+  // Get multiplier value from referenced field (e.g., guest count)
+  const getMultiplier = (): number => {
+    const { multiplierReferenceId } = config;
+    if (!multiplierReferenceId) return 1;
+
+    for (const step of steps) {
+      for (const el of step.element || []) {
+        const elWithRef = el as { referenceId?: string };
+        if (elWithRef.referenceId === multiplierReferenceId) {
+          const formKey = `${el.__component}-${el.id}`;
+          const formValue = formValues[formKey];
+          const num = Number(formValue);
+          return isNaN(num) ? 1 : num;
+        }
+      }
+    }
+    return 1;
+  };
+
+  // Find the matching rule based on previous form values
+  const getMatchingRule = () => {
+    const { rules } = config;
+    if (!rules || rules.length === 0) return null;
+
+    // First, try to find a rule that matches a previous answer
+    for (const rule of rules) {
+      if (rule.sourceReferenceId && rule.value) {
+        // Find the element with this referenceId
+        for (const step of steps) {
+          for (const el of step.element || []) {
+            const elWithRef = el as { referenceId?: string };
+            if (elWithRef.referenceId === rule.sourceReferenceId) {
+              const formKey = `${el.__component}-${el.id}`;
+              const formValue = formValues[formKey];
+
+              // For multi-choice, we need to find the choice name by ID
+              if (el.__component === "elements.multi-choice") {
+                const multiChoice = el as MultiChoice;
+                const selectedChoice = multiChoice.choice?.find((c) => String(c.id) === formValue);
+                if (selectedChoice?.name === rule.value) {
+                  return rule;
+                }
+              } else if (formValue === rule.value) {
+                return rule;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Fall back to default rule
+    return rules.find((rule) => rule.default);
+  };
+
+  const matchingRule = getMatchingRule();
+  const multiplier = getMultiplier();
+
+  // Apply multiplier to category limits
+  const categoryLimits = matchingRule?.selection
+    ? Object.fromEntries(
+        Object.entries(matchingRule.selection).map(([key, val]) => [key, val * multiplier]),
+      )
+    : {};
+
+  // Pre-fill dishes based on rule and guest count
+  useEffect(() => {
+    if (!matchingRule || dishes.length === 0 || hasInitialized.current) return;
+
+    const prefilled: MenuSelectionValue = {};
+    const categories = Object.keys(categoryLimits);
+
+    for (const category of categories) {
+      const requiredAmount = categoryLimits[category];
+      const categoryDishes = dishes.filter((dish) => dish.kind === category);
+
+      if (categoryDishes.length > 0 && requiredAmount > 0) {
+        // Pre-fill the first dish with the required amount
+        prefilled[String(categoryDishes[0].id)] = requiredAmount;
+      }
+    }
+
+    if (Object.keys(prefilled).length > 0) {
+      hasInitialized.current = true;
+      onChange(prefilled);
+    }
+  }, [matchingRule, multiplier, dishes, categoryLimits, onChange]);
+
+  // Get total selected count for a category
+  const getCategoryTotal = (category: string) => {
+    return dishes
+      .filter((dish) => dish.kind === category)
+      .reduce((sum, dish) => sum + (values[String(dish.id)] || 0), 0);
+  };
+
+  // Update dish quantity (no max limit - user chooses freely)
+  const updateDish = (dishId: string, delta: number) => {
+    const currentValue = values[dishId] || 0;
+    const newValue = Math.max(0, currentValue + delta);
+    onChange({ ...values, [dishId]: newValue });
+  };
+
+  const categoryLabels: Record<string, string> = {
+    first: "Pirmais ēdiens",
+    second: "Otrais ēdiens",
+    sweet: "Saldais",
+  };
+
+  if (!matchingRule || Object.keys(categoryLimits).length === 0) {
+    return null;
+  }
+
+  // Get available categories from the rule
+  const availableCategories = Object.keys(categoryLimits);
+
+  // Group dishes by category
+  const dishesByCategory = availableCategories.reduce(
+    (acc, category) => {
+      acc[category] = dishes.filter((dish) => dish.kind === category);
+      return acc;
+    },
+    {} as Record<string, typeof dishes>,
+  );
+
+  return (
+    <div>
+      <label className={questionLabelClass}>{element.question}</label>
+      <div className="space-y-6">
+        {availableCategories.map((category) => {
+          const categoryDishes = dishesByCategory[category];
+          const requiredCount = categoryLimits[category];
+          const currentTotal = getCategoryTotal(category);
+          const remaining = requiredCount - currentTotal;
+          const isComplete = remaining <= 0;
+
+          if (categoryDishes.length === 0) return null;
+
+          return (
+            <div key={category} className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-lg font-semibold text-neutral-100">
+                  {categoryLabels[category] || category}
+                </h4>
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    isComplete ? "text-green-400" : "text-amber-400",
+                  )}
+                >
+                  {isComplete
+                    ? `✓ ${currentTotal} izvēlēti`
+                    : `${currentTotal} / ${requiredCount} (vēl ${remaining})`}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {categoryDishes.map((dish) => {
+                  const dishId = String(dish.id);
+                  const quantity = values[dishId] || 0;
+
+                  return (
+                    <div
+                      key={dish.id}
+                      className={cn(
+                        "flex items-center justify-between p-4 rounded-lg border transition-all",
+                        quantity > 0
+                          ? "border-primary bg-primary/10"
+                          : "border-neutral-700 bg-neutral-800/30",
+                      )}
+                    >
+                      <div className="flex-1">
+                        <span className="text-neutral-100 font-medium">{dish.name}</span>
+                        {dish.description && (
+                          <p className="text-sm text-neutral-400 mt-1">{dish.description}</p>
+                        )}
+                        {dish.price && (
+                          <span className="text-sm text-primary font-medium">
+                            €{dish.price.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 ml-4">
+                        <button
+                          type="button"
+                          onClick={() => updateDish(dishId, -1)}
+                          disabled={quantity <= 0}
+                          className={cn(
+                            "w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg transition-all",
+                            quantity <= 0
+                              ? "bg-neutral-700 text-neutral-500 cursor-not-allowed"
+                              : "bg-neutral-700 text-neutral-100 hover:bg-neutral-600",
+                          )}
+                        >
+                          −
+                        </button>
+                        <span className="w-8 text-center text-lg font-semibold text-neutral-100">
+                          {quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => updateDish(dishId, 1)}
+                          className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg transition-all bg-primary text-primary-foreground hover:bg-primary/80"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

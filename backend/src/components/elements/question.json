@@ -9,6 +9,9 @@
       "type": "string",
       "required": true
     },
+    "referenceId": {
+      "type": "string"
+    },
     "inputType": {
       "type": "enumeration",
       "enum": ["text", "number"],

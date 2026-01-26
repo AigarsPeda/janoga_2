@@ -228,6 +228,7 @@ export interface MultiChoice {
   __component: "elements.multi-choice";
   id: number;
   question: string;
+  referenceId?: string;
   choice?: CalculatorChoice[];
 }
 
@@ -236,6 +237,7 @@ export interface Question {
   id: number;
   unit?: string;
   question: string;
+  referenceId?: string;
   placeholder?: string;
   inputType: "text" | "number";
 }
@@ -255,6 +257,7 @@ export interface Slider {
   step?: number;
   unit?: string;
   question: string;
+  referenceId?: string;
 }
 
 export interface DatePicker {
@@ -325,6 +328,34 @@ export interface Contact {
   field?: ContactField[];
 }
 
+export interface MenuSelectionRule {
+  sourceReferenceId?: string;
+  value?: string;
+  default?: boolean;
+  selection: Record<string, number>;
+}
+
+export interface MenuSelectionConfig {
+  rules: MenuSelectionRule[];
+  multiplierReferenceId?: string;
+}
+
+export interface Dish {
+  id: number;
+  name: string;
+  kind: "first" | "second" | "sweet";
+  description?: string;
+  price?: number;
+}
+
+export interface MenuSelection {
+  __component: "elements.menu-selection";
+  id: number;
+  question: string;
+  config: MenuSelectionConfig;
+  dishes?: Dish[];
+}
+
 export type StepFormElement =
   | MultiChoice
   | Question
@@ -337,7 +368,8 @@ export type StepFormElement =
   | Dropdown
   | YesNo
   | FileUpload
-  | Contact;
+  | Contact
+  | MenuSelection;
 
 export interface FormStep {
   id: number;

@@ -9,6 +9,9 @@
       "type": "string",
       "required": true
     },
+    "referenceId": {
+      "type": "string"
+    },
     "min": {
       "type": "integer",
       "default": 0,

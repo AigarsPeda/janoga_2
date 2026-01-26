@@ -1,7 +1,7 @@
 {
-  "collectionName": "components_elements_multi_choices",
+  "collectionName": "components_elements_menu_selections",
   "info": {
-    "displayName": "MultiChoice"
+    "displayName": "MenuSelection"
   },
   "options": {},
   "attributes": {
@@ -9,12 +9,13 @@
       "type": "string",
       "required": true
     },
-    "referenceId": {
-      "type": "string"
+    "config": {
+      "type": "json",
+      "required": true
     },
-    "choice": {
+    "dishes": {
       "type": "component",
-      "component": "elements.choice",
+      "component": "elements.dish",
       "repeatable": true
     }
   },

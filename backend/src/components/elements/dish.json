@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_elements_dishes",
+  "info": {
+    "displayName": "Dish"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "kind": {
+      "type": "enumeration",
+      "enum": ["first", "second", "sweet"],
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "price": {
+      "type": "decimal"
+    }
+  },
+  "config": {}
+}
