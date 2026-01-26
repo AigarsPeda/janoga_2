@@ -1329,7 +1329,8 @@ function MenuSelectionElement({
       <div className="space-y-6">
         {availableCategories.map((category) => {
           const categoryDishes = dishesByCategory[category];
-          const requiredCount = categoryLimits[category] || 0;
+          // Use category-specific limit if defined, otherwise default to multiplier (guest count)
+          const requiredCount = categoryLimits[category] ?? multiplier;
           const currentTotal = getCategoryTotal(category);
           const hasRequirement = requiredCount > 0;
           const remaining = requiredCount - currentTotal;
@@ -1348,16 +1349,16 @@ function MenuSelectionElement({
                     "text-sm font-medium pr-2",
                     !hasRequirement
                       ? "text-neutral-400"
-                      : isComplete
+                      : currentTotal >= requiredCount
                         ? "text-green-400"
                         : "text-amber-400",
                   )}
                 >
                   {!hasRequirement
-                    ? `${currentTotal} izvēlēti`
-                    : isComplete
-                      ? `✓ ${currentTotal} izvēlēti`
-                      : `${currentTotal} / ${requiredCount} (vēl ${remaining})`}
+                    ? `${currentTotal} porcijas`
+                    : currentTotal >= requiredCount
+                      ? `✓ ${currentTotal} porcijas`
+                      : `${currentTotal} / ${requiredCount} porcijas`}
                 </span>
               </div>
               <div className="space-y-2">
