@@ -387,4 +387,5 @@ export interface StepFormProps extends Base<"layout.step-form"> {
   backButtonLabel?: string;
   nextButtonLabel?: string;
   submitButtonLabel?: string;
+  resetButtonLabel?: string;
 }

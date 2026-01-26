@@ -583,6 +583,7 @@ export interface LayoutStepForm extends Struct.ComponentSchema {
     backButtonLabel: Schema.Attribute.String;
     nextButtonLabel: Schema.Attribute.String;
     recipientEmail: Schema.Attribute.String & Schema.Attribute.Required;
+    resetButtonLabel: Schema.Attribute.String;
     step: Schema.Attribute.Component<'elements.form-step', true>;
     submitButtonLabel: Schema.Attribute.String;
     successMessage: Schema.Attribute.String;

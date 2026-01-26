@@ -46,6 +46,7 @@ export function StepForm(props: Readonly<StepFormProps>) {
     backButtonLabel = "Atpakaļ",
     submitButtonLabel = "Iesniegt",
     successMessage = "Ziņojums nosūtīts veiksmīgi!",
+    resetButtonLabel = "Atjaunot ieteiktos",
     locale = "lv",
   } = props;
 
@@ -336,6 +337,7 @@ export function StepForm(props: Readonly<StepFormProps>) {
                     locale={locale}
                     formValues={formValues}
                     steps={steps}
+                    resetButtonLabel={resetButtonLabel}
                   />
                 ))}
               </div>
@@ -371,6 +373,7 @@ export function StepForm(props: Readonly<StepFormProps>) {
                   locale={locale}
                   formValues={formValues}
                   steps={steps}
+                  resetButtonLabel={resetButtonLabel}
                 />
               ))}
             </div>
@@ -444,6 +447,7 @@ interface ElementRendererProps {
   onChange: (value: FormValues[string]) => void;
   formValues: FormValues;
   steps: FormStep[];
+  resetButtonLabel?: string;
 }
 
 function ElementRenderer({
@@ -453,6 +457,7 @@ function ElementRenderer({
   onChange,
   formValues,
   steps,
+  resetButtonLabel,
 }: ElementRendererProps) {
   switch (element.__component) {
     case "elements.multi-choice":
@@ -544,6 +549,7 @@ function ElementRenderer({
           value={value as Record<string, number>}
           formValues={formValues}
           steps={steps}
+          resetButtonLabel={resetButtonLabel}
         />
       );
     default:
@@ -1134,12 +1140,14 @@ function MenuSelectionElement({
   onChange,
   formValues,
   steps,
+  resetButtonLabel = "Atjaunot ieteiktos",
 }: {
   element: MenuSelection;
   value: MenuSelectionValue;
   onChange: (val: MenuSelectionValue) => void;
   formValues: FormValues;
   steps: FormStep[];
+  resetButtonLabel?: string;
 }) {
   const values = value || {};
   const dishes = element.dishes || [];
@@ -1211,11 +1219,9 @@ function MenuSelectionElement({
       )
     : {};
 
-  // Pre-fill dishes based on rule and guest count
-  useEffect(() => {
-    if (!matchingRule || dishes.length === 0 || hasInitialized.current) return;
-
-    const prefilled: MenuSelectionValue = {};
+  // Calculate recommended values based on rule and guest count
+  const getRecommendedValues = (): MenuSelectionValue => {
+    const recommended: MenuSelectionValue = {};
     const categories = Object.keys(categoryLimits);
 
     for (const category of categories) {
@@ -1223,16 +1229,46 @@ function MenuSelectionElement({
       const categoryDishes = dishes.filter((dish) => dish.kind === category);
 
       if (categoryDishes.length > 0 && requiredAmount > 0) {
-        // Pre-fill the first dish with the required amount
-        prefilled[String(categoryDishes[0].id)] = requiredAmount;
+        recommended[String(categoryDishes[0].id)] = requiredAmount;
       }
     }
+    return recommended;
+  };
 
-    if (Object.keys(prefilled).length > 0) {
-      hasInitialized.current = true;
-      onChange(prefilled);
+  const recommendedValues = getRecommendedValues();
+
+  // Check if current values differ from recommended
+  const hasChangedFromRecommended = (): boolean => {
+    if (Object.keys(recommendedValues).length === 0) return false;
+
+    // Check if any recommended dish has different quantity
+    for (const [dishId, recommendedQty] of Object.entries(recommendedValues)) {
+      if ((values[dishId] || 0) !== recommendedQty) return true;
     }
-  }, [matchingRule, multiplier, dishes, categoryLimits, onChange]);
+
+    // Check if user added dishes not in recommended
+    for (const [dishId, qty] of Object.entries(values)) {
+      if (qty > 0 && !(dishId in recommendedValues)) return true;
+    }
+
+    return false;
+  };
+
+  const isModified = hasChangedFromRecommended();
+
+  const resetToRecommended = () => {
+    onChange(recommendedValues);
+  };
+
+  // Pre-fill dishes based on rule and guest count
+  useEffect(() => {
+    if (!matchingRule || dishes.length === 0 || hasInitialized.current) return;
+
+    if (Object.keys(recommendedValues).length > 0) {
+      hasInitialized.current = true;
+      onChange(recommendedValues);
+    }
+  }, [matchingRule, multiplier, dishes, recommendedValues, onChange]);
 
   // Get total selected count for a category
   const getCategoryTotal = (category: string) => {
@@ -1278,7 +1314,18 @@ function MenuSelectionElement({
 
   return (
     <div>
-      <label className={questionLabelClass}>{element.question}</label>
+      <div className="flex items-center justify-between mb-6 mt-6">
+        <label className="text-2xl font-medium text-neutral-100">{element.question}</label>
+        {isModified && (
+          <button
+            type="button"
+            onClick={resetToRecommended}
+            className="text-sm text-neutral-400 hover:text-neutral-200 underline underline-offset-2 transition-colors"
+          >
+            {resetButtonLabel}
+          </button>
+        )}
+      </div>
       <div className="space-y-6">
         {availableCategories.map((category) => {
           const categoryDishes = dishesByCategory[category];
@@ -1298,7 +1345,7 @@ function MenuSelectionElement({
                 </h4>
                 <span
                   className={cn(
-                    "text-sm font-medium",
+                    "text-sm font-medium pr-2",
                     !hasRequirement
                       ? "text-neutral-400"
                       : isComplete
@@ -1323,9 +1370,9 @@ function MenuSelectionElement({
                       key={dish.id}
                       className={cn(
                         "flex items-center justify-between p-4 rounded-lg border transition-all",
-                        quantity > 0
-                          ? "border-primary bg-primary/10"
-                          : "border-neutral-700 bg-neutral-800/30",
+                        // quantity > 0
+                        //   ? "border-neutral-700/60 bg-gray-900/10"
+                        //   : "border-neutral-700 bg-neutral-800/30",
                       )}
                     >
                       <div className="flex-1 min-w-0">
@@ -1335,7 +1382,7 @@ function MenuSelectionElement({
                         )}
                       </div>
                       {dish.price != null && (
-                        <span className="text-sm text-primary font-medium whitespace-nowrap w-16 text-right mx-4">
+                        <span className="text-sm text-neutral-300 font-medium whitespace-nowrap w-16 text-right mx-4">
                           €{dish.price.toFixed(2)}
                         </span>
                       )}
