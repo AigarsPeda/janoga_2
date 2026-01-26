@@ -360,15 +360,19 @@ export function StepForm(props: Readonly<StepFormProps>) {
 
         {/* Navigation */}
         <div className="px-8 pb-8 flex justify-between items-center">
-          <Button
-            className="gap-2"
-            variant="outline"
-            onClick={prevStep}
-            disabled={currentStep === 0 || isAnimating}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            {backButtonLabel}
-          </Button>
+          {currentStep > 0 ? (
+            <Button
+              className="gap-2"
+              variant="outline"
+              onClick={prevStep}
+              disabled={isAnimating}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              {backButtonLabel}
+            </Button>
+          ) : (
+            <div />
+          )}
 
           {/* <span className="text-sm text-muted-foreground">
             {currentStep + 1} / {totalSteps}
