@@ -69,35 +69,45 @@ export function FeatureCard({ items }: Readonly<FeatureCardProps>) {
 
   return (
     <div className="w-full h-full container sticky-cards" ref={containerRef}>
-      {items.map((item) => (
-        <div key={item.id} className="sticky-card mx-auto overflow-hidden relative h-[32rem] mb-10">
+      {items.map((item, index) => (
+        <div
+          key={item.id}
+          className="sticky-card mx-auto overflow-hidden relative h-[30rem] sm:h-[34rem] lg:h-[36rem] mb-10 rounded-3xl"
+        >
           <StrapiImage
-            width={900}
-            height={600}
+            width={1100}
+            height={720}
             src={item.image?.url || ""}
             alt={item.heading ?? "Feature image"}
-            className="mx-auto h-full w-full object-cover rounded-xl"
+            className="mx-auto h-full w-full object-cover"
           />
-          <div className="absolute top-0 left-0 right-0 bottom-0 p-6 bg-gradient-to-r from-black/80 to-transparent rounded-xl max-w-xl">
-            <h3 className="text-5xl font-bold tracking-tight text-white mb-10 text-left pt-10">
-              {item.heading}
-            </h3>
-            <p className="text-xl text-gray-200 text-left">{item.description}</p>
-            {item.buttonLink && (
-              <Button
-                asChild
-                size="sm"
-                variant={item.buttonLink.isPrimary ? "default" : "outline"}
-                className="cursor-pointer border-border text-base mt-10 py-5 px-6"
-              >
-                <Link
-                  href={item.buttonLink.href}
-                  target={item.buttonLink.isExternal ? "_blank" : "_self"}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.22),transparent_55%)]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/35 to-transparent" />
+
+          <div className="absolute inset-0 flex items-end sm:items-center">
+            <div className="m-5 sm:m-8 md:m-10 max-w-xl p-6 sm:p-8">
+              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-white mb-4">
+                {item.heading}
+              </h3>
+              <p className="text-base sm:text-lg text-white/85 leading-relaxed">
+                {item.description}
+              </p>
+              {item.buttonLink && (
+                <Button
+                  asChild
+                  size="sm"
+                  variant={item.buttonLink.isPrimary ? "default" : "outline"}
+                  className="cursor-pointer border-border text-sm sm:text-base mt-6 sm:mt-8 py-5 px-6"
                 >
-                  {item.buttonLink.text}
-                </Link>
-              </Button>
-            )}
+                  <Link
+                    href={item.buttonLink.href}
+                    target={item.buttonLink.isExternal ? "_blank" : "_self"}
+                  >
+                    {item.buttonLink.text}
+                  </Link>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       ))}
