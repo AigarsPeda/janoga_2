@@ -70,7 +70,7 @@ export function Header({ data, locales, currentLocale = "lv" }: Readonly<HeaderP
             className="h-10 w-10 object-contain"
           />
         )}
-        <span className="font-heading text-xl font-bold">{logoText}</span>
+        <span className="text-xl font-bold">{logoText}</span>
       </Link>
       <div className="flex items-center gap-10">
         <nav className="hidden items-center gap-10 md:flex justify-end">

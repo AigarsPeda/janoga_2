@@ -147,7 +147,7 @@ export function Hero(data: Readonly<HeroProps>) {
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10 md:pb-24">
-        <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-10 lg:gap-12 items-center py-16 md:py-20 lg:py-0">
+        <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-10 lg:gap-12 items-center pt-1 pb-16 md:py-20 lg:py-0">
           {/* Text content */}
           <div ref={contentRef} className="flex flex-col gap-5 opacity-0 order-2 lg:order-1">
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground">
@@ -185,7 +185,7 @@ export function Hero(data: Readonly<HeroProps>) {
           <div className="relative order-1 lg:order-2 pb-10 lg:pb-0">
             <div
               ref={mainImageRef}
-              className="relative w-full aspect-[4/3] sm:aspect-[3/2] rounded-[28px] overflow-hidden shadow-2xl ring-1 ring-white/10 will-change-transform opacity-0"
+              className="relative w-full max-w-[560px] mx-auto aspect-[4/3] sm:aspect-[3/2] sm:max-w-none rounded-[28px] overflow-hidden shadow-2xl ring-1 ring-white/10 will-change-transform opacity-0"
             >
               <StrapiImage
                 src={image.url}
@@ -200,7 +200,7 @@ export function Hero(data: Readonly<HeroProps>) {
 
             <div
               ref={accentImageRef}
-              className="absolute -bottom-6 -left-3 sm:-bottom-8 sm:-left-6 w-28 sm:w-36 lg:w-44 aspect-[3/4] rounded-2xl overflow-hidden shadow-xl ring-[3px] ring-background/80 will-change-transform opacity-0"
+              className="absolute -bottom-6 left-2 sm:-bottom-8 sm:-left-4 lg:-left-6 w-28 sm:w-36 lg:w-44 aspect-[3/4] rounded-2xl overflow-hidden shadow-xl ring-[3px] ring-background/80 will-change-transform opacity-0"
             >
               <StrapiImage
                 src={image2.url}
