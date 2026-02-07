@@ -52,12 +52,16 @@ export function Hero(data: Readonly<HeroProps>) {
 
       if (mainImage) {
         gsap.set(mainImage, { y: 24 });
-        tl.to(mainImage, {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          onComplete: () => mainImage.classList.remove("opacity-0"),
-        }, 0);
+        tl.to(
+          mainImage,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            onComplete: () => mainImage.classList.remove("opacity-0"),
+          },
+          0,
+        );
       }
 
       tl.to(
@@ -86,12 +90,16 @@ export function Hero(data: Readonly<HeroProps>) {
 
       if (accentImage) {
         gsap.set(accentImage, { y: 16 });
-        tl.to(accentImage, {
-          opacity: 1,
-          y: 0,
-          duration: 0.65,
-          onComplete: () => accentImage.classList.remove("opacity-0"),
-        }, 0.5);
+        tl.to(
+          accentImage,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.65,
+            onComplete: () => accentImage.classList.remove("opacity-0"),
+          },
+          0.5,
+        );
       }
     }, sectionRef);
 
@@ -132,13 +140,16 @@ export function Hero(data: Readonly<HeroProps>) {
       ref={sectionRef}
       className="relative min-h-[95svh] flex flex-col justify-center overflow-hidden"
     >
-      <div className="container mx-auto px-4 md:px-6 relative z-10 md:pb-28">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center py-16 md:py-20 lg:py-0">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-28 -left-24 h-64 w-64 rounded-full bg-primary/25 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-amber-100/10 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_55%)]" />
+      </div>
+
+      <div className="container mx-auto px-4 md:px-6 relative z-10 md:pb-24">
+        <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-10 lg:gap-12 items-center py-16 md:py-20 lg:py-0">
           {/* Text content */}
-          <div
-            ref={contentRef}
-            className="lg:col-span-5 flex flex-col gap-5 opacity-0 order-2 lg:order-1"
-          >
+          <div ref={contentRef} className="flex flex-col gap-5 opacity-0 order-2 lg:order-1">
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground">
               {heading}
             </h1>
@@ -171,10 +182,10 @@ export function Hero(data: Readonly<HeroProps>) {
           </div>
 
           {/* Images */}
-          <div className="lg:col-span-7 relative order-1 lg:order-2 pb-8 lg:pb-0">
+          <div className="relative order-1 lg:order-2 pb-10 lg:pb-0">
             <div
               ref={mainImageRef}
-              className="relative w-full aspect-[4/3] sm:aspect-[3/2] rounded-2xl overflow-hidden shadow-xl will-change-transform opacity-0"
+              className="relative w-full aspect-[4/3] sm:aspect-[3/2] rounded-[28px] overflow-hidden shadow-2xl ring-1 ring-white/10 will-change-transform opacity-0"
             >
               <StrapiImage
                 src={image.url}
@@ -184,12 +195,12 @@ export function Hero(data: Readonly<HeroProps>) {
                 sizes="(max-width: 1024px) 100vw, 58vw"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" />
             </div>
 
             <div
               ref={accentImageRef}
-              className="absolute -bottom-4 -left-3 sm:-bottom-6 sm:-left-5 w-28 sm:w-36 lg:w-44 aspect-[3/4] rounded-xl overflow-hidden shadow-lg ring-[3px] ring-background will-change-transform opacity-0"
+              className="absolute -bottom-6 -left-3 sm:-bottom-8 sm:-left-6 w-28 sm:w-36 lg:w-44 aspect-[3/4] rounded-2xl overflow-hidden shadow-xl ring-[3px] ring-background/80 will-change-transform opacity-0"
             >
               <StrapiImage
                 src={image2.url}

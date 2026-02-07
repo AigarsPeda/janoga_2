@@ -2,17 +2,17 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { cn, getStrapiURL } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Inter, Nunito } from "next/font/google";
+import { Manrope, Playfair_Display } from "next/font/google";
 import qs from "qs";
 import { i18n, type Locale } from "../../../i18n-config";
 import "../globals.css";
 
-const fontSans = Inter({
+const fontSans = Manrope({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const fontHeading = Nunito({
+const fontHeading = Playfair_Display({
   variable: "--font-heading",
   subsets: ["latin"],
 });
