@@ -140,12 +140,6 @@ export function Hero(data: Readonly<HeroProps>) {
       ref={sectionRef}
       className="relative min-h-[95svh] flex flex-col justify-center overflow-hidden"
     >
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-28 -left-24 h-64 w-64 rounded-full bg-primary/25 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-amber-100/10 blur-3xl" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_55%)]" />
-      </div>
-
       <div className="container mx-auto px-4 md:px-6 relative z-10 md:pb-24">
         <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-10 lg:gap-12 items-center pt-1 pb-16 md:py-20 lg:py-0">
           {/* Text content */}
