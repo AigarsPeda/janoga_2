@@ -1,5 +1,8 @@
+"use client";
+
 import type { NavLink } from "@/types";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { MobileNavbar } from "@/components/mobile-navbar";
 import { Button } from "@/components/ui/button";
@@ -35,6 +38,7 @@ export function Header({ data, locales, currentLocale = "lv" }: Readonly<HeaderP
 
   const baseUrl = getStrapiURL();
   const { logoText, navItems, cta } = data;
+  const pathname = usePathname() ?? "/";
 
   // Helper function to add locale prefix to internal links
   const getLocalizedHref = (href: string, isExternal?: boolean) => {
@@ -49,6 +53,11 @@ export function Header({ data, locales, currentLocale = "lv" }: Readonly<HeaderP
     // Ensure href starts with /
     const path = href.startsWith("/") ? href : `/${href}`;
     return `/${currentLocale}${path}`;
+  };
+
+  const normalizePath = (path: string) => {
+    if (path === "/") return "/";
+    return path.replace(/\/$/, "");
   };
 
   return (
@@ -66,18 +75,26 @@ export function Header({ data, locales, currentLocale = "lv" }: Readonly<HeaderP
       <div className="flex items-center gap-10">
         <nav className="hidden items-center gap-10 md:flex justify-end">
           {navItems &&
-            navItems.map((item, i) => (
-              <Link
-                href={getLocalizedHref(item.href, item.isExternal)}
-                className={cn("font-medium text-muted-foreground hover:text-foreground", {
-                  "text-primary": item.isPrimary,
-                })}
-                key={`navItems-link-${i}`}
-                target={item.isExternal ? "_blank" : "_self"}
-              >
-                {item.text}
-              </Link>
-            ))}
+            navItems.map((item, i) =>
+              (() => {
+                const localizedHref = getLocalizedHref(item.href, item.isExternal);
+                const isActive =
+                  !item.isExternal && normalizePath(pathname) === normalizePath(localizedHref);
+
+                return (
+                  <Link
+                    href={localizedHref}
+                    className={cn("font-medium text-muted-foreground hover:text-foreground", {
+                      "text-primary": item.isPrimary || isActive,
+                    })}
+                    key={`navItems-link-${i}`}
+                    target={item.isExternal ? "_blank" : "_self"}
+                  >
+                    {item.text}
+                  </Link>
+                );
+              })(),
+            )}
         </nav>
         {locales && locales.length > 1 && (
           <LocaleSwitcher
@@ -104,16 +121,27 @@ export function Header({ data, locales, currentLocale = "lv" }: Readonly<HeaderP
         <div className="rounded-b-lg bg-background py-4 container text-foreground shadow-xl">
           <nav className="flex flex-col gap-1 pt-2">
             {navItems &&
-              navItems.map((item, i) => (
-                <Link
-                  // key={item.text}
-                  key={`navItems-link-${i}-${item.text}`}
-                  href={getLocalizedHref(item.href, item.isExternal)}
-                  className="flex w-full cursor-pointer items-center rounded-md p-2 font-medium text-muted-foreground hover:text-foreground"
-                >
-                  {item.text}
-                </Link>
-              ))}
+              navItems.map((item, i) =>
+                (() => {
+                  const localizedHref = getLocalizedHref(item.href, item.isExternal);
+                  const isActive =
+                    !item.isExternal && normalizePath(pathname) === normalizePath(localizedHref);
+
+                  return (
+                    <Link
+                      // key={item.text}
+                      key={`navItems-link-${i}-${item.text}`}
+                      href={localizedHref}
+                      className={cn(
+                        "flex w-full cursor-pointer items-center rounded-md p-2 font-medium text-muted-foreground hover:text-foreground",
+                        { "text-primary": item.isPrimary || isActive },
+                      )}
+                    >
+                      {item.text}
+                    </Link>
+                  );
+                })(),
+              )}
 
             {locales && locales.length > 1 && (
               <div className="pt-2 border-t mt-2">
