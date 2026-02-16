@@ -145,7 +145,7 @@ export function Hero(data: Readonly<HeroProps>) {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[95svh] flex flex-col justify-center overflow-hidden bg-gradient-to-b from-background via-background to-muted/20"
+      className="relative min-h-[95svh] flex flex-col justify-center overflow-hidden"
     >
       {/* Subtle organic background texture */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
@@ -157,7 +157,10 @@ export function Hero(data: Readonly<HeroProps>) {
         <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-10 lg:gap-12 items-center pt-1 pb-16 md:py-20 lg:py-0">
           {/* Text content */}
           <div ref={contentRef} className="flex flex-col gap-6 opacity-0 order-2 lg:order-1">
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-[4rem] font-semibold leading-[1.1] tracking-tight text-foreground" style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}>
+            <h1
+              className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-[4rem] font-semibold leading-[1.1] tracking-tight text-foreground"
+              style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}
+            >
               {heading}
             </h1>
 
