@@ -16,7 +16,7 @@ export function CallToAction(data: Readonly<CallToActionProps>) {
         <div className="relative z-10 flex-1">
           <h2
             className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-tight"
-            style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}
+            style={{ fontFamily: "'Lora', 'Georgia', serif" }}
           >
             {heading}
           </h2>

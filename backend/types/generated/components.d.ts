@@ -381,7 +381,7 @@ export interface ElementsTrustBadge extends Struct.ComponentSchema {
     icon: Schema.Attribute.Enumeration<['award', 'users', 'leaf']> &
       Schema.Attribute.DefaultTo<'award'>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
-    sublabel: Schema.Attribute.String & Schema.Attribute.Required;
+    sublabel: Schema.Attribute.String;
   };
 }
 

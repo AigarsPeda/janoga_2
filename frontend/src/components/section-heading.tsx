@@ -22,7 +22,7 @@ export function SectionHeading(data: Readonly<SectionHeadingProps>) {
         {heading && (
           <h2
             className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-2 tracking-tight"
-            style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}
+            style={{ fontFamily: "'Lora', 'Georgia', serif" }}
           >
             {heading}
           </h2>

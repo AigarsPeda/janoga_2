@@ -159,14 +159,13 @@ export function Hero(data: Readonly<HeroProps>) {
           <div ref={contentRef} className="flex flex-col gap-6 opacity-0 order-2 lg:order-1">
             <h1
               className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-[4rem] font-semibold leading-[1.1] tracking-tight text-foreground"
-              style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}
+              style={{ fontFamily: "'Lora', 'Georgia', serif" }}
             >
               {heading}
             </h1>
 
             <div className="hero-rule flex items-center gap-3">
               <div className="w-12 h-[2px] bg-gradient-to-r from-primary/80 to-primary/60" />
-              <div className="w-2 h-2 rounded-full bg-primary/70" />
             </div>
 
             <p className="max-w-lg text-foreground/75 text-base sm:text-lg leading-relaxed font-light">
@@ -185,9 +184,11 @@ export function Hero(data: Readonly<HeroProps>) {
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold text-foreground text-xs">{badge.label}</span>
-                        <span className="text-[10px] text-muted-foreground uppercase tracking-wide">
-                          {badge.sublabel}
-                        </span>
+                        {badge.sublabel && (
+                          <span className="text-[10px] text-muted-foreground uppercase tracking-wide">
+                            {badge.sublabel}
+                          </span>
+                        )}
                       </div>
                     </div>
                   );

@@ -2,24 +2,24 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { cn, getStrapiURL } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Manrope, Playfair_Display, Cormorant_Garamond } from "next/font/google";
+import { Manrope, Playfair_Display, Lora } from "next/font/google";
 import qs from "qs";
 import { i18n, type Locale } from "../../../i18n-config";
 import "../globals.css";
 
 const fontSans = Manrope({
   variable: "--font-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 const fontHeading = Playfair_Display({
   variable: "--font-heading",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
-const fontSerif = Cormorant_Garamond({
+const fontSerif = Lora({
   variable: "--font-serif",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700"],
 });
 

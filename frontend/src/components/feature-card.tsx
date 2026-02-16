@@ -109,7 +109,7 @@ export function FeatureCard({ items }: Readonly<FeatureCardProps>) {
 
                 <h3
                   className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-white mb-4 drop-shadow-lg"
-                  style={{ fontFamily: "'Cormorant Garamond', 'Georgia', serif" }}
+                  style={{ fontFamily: "'Lora', 'Georgia', serif" }}
                 >
                   {item.heading}
                 </h3>

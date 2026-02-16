@@ -66,7 +66,7 @@ export interface FeatureCardProps extends Base<"layout.feature-card"> {
 export interface TrustBadge {
   id: number;
   label: string;
-  sublabel: string;
+  sublabel?: string;
   icon: "award" | "users" | "leaf";
 }
 

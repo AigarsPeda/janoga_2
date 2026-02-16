@@ -12,7 +12,7 @@
     },
     "sublabel": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "icon": {
       "type": "enumeration",
