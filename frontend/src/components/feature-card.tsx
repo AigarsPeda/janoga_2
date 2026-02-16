@@ -82,7 +82,10 @@ export function FeatureCard({ items }: Readonly<FeatureCardProps>) {
             style={{
               willChange: 'transform',
               backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)'
+              transform: 'translateZ(0)',
+              borderRadius: '1.5rem',
+              overflow: 'hidden',
+              isolation: 'isolate'
             }}
           >
             <StrapiImage

@@ -145,7 +145,7 @@ export function Hero(data: Readonly<HeroProps>) {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[95svh] flex flex-col justify-center overflow-hidden"
+      className="relative min-h-[90svh] md:min-h-[92svh] flex flex-col justify-center overflow-hidden"
     >
       {/* Subtle organic background texture */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
@@ -154,38 +154,43 @@ export function Hero(data: Readonly<HeroProps>) {
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10 md:pb-24">
-        <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-10 lg:gap-12 items-center pt-1 pb-16 md:py-20 lg:py-0">
+        <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-6 lg:gap-12 items-center pt-1 pb-12 md:py-20 lg:py-0">
           {/* Text content */}
-          <div ref={contentRef} className="flex flex-col gap-6 opacity-0 order-2 lg:order-1">
+          <div
+            ref={contentRef}
+            className="flex flex-col gap-3.5 sm:gap-5 lg:gap-6 opacity-0 order-2 lg:order-1"
+          >
             <h1
-              className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-[4rem] font-semibold leading-[1.1] tracking-tight text-foreground"
+              className="font-serif text-[2rem] leading-[1.15] pt-8 sm:text-5xl lg:text-6xl xl:text-[4rem] font-semibold lg:leading-[1.1] tracking-tight text-foreground"
               style={{ fontFamily: "'Lora', 'Georgia', serif" }}
             >
               {heading}
             </h1>
 
-            <div className="hero-rule flex items-center gap-3">
+            <div className="hero-rule flex items-center gap-3 -mt-1 sm:mt-0">
               <div className="w-12 h-[2px] bg-gradient-to-r from-primary/80 to-primary/60" />
             </div>
 
-            <p className="max-w-lg text-foreground/75 text-base sm:text-lg leading-relaxed font-light">
+            <p className="max-w-lg text-foreground/75 text-[0.9375rem] sm:text-lg leading-relaxed font-light -mt-0.5 sm:mt-0">
               {text}
             </p>
 
             {/* Trust Badges */}
             {trustBadges && trustBadges.length > 0 && (
-              <div className="hero-stagger flex flex-wrap gap-4 sm:gap-6 pt-2 pb-4">
+              <div className="hero-stagger flex flex-wrap gap-3 sm:gap-5 lg:gap-6 pt-0.5 pb-1 sm:pt-2 sm:pb-3">
                 {trustBadges.map((badge) => {
                   const IconComponent = iconMap[badge.icon];
                   return (
                     <div key={badge.id} className="flex items-center gap-2 text-sm">
-                      <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 border border-primary/20">
-                        <IconComponent className="w-4 h-4 text-primary" />
+                      <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/10 border border-primary/20">
+                        <IconComponent className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-foreground text-xs">{badge.label}</span>
+                        <span className="font-semibold text-foreground text-[0.6875rem] sm:text-xs">
+                          {badge.label}
+                        </span>
                         {badge.sublabel && (
-                          <span className="text-[10px] text-muted-foreground uppercase tracking-wide">
+                          <span className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wide">
                             {badge.sublabel}
                           </span>
                         )}
@@ -197,14 +202,14 @@ export function Hero(data: Readonly<HeroProps>) {
             )}
 
             {buttonLink && buttonLink.length > 0 && (
-              <div className="flex flex-wrap gap-3 pt-2">
+              <div className="flex flex-wrap gap-2.5 sm:gap-3 pt-1 sm:pt-2">
                 {buttonLink.map((link, i) => (
                   <Button
                     key={`link-${i}-${link.text}`}
                     size="lg"
                     variant={link.isPrimary ? "default" : "outline"}
                     asChild
-                    className={`h-12 cursor-pointer text-base font-medium px-8 rounded-lg transition-all duration-300 ${
+                    className={`h-11 sm:h-12 cursor-pointer text-[0.9375rem] sm:text-base font-medium px-6 sm:px-8 rounded-lg transition-all duration-300 ${
                       link.isPrimary
                         ? "shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02]"
                         : "border-2 hover:bg-accent/50 hover:border-foreground/30"
@@ -220,7 +225,7 @@ export function Hero(data: Readonly<HeroProps>) {
           </div>
 
           {/* Images */}
-          <div className="relative order-1 lg:order-2 pb-10 lg:pb-0">
+          <div className="relative order-1 lg:order-2 pb-6 lg:pb-0">
             {/* Decorative background element */}
             <div className="absolute -inset-8 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 rounded-[3rem] blur-3xl" />
 
