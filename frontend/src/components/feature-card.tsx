@@ -79,6 +79,11 @@ export function FeatureCard({ items }: Readonly<FeatureCardProps>) {
           <div
             key={item.id}
             className="sticky-card mx-auto overflow-hidden relative h-[30rem] sm:h-[34rem] lg:h-[36rem] mb-10 rounded-3xl group"
+            style={{
+              willChange: 'transform',
+              backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)'
+            }}
           >
             <StrapiImage
               width={1100}
