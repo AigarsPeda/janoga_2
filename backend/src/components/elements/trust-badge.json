@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_elements_trust_badges",
+  "info": {
+    "displayName": "Trust Badge",
+    "description": "Trust indicator badge with label and sublabel"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "sublabel": {
+      "type": "string",
+      "required": true
+    },
+    "icon": {
+      "type": "enumeration",
+      "enum": ["award", "users", "leaf"],
+      "default": "award"
+    }
+  }
+}

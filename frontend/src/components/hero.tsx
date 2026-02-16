@@ -16,7 +16,14 @@ if (typeof window !== "undefined") {
 export function Hero(data: Readonly<HeroProps>) {
   if (!data) return null;
 
-  const { heading, text, buttonLink, image, image2 } = data;
+  const { heading, text, buttonLink, image, image2, trustBadges } = data;
+
+  // Map icon names to Lucide components
+  const iconMap = {
+    award: Award,
+    users: Users,
+    leaf: Leaf,
+  };
 
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -164,37 +171,26 @@ export function Hero(data: Readonly<HeroProps>) {
             </p>
 
             {/* Trust Badges */}
-            <div className="hero-stagger flex flex-wrap gap-4 sm:gap-6 pt-2 pb-4">
-              <div className="flex items-center gap-2 text-sm">
-                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 border border-primary/20">
-                  <Award className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold text-foreground text-xs">10+ Gadi</span>
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Pieredze</span>
-                </div>
+            {trustBadges && trustBadges.length > 0 && (
+              <div className="hero-stagger flex flex-wrap gap-4 sm:gap-6 pt-2 pb-4">
+                {trustBadges.map((badge) => {
+                  const IconComponent = iconMap[badge.icon];
+                  return (
+                    <div key={badge.id} className="flex items-center gap-2 text-sm">
+                      <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 border border-primary/20">
+                        <IconComponent className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-foreground text-xs">{badge.label}</span>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wide">
+                          {badge.sublabel}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-
-              <div className="flex items-center gap-2 text-sm">
-                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 border border-primary/20">
-                  <Users className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold text-foreground text-xs">500+ Pasākumi</span>
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Veiksmīgi</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 text-sm">
-                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 border border-primary/20">
-                  <Leaf className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold text-foreground text-xs">Vietējie Produkti</span>
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Kvalitāte</span>
-                </div>
-              </div>
-            </div>
+            )}
 
             {buttonLink && buttonLink.length > 0 && (
               <div className="flex flex-wrap gap-3 pt-2">

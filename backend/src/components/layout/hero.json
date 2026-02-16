@@ -30,6 +30,12 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "trustBadges": {
+      "type": "component",
+      "component": "elements.trust-badge",
+      "repeatable": true,
+      "max": 3
     }
   }
 }

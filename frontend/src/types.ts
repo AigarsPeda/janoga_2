@@ -63,6 +63,13 @@ export interface FeatureCardProps extends Base<"layout.feature-card"> {
   }[];
 }
 
+export interface TrustBadge {
+  id: number;
+  label: string;
+  sublabel: string;
+  icon: "award" | "users" | "leaf";
+}
+
 export interface HeroProps extends Base<"layout.hero"> {
   text: string;
   heading: string;
@@ -77,6 +84,7 @@ export interface HeroProps extends Base<"layout.hero"> {
     name: string;
     alternativeText: string | null;
   };
+  trustBadges?: TrustBadge[];
 }
 
 export interface CardGridProps extends Base<"layout.card-grid"> {

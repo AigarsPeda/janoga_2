@@ -371,6 +371,20 @@ export interface ElementsTextarea extends Struct.ComponentSchema {
   };
 }
 
+export interface ElementsTrustBadge extends Struct.ComponentSchema {
+  collectionName: 'components_elements_trust_badges';
+  info: {
+    description: 'Trust indicator badge with label and sublabel';
+    displayName: 'Trust Badge';
+  };
+  attributes: {
+    icon: Schema.Attribute.Enumeration<['award', 'users', 'leaf']> &
+      Schema.Attribute.DefaultTo<'award'>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    sublabel: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface ElementsYesNo extends Struct.ComponentSchema {
   collectionName: 'components_elements_yes_nos';
   info: {
@@ -495,6 +509,13 @@ export interface LayoutHero extends Struct.ComponentSchema {
     image: Schema.Attribute.Media<'images'>;
     image2: Schema.Attribute.Media<'images'>;
     text: Schema.Attribute.Text;
+    trustBadges: Schema.Attribute.Component<'elements.trust-badge', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 3;
+        },
+        number
+      >;
   };
 }
 
@@ -634,6 +655,7 @@ declare module '@strapi/strapi' {
       'elements.slider': ElementsSlider;
       'elements.step': ElementsStep;
       'elements.textarea': ElementsTextarea;
+      'elements.trust-badge': ElementsTrustBadge;
       'elements.yes-no': ElementsYesNo;
       'layout.call-to-action': LayoutCallToAction;
       'layout.card-grid': LayoutCardGrid;

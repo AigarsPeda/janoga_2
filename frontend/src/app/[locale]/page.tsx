@@ -21,6 +21,7 @@ const blocksPopulate = {
           image: { fields: ["url", "alternativeText", "name"] },
           image2: { fields: ["url", "alternativeText", "name"] },
           buttonLink: { populate: "*" },
+          trustBadges: { populate: "*" },
         },
       },
       "layout.card-grid": { populate: "*" },
