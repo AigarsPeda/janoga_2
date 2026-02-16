@@ -22,7 +22,6 @@ import { useEffect, useState } from "react";
 
 interface MenuCardProps extends MenuProps {
   note?: string;
-  title?: string;
 }
 
 interface DishSelection {
@@ -62,7 +61,15 @@ function findTodayOrFirst(days: MenuDay[]): string | null {
   return todayMenu?.id || days[0].id;
 }
 
-export default function Menu({ days, note, buttonLink }: MenuCardProps) {
+export default function Menu({
+  days,
+  note,
+  buttonLink,
+  title,
+  singleDayLabel,
+  fullWeekLabel,
+  helperText,
+}: MenuCardProps) {
   const [viewMode, setViewMode] = useState<"single" | "week">("single");
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
   const [selections, setSelections] = useState<Record<string, DishSelection>>({});
@@ -137,7 +144,11 @@ export default function Menu({ days, note, buttonLink }: MenuCardProps) {
         <div className="mb-8 space-y-5">
           {/* View Mode Toggle */}
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-foreground tracking-tight">Weekly Menu</h2>
+            {title ? (
+              <h2 className="text-xl font-bold text-foreground tracking-tight">{title}</h2>
+            ) : (
+              <div />
+            )}
             <button
               onClick={() => setViewMode(viewMode === "single" ? "week" : "single")}
               className={cn(
@@ -151,12 +162,12 @@ export default function Menu({ days, note, buttonLink }: MenuCardProps) {
               {viewMode === "week" ? (
                 <>
                   <Calendar className="w-4 h-4" />
-                  <span>Single Day</span>
+                  <span>{singleDayLabel || "Single Day"}</span>
                 </>
               ) : (
                 <>
                   <CalendarDays className="w-4 h-4" />
-                  <span>Full Week</span>
+                  <span>{fullWeekLabel || "Full Week"}</span>
                 </>
               )}
             </button>
@@ -199,9 +210,9 @@ export default function Menu({ days, note, buttonLink }: MenuCardProps) {
         </div>
 
         {/* Helper Text */}
-        <p className="text-sm text-muted-foreground mb-6 px-1">
-          Click to select dishes and adjust portions
-        </p>
+        {helperText && (
+          <p className="text-sm text-muted-foreground mb-6 px-1">{helperText}</p>
+        )}
 
         {/* Menu Content */}
         <div

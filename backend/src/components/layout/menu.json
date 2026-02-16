@@ -5,6 +5,25 @@
   },
   "options": {},
   "attributes": {
+    "title": {
+      "type": "string",
+      "required": false,
+      "default": "Weekly Menu"
+    },
+    "singleDayLabel": {
+      "type": "string",
+      "required": false,
+      "default": "Single Day"
+    },
+    "fullWeekLabel": {
+      "type": "string",
+      "required": false,
+      "default": "Full Week"
+    },
+    "helperText": {
+      "type": "string",
+      "required": false
+    },
     "days": {
       "type": "component",
       "component": "layout.day",

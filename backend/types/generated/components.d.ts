@@ -547,6 +547,12 @@ export interface LayoutMenu extends Struct.ComponentSchema {
   attributes: {
     buttonLink: Schema.Attribute.Component<'elements.link', false>;
     days: Schema.Attribute.Component<'layout.day', true>;
+    fullWeekLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Full Week'>;
+    helperText: Schema.Attribute.String;
+    singleDayLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Single Day'>;
+    title: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Weekly Menu'>;
   };
 }
 

@@ -176,6 +176,10 @@ export interface MenuDay {
 }
 
 export interface MenuProps extends Base<"layout.menu"> {
+  title?: string;
+  singleDayLabel?: string;
+  fullWeekLabel?: string;
+  helperText?: string;
   days: MenuDay[];
   buttonLink?: NavLink;
 }
