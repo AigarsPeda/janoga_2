@@ -2,7 +2,7 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { cn, getStrapiURL } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Manrope, Playfair_Display } from "next/font/google";
+import { Manrope, Playfair_Display, Cormorant_Garamond } from "next/font/google";
 import qs from "qs";
 import { i18n, type Locale } from "../../../i18n-config";
 import "../globals.css";
@@ -15,6 +15,12 @@ const fontSans = Manrope({
 const fontHeading = Playfair_Display({
   variable: "--font-heading",
   subsets: ["latin"],
+});
+
+const fontSerif = Cormorant_Garamond({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -98,6 +104,7 @@ export default async function LocaleLayout({
           "min-h-screen font-sans antialiased",
           fontSans.variable,
           fontHeading.variable,
+          fontSerif.variable,
         )}
       >
         <Header data={topNav} locales={locales} currentLocale={locale} />

@@ -44,6 +44,8 @@
   --font-heading:
     var(--font-heading), ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-serif:
+    var(--font-serif), 'Georgia', 'Cambria', 'Times New Roman', 'Times', serif;
 
   @keyframes accordion-down {
     from {
