@@ -169,9 +169,12 @@ export interface MenuItem {
   price: string | number;
 }
 
+export type Weekday = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
+
 export interface MenuDay {
   id: string;
   heading: string;
+  weekday?: Weekday;
   item: MenuItem[];
 }
 
@@ -180,6 +183,8 @@ export interface MenuProps extends Base<"layout.menu"> {
   singleDayLabel?: string;
   fullWeekLabel?: string;
   helperText?: string;
+  itemLabel?: string;
+  itemsLabel?: string;
   days: MenuDay[];
   buttonLink?: NavLink;
 }

@@ -24,6 +24,16 @@
       "type": "string",
       "required": false
     },
+    "itemLabel": {
+      "type": "string",
+      "required": false,
+      "default": "item"
+    },
+    "itemsLabel": {
+      "type": "string",
+      "required": false,
+      "default": "items"
+    },
     "days": {
       "type": "component",
       "component": "layout.day",

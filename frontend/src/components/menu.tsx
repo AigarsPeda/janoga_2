@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MenuDay, MenuItem, MenuProps } from "@/types";
+import { MenuDay, MenuItem, MenuProps, Weekday } from "@/types";
 import type { LucideIcon } from "lucide-react";
 import {
   Calendar,
@@ -42,25 +42,6 @@ const kindIconMap: Record<string, LucideIcon> = {
   main: UtensilsCrossed,
 };
 
-function getKindIcon(kind: string | undefined): LucideIcon {
-  if (!kind) return CircleHelp;
-  return kindIconMap[kind.trim().toLowerCase()] || CircleHelp;
-}
-
-// Get today's day name
-function getTodayDayName(): string {
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  return days[new Date().getDay()];
-}
-
-// Find today's menu or return first day
-function findTodayOrFirst(days: MenuDay[]): string | null {
-  if (days.length === 0) return null;
-  const today = getTodayDayName();
-  const todayMenu = days.find((d) => d.heading.toLowerCase().includes(today.toLowerCase()));
-  return todayMenu?.id || days[0].id;
-}
-
 export default function Menu({
   days,
   note,
@@ -69,6 +50,8 @@ export default function Menu({
   singleDayLabel,
   fullWeekLabel,
   helperText,
+  itemLabel,
+  itemsLabel,
 }: MenuCardProps) {
   const [viewMode, setViewMode] = useState<"single" | "week">("single");
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
@@ -131,6 +114,13 @@ export default function Menu({
   const displayedDays =
     viewMode === "single" && selectedDayId ? days.filter((d) => d.id === selectedDayId) : days;
 
+  const totalPrice = Object.values(selections).reduce((sum, s) => {
+    const price = typeof s.price === "number" ? s.price : parseFloat(s.price) || 0;
+    return sum + price * s.quantity;
+  }, 0);
+
+  const totalItems = Object.values(selections).reduce((sum, s) => sum + s.quantity, 0);
+
   return (
     <div className="w-full flex justify-center">
       <div
@@ -176,12 +166,10 @@ export default function Menu({
           {/* Day Tabs - Only show in single day mode */}
           {viewMode === "single" && days.length > 0 && (
             <div className="relative">
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide py-1">
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide py-2">
                 {days.map((day, idx) => {
                   const isSelected = day.id === selectedDayId;
-                  const isToday = day.heading
-                    .toLowerCase()
-                    .includes(getTodayDayName().toLowerCase());
+                  const isToday = day.weekday === getTodayDayName();
 
                   return (
                     <button
@@ -199,7 +187,10 @@ export default function Menu({
                     >
                       <span className="relative z-10">{day.heading}</span>
                       {isToday && !isSelected && (
-                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full ring-2 ring-card" />
+                        <span className="absolute -top-0 -right-0 flex h-3 w-3 z-20">
+                          <span className="absolute inset-0 animate-ping rounded-full bg-primary/60 " />
+                          <span className="relative inline-flex h-3 w-3 rounded-full bg-primary shadow-[0_0_6px_hsl(var(--primary)/0.8)]" />
+                        </span>
                       )}
                     </button>
                   );
@@ -210,9 +201,7 @@ export default function Menu({
         </div>
 
         {/* Helper Text */}
-        {helperText && (
-          <p className="text-sm text-muted-foreground mb-6 px-1">{helperText}</p>
-        )}
+        {helperText && <p className="text-sm text-muted-foreground mb-6 px-1">{helperText}</p>}
 
         {/* Menu Content */}
         <div
@@ -221,147 +210,171 @@ export default function Menu({
             viewMode === "week" ? "max-h-[600px] overflow-y-auto pr-2 scrollbar-thin" : "",
           )}
         >
-          {displayedDays.map((day, dayIdx) => (
-            <section
-              key={day.id}
-              aria-labelledby={`menu-day-${day.id}`}
-              className="space-y-6 animate-[slideIn_0.5s_ease-out_forwards] opacity-0"
-              style={{ animationDelay: `${dayIdx * 100}ms` }}
-            >
-              {/* Day heading - only show in week view */}
-              {viewMode === "week" && (
-                <h3
-                  id={`menu-day-${day.id}`}
-                  className="text-2xl font-bold tracking-tight text-foreground border-b-2 border-border pb-3"
-                >
-                  {day.heading}
-                </h3>
-              )}
+          {displayedDays.map((day, dayIdx) => {
+            const isDayOrderable = day.weekday === getTodayDayName();
 
-              {/* Grouped by Kind */}
-              {(() => {
-                const order: string[] = [];
-                const groups: Record<string, typeof day.item> = {};
-                day.item.forEach((it) => {
-                  const key = it.kind || "Other";
-                  if (!groups[key]) {
-                    groups[key] = [];
-                    order.push(key);
-                  }
-                  groups[key].push(it);
-                });
+            return (
+              <section
+                key={day.id}
+                aria-labelledby={`menu-day-${day.id}`}
+                className="space-y-6 animate-[slideIn_0.5s_ease-out_forwards] opacity-0"
+                style={{ animationDelay: `${dayIdx * 100}ms` }}
+              >
+                {/* Day heading - only show in week view */}
+                {viewMode === "week" && (
+                  <h3
+                    id={`menu-day-${day.id}`}
+                    className="text-2xl font-bold tracking-tight text-foreground border-b-2 border-border pb-3"
+                  >
+                    {day.heading}
+                  </h3>
+                )}
 
-                return order.map((kind, kindIdx) => {
-                  const KindIcon = getKindIcon(kind);
-                  return (
-                    <div
-                      key={kind}
-                      className="space-y-3"
-                      style={{ animationDelay: `${dayIdx * 100 + kindIdx * 50}ms` }}
-                    >
-                      {/* Kind Header */}
-                      <div className="flex items-center gap-3 pt-2">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-neutral-900/40 text-foreground">
-                          <KindIcon className="w-5 h-5" aria-hidden />
+                {/* Grouped by Kind */}
+                {(() => {
+                  const order: string[] = [];
+                  const groups: Record<string, typeof day.item> = {};
+                  day.item.forEach((it) => {
+                    const key = it.kind || "Other";
+                    if (!groups[key]) {
+                      groups[key] = [];
+                      order.push(key);
+                    }
+                    groups[key].push(it);
+                  });
+
+                  return order.map((kind, kindIdx) => {
+                    const KindIcon = getKindIcon(kind);
+                    return (
+                      <div
+                        key={kind}
+                        className="space-y-3"
+                        style={{ animationDelay: `${dayIdx * 100 + kindIdx * 50}ms` }}
+                      >
+                        {/* Kind Header */}
+                        <div className="flex items-center gap-3 pt-2">
+                          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-neutral-900/40 text-foreground">
+                            <KindIcon className="w-5 h-5" aria-hidden />
+                          </div>
+                          <span className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                            {kind}
+                          </span>
                         </div>
-                        <span className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                          {kind}
-                        </span>
+
+                        {/* Dish Items */}
+                        <ul className="space-y-2">
+                          {groups[kind].map((item, itemIdx) => {
+                            const selectionKey = `${item.id}-${day.heading}`;
+                            const selection = selections[selectionKey];
+                            const quantity = selection?.quantity || 0;
+                            const isSelected = quantity > 0;
+
+                            return (
+                              <li
+                                key={item.id}
+                                className={cn(
+                                  "group relative rounded-2xl transition-all duration-300",
+                                  isSelected ? "bg-neutral-700/50" : "bg-neutral-700/50",
+                                )}
+                                style={{
+                                  animationDelay: `${dayIdx * 100 + kindIdx * 50 + itemIdx * 30}ms`,
+                                }}
+                              >
+                                <div className="flex items-center gap-3 p-4">
+                                  {/* Dish Details */}
+                                  <div className="flex-1 flex items-center gap-3 min-w-0">
+                                    <span className="font-medium leading-snug flex-1 break-words text-foreground">
+                                      {item.description}
+                                    </span>
+
+                                    {/* Decorative Dots */}
+                                    <span
+                                      aria-hidden
+                                      className="hidden sm:block flex-shrink h-[2px] min-w-[40px] text-border"
+                                    />
+
+                                    {/* Price */}
+                                    <span className="font-semibold tabular-nums whitespace-nowrap text-base text-foreground">
+                                      {formatPrice(item.price)}
+                                    </span>
+                                  </div>
+
+                                  {/* Quantity Controls - Only for orderable days */}
+                                  {isDayOrderable && (
+                                    <div className="flex items-center gap-2 ml-2">
+                                      <button
+                                        onClick={() => handleQuantityChange(item, day.heading, -1)}
+                                        disabled={quantity === 0}
+                                        className={cn(
+                                          "w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200",
+                                          "ring-1",
+                                          quantity === 0
+                                            ? "bg-neutral-900/40 text-muted-foreground ring-border/30 cursor-not-allowed opacity-50"
+                                            : "bg-neutral-900/60 text-foreground hover:bg-neutral-900/80 ring-border",
+                                        )}
+                                      >
+                                        <Minus className="w-4 h-4" />
+                                      </button>
+
+                                      <span
+                                        className={cn(
+                                          "w-10 text-center font-bold tabular-nums text-lg transition-colors duration-200",
+                                          isSelected ? "text-primary" : "text-muted-foreground",
+                                        )}
+                                      >
+                                        {quantity}
+                                      </span>
+
+                                      <button
+                                        onClick={() => {
+                                          if (quantity === 0) {
+                                            handleDishClick(item, day.heading);
+                                          } else {
+                                            handleQuantityChange(item, day.heading, 1);
+                                          }
+                                        }}
+                                        className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ring-1 bg-neutral-900/60 text-foreground hover:bg-neutral-900/80 ring-border"
+                                      >
+                                        <Plus className="w-4 h-4" />
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
-
-                      {/* Dish Items */}
-                      <ul className="space-y-2">
-                        {groups[kind].map((item, itemIdx) => {
-                          const selectionKey = `${item.id}-${day.heading}`;
-                          const selection = selections[selectionKey];
-                          const quantity = selection?.quantity || 0;
-                          const isSelected = quantity > 0;
-
-                          return (
-                            <li
-                              key={item.id}
-                              className={cn(
-                                "group relative rounded-2xl transition-all duration-300",
-                                isSelected ? "bg-neutral-700/50" : "bg-neutral-700/50",
-                              )}
-                              style={{
-                                animationDelay: `${dayIdx * 100 + kindIdx * 50 + itemIdx * 30}ms`,
-                              }}
-                            >
-                              <div className="flex items-center gap-3 p-4">
-                                {/* Dish Details */}
-                                <div className="flex-1 flex items-center gap-3 min-w-0">
-                                  <span className="font-medium leading-snug flex-1 break-words text-foreground">
-                                    {item.description}
-                                  </span>
-
-                                  {/* Decorative Dots */}
-                                  <span
-                                    aria-hidden
-                                    className="hidden sm:block flex-shrink h-[2px] min-w-[40px] text-border"
-                                  />
-
-                                  {/* Price */}
-                                  <span className="font-semibold tabular-nums whitespace-nowrap text-base text-foreground">
-                                    {formatPrice(item.price)}
-                                  </span>
-                                </div>
-
-                                {/* Quantity Controls - Always visible */}
-                                <div className="flex items-center gap-2 ml-2">
-                                  <button
-                                    onClick={() => handleQuantityChange(item, day.heading, -1)}
-                                    disabled={quantity === 0}
-                                    className={cn(
-                                      "w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200",
-                                      "ring-1",
-                                      quantity === 0
-                                        ? "bg-neutral-900/40 text-muted-foreground ring-border/30 cursor-not-allowed opacity-50"
-                                        : "bg-neutral-900/60 text-foreground hover:bg-neutral-900/80 ring-border",
-                                    )}
-                                  >
-                                    <Minus className="w-4 h-4" />
-                                  </button>
-
-                                  <span
-                                    className={cn(
-                                      "w-10 text-center font-bold tabular-nums text-lg transition-colors duration-200",
-                                      isSelected ? "text-primary" : "text-muted-foreground",
-                                    )}
-                                  >
-                                    {quantity}
-                                  </span>
-
-                                  <button
-                                    onClick={() => {
-                                      if (quantity === 0) {
-                                        handleDishClick(item, day.heading);
-                                      } else {
-                                        handleQuantityChange(item, day.heading, 1);
-                                      }
-                                    }}
-                                    className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ring-1 bg-neutral-900/60 text-foreground hover:bg-neutral-900/80 ring-border"
-                                  >
-                                    <Plus className="w-4 h-4" />
-                                  </button>
-                                </div>
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  );
-                });
-              })()}
-            </section>
-          ))}
+                    );
+                  });
+                })()}
+              </section>
+            );
+          })}
         </div>
 
-        {/* Button Link */}
+        {/* Order Summary & Button */}
         {buttonLink && (
           <div className="mt-10 animate-[fadeIn_0.6s_ease-out_0.5s_forwards] opacity-0">
-            <Button asChild size={"lg"} className="w-full sm:w-auto shadow-lg">
+            {totalItems > 0 && (
+              <div className="flex items-center justify-between mb-4 px-1">
+                <span className="text-sm text-muted-foreground">
+                  {totalItems} {totalItems === 1 ? (itemLabel || "item") : (itemsLabel || "items")}
+                </span>
+                <span className="text-2xl font-bold tabular-nums text-foreground">
+                  {totalPrice.toFixed(2)}{" "}
+                  <span className="text-lg font-medium text-muted-foreground">€</span>
+                </span>
+              </div>
+            )}
+            <Button
+              asChild
+              size={"lg"}
+              className={cn(
+                "w-full shadow-lg",
+                totalItems === 0 && "opacity-50 pointer-events-none",
+              )}
+            >
               <Link
                 href={buttonLink.href}
                 className="cursor-pointer"
@@ -380,7 +393,34 @@ export default function Menu({
   );
 }
 
+// Find today's menu or return first day
+function findTodayOrFirst(days: MenuDay[]): string | null {
+  if (days.length === 0) return null;
+  const today = getTodayDayName();
+  const todayMenu = days.find((d) => d.weekday === today);
+  return todayMenu?.id || days[0].id;
+}
+
 function formatPrice(price: string | number) {
   if (typeof price === "number") return price.toFixed(price % 1 === 0 ? 0 : 2);
   return price;
+}
+
+function getKindIcon(kind: string | undefined): LucideIcon {
+  if (!kind) return CircleHelp;
+  return kindIconMap[kind.trim().toLowerCase()] || CircleHelp;
+}
+
+// Get today's day name as Weekday enum value
+function getTodayDayName(): Weekday {
+  const days: Weekday[] = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  return days[new Date().getDay()];
 }

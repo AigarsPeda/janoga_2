@@ -8,6 +8,11 @@
     "heading": {
       "type": "string"
     },
+    "weekday": {
+      "type": "enumeration",
+      "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "required": false
+    },
     "item": {
       "type": "component",
       "component": "elements.item",

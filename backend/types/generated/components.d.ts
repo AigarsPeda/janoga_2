@@ -451,6 +451,17 @@ export interface LayoutDay extends Struct.ComponentSchema {
   attributes: {
     heading: Schema.Attribute.String;
     item: Schema.Attribute.Component<'elements.item', true>;
+    weekday: Schema.Attribute.Enumeration<
+      [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ]
+    >;
   };
 }
 
@@ -550,6 +561,8 @@ export interface LayoutMenu extends Struct.ComponentSchema {
     fullWeekLabel: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Full Week'>;
     helperText: Schema.Attribute.String;
+    itemLabel: Schema.Attribute.String & Schema.Attribute.DefaultTo<'item'>;
+    itemsLabel: Schema.Attribute.String & Schema.Attribute.DefaultTo<'items'>;
     singleDayLabel: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Single Day'>;
     title: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Weekly Menu'>;
