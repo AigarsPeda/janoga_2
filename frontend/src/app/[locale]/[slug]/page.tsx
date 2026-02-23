@@ -10,7 +10,7 @@ import Menu from "@/components/menu";
 import { MenuInfo } from "@/components/menu-info";
 import { SectionHeading } from "@/components/section-heading";
 import { getStrapiURL } from "@/lib/utils";
-import type { Block } from "@/types";
+import type { Block, MenuInfoProps } from "@/types";
 import { notFound } from "next/navigation";
 import qs from "qs";
 import { i18n, type Locale } from "../../../../i18n-config";
@@ -72,7 +72,15 @@ const pagePopulate = {
           buttonLink: { populate: "*" },
         },
       },
-      "layout.menu-info": { populate: { items: { populate: "*" } } },
+      "layout.menu-info": {
+        populate: {
+          items: {
+            populate: {
+              items: { populate: "*" },
+            },
+          },
+        },
+      },
       "layout.form": { populate: "*" },
       "layout.map": { populate: "*" },
       "layout.side-by-side": {
@@ -163,7 +171,11 @@ async function loader(slug: string, locale: string) {
   return data;
 }
 
-function BlockRenderer(block: Block, locale?: string) {
+function isMenuInfoBlock(block: Block): block is MenuInfoProps {
+  return block.__component === "layout.menu-info";
+}
+
+function BlockRenderer(block: Block, locale?: string, menuOffers?: MenuInfoProps["items"]) {
   switch (block.__component) {
     case "layout.hero":
       return <Hero key={block.id} {...block} />;
@@ -176,7 +188,7 @@ function BlockRenderer(block: Block, locale?: string) {
     case "layout.delivery":
       return <Delivery key={block.id} {...block} />;
     case "layout.menu":
-      return <Menu key={block.id} {...block} />;
+      return <Menu key={block.id} {...block} specialOffers={menuOffers} />;
     case "layout.menu-info":
       return <MenuInfo key={block.id} {...block} />;
     case "layout.form":
@@ -210,5 +222,7 @@ export default async function PageBySlugRoute({
 
   if (!blocks || !Array.isArray(blocks)) return null;
 
-  return <div>{blocks.map((block) => BlockRenderer(block, locale))}</div>;
+  const menuOffers = blocks.filter(isMenuInfoBlock).flatMap((block) => block.items || []);
+
+  return <div>{blocks.map((block) => BlockRenderer(block, locale, menuOffers))}</div>;
 }

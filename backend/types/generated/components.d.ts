@@ -204,7 +204,7 @@ export interface ElementsInfoItem extends Struct.ComponentSchema {
   };
   attributes: {
     items: Schema.Attribute.Component<'elements.menu-info', true>;
-    price: Schema.Attribute.String;
+    price: Schema.Attribute.Decimal & Schema.Attribute.Required;
   };
 }
 
@@ -256,7 +256,8 @@ export interface ElementsMenuInfo extends Struct.ComponentSchema {
     description: Schema.Attribute.String;
     kind: Schema.Attribute.Enumeration<
       ['Soup', 'Main', 'Dessert', 'Side dish', 'Salad', 'Drink']
-    >;
+    > &
+      Schema.Attribute.Required;
   };
 }
 
@@ -565,6 +566,8 @@ export interface LayoutMenu extends Struct.ComponentSchema {
     itemsLabel: Schema.Attribute.String & Schema.Attribute.DefaultTo<'items'>;
     singleDayLabel: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Single Day'>;
+    specialOfferAppliedLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Special offer applied'>;
     title: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Weekly Menu'>;
   };
 }

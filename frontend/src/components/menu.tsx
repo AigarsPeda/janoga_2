@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MenuDay, MenuItem, MenuProps, Weekday } from "@/types";
+import { MenuDay, MenuInfoEntry, MenuInfoProps, MenuItem, MenuProps, Weekday } from "@/types";
 import type { LucideIcon } from "lucide-react";
 import {
   Calendar,
@@ -18,10 +18,11 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface MenuCardProps extends MenuProps {
   note?: string;
+  specialOffers?: MenuInfoProps["items"];
 }
 
 interface DishSelection {
@@ -45,6 +46,7 @@ const kindIconMap: Record<string, LucideIcon> = {
 export default function Menu({
   days,
   note,
+  specialOffers,
   buttonLink,
   title,
   singleDayLabel,
@@ -52,6 +54,7 @@ export default function Menu({
   helperText,
   itemLabel,
   itemsLabel,
+  specialOfferAppliedLabel,
 }: MenuCardProps) {
   const [viewMode, setViewMode] = useState<"single" | "week">("single");
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
@@ -70,13 +73,14 @@ export default function Menu({
 
   const handleDishClick = (item: MenuItem, dayHeading: string) => {
     const key = `${item.id}-${dayHeading}`;
+    setSelections((prev) => {
+      if (prev[key]) {
+        // Increment quantity
+        const updated = { ...prev[key], quantity: prev[key].quantity + 1 };
+        console.log("Updated selection:", updated);
+        return { ...prev, [key]: updated };
+      }
 
-    if (selections[key]) {
-      // Increment quantity
-      const updated = { ...selections[key], quantity: selections[key].quantity + 1 };
-      setSelections({ ...selections, [key]: updated });
-      console.log("Updated selection:", updated);
-    } else {
       // Add new selection with quantity 1
       const newSelection: DishSelection = {
         dishId: item.id,
@@ -85,39 +89,41 @@ export default function Menu({
         price: item.price,
         quantity: 1,
       };
-      setSelections({ ...selections, [key]: newSelection });
-    }
+      return { ...prev, [key]: newSelection };
+    });
   };
 
   const handleQuantityChange = (item: MenuItem, dayHeading: string, delta: number) => {
     const key = `${item.id}-${dayHeading}`;
-    const current = selections[key];
+    setSelections((prev) => {
+      const current = prev[key];
+      if (!current) return prev;
 
-    if (!current) return;
+      const newQuantity = current.quantity + delta;
 
-    const newQuantity = current.quantity + delta;
+      if (newQuantity <= 0) {
+        // Remove selection
+        const newSelections = { ...prev };
+        delete newSelections[key];
+        console.log("Removed selection:", { dishId: item.id, description: item.description });
+        return newSelections;
+      }
 
-    if (newQuantity <= 0) {
-      // Remove selection
-      const newSelections = { ...selections };
-      delete newSelections[key];
-      setSelections(newSelections);
-      console.log("Removed selection:", { dishId: item.id, description: item.description });
-    } else {
       // Update quantity
       const updated = { ...current, quantity: newQuantity };
-      setSelections({ ...selections, [key]: updated });
       console.log("Updated selection:", updated);
-    }
+      return { ...prev, [key]: updated };
+    });
   };
 
   const displayedDays =
     viewMode === "single" && selectedDayId ? days.filter((d) => d.id === selectedDayId) : days;
 
-  const totalPrice = Object.values(selections).reduce((sum, s) => {
-    const price = typeof s.price === "number" ? s.price : parseFloat(s.price) || 0;
-    return sum + price * s.quantity;
-  }, 0);
+  const normalizedOffers = useMemo(() => normalizeOffers(specialOffers), [specialOffers]);
+  const { totalPrice, savings: specialOfferSavings } = useMemo(
+    () => calculateSelectionTotalWithOffers(selections, normalizedOffers),
+    [selections, normalizedOffers],
+  );
 
   const totalItems = Object.values(selections).reduce((sum, s) => sum + s.quantity, 0);
 
@@ -357,14 +363,22 @@ export default function Menu({
         {buttonLink && (
           <div className="mt-10 animate-[fadeIn_0.6s_ease-out_0.5s_forwards] opacity-0">
             {totalItems > 0 && (
-              <div className="flex items-center justify-between mb-4 px-1">
-                <span className="text-sm text-muted-foreground">
-                  {totalItems} {totalItems === 1 ? (itemLabel || "item") : (itemsLabel || "items")}
-                </span>
-                <span className="text-2xl font-bold tabular-nums text-foreground">
-                  {totalPrice.toFixed(2)}{" "}
-                  <span className="text-lg font-medium text-muted-foreground">€</span>
-                </span>
+              <div className="mb-4 px-1 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {totalItems} {totalItems === 1 ? (itemLabel || "item") : (itemsLabel || "items")}
+                  </span>
+                  <span className="text-2xl font-bold tabular-nums text-foreground">
+                    {totalPrice.toFixed(2)}{" "}
+                    <span className="text-lg font-medium text-muted-foreground">€</span>
+                  </span>
+                </div>
+                {specialOfferSavings > 0 && (
+                  <p className="text-xs text-primary font-medium">
+                    {specialOfferAppliedLabel || "Special offer applied"}: -
+                    {specialOfferSavings.toFixed(2)} €
+                  </p>
+                )}
               </div>
             )}
             <Button
@@ -391,6 +405,163 @@ export default function Menu({
       </div>
     </div>
   );
+}
+
+interface NormalizedOffer {
+  price: number;
+  requiredKindCounts: Record<string, number>;
+}
+
+interface PreparedOffer {
+  price: number;
+  requiredCounts: number[];
+}
+
+function toOfferEntries(items: MenuInfoProps["items"][number]["items"]): MenuInfoEntry[] {
+  if (Array.isArray(items)) return items;
+  if (items) return [items];
+  return [];
+}
+
+function normalizeKind(kind: string | undefined): string {
+  return kind?.trim().toLowerCase() || "";
+}
+
+function toNumericPrice(value: string | number): number {
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+  const parsed = Number.parseFloat(String(value).replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function normalizeOffers(offers: MenuInfoProps["items"] | undefined): NormalizedOffer[] {
+  if (!offers || offers.length === 0) return [];
+
+  return offers.reduce<NormalizedOffer[]>((acc, offer) => {
+    const requiredKindCounts: Record<string, number> = {};
+
+    toOfferEntries(offer.items).forEach((entry) => {
+      const kind = normalizeKind(entry.kind);
+      if (!kind) return;
+      requiredKindCounts[kind] = (requiredKindCounts[kind] || 0) + 1;
+    });
+
+    if (Object.keys(requiredKindCounts).length === 0) return acc;
+
+    acc.push({
+      price: toNumericPrice(offer.price),
+      requiredKindCounts,
+    });
+    return acc;
+  }, []);
+}
+
+function calculateSelectionTotalWithOffers(
+  selections: Record<string, DishSelection>,
+  offers: NormalizedOffer[],
+) {
+  const baseTotal = Object.values(selections).reduce((sum, selection) => {
+    return sum + toNumericPrice(selection.price) * selection.quantity;
+  }, 0);
+
+  if (offers.length === 0) {
+    return { totalPrice: baseTotal, savings: 0 };
+  }
+
+  const pricesByKind = new Map<string, number[]>();
+  Object.values(selections).forEach((selection) => {
+    const normalizedKind = normalizeKind(selection.kind);
+    const unitPrice = toNumericPrice(selection.price);
+
+    if (!normalizedKind || unitPrice <= 0 || selection.quantity <= 0) return;
+
+    const bucket = pricesByKind.get(normalizedKind) || [];
+    for (let i = 0; i < selection.quantity; i += 1) {
+      bucket.push(unitPrice);
+    }
+    pricesByKind.set(normalizedKind, bucket);
+  });
+
+  if (pricesByKind.size === 0) {
+    return { totalPrice: baseTotal, savings: 0 };
+  }
+
+  pricesByKind.forEach((prices) => prices.sort((a, b) => b - a));
+
+  const kindKeys = Array.from(pricesByKind.keys()).sort();
+  const kindIndex = new Map(kindKeys.map((kind, idx) => [kind, idx]));
+  const maxKindCounts = kindKeys.map((kind) => pricesByKind.get(kind)?.length || 0);
+  const pricePrefixSums = kindKeys.map((kind) => {
+    const prices = pricesByKind.get(kind) || [];
+    const prefix = [0];
+    prices.forEach((price) => {
+      prefix.push(prefix[prefix.length - 1] + price);
+    });
+    return prefix;
+  });
+
+  const preparedOffers: PreparedOffer[] = offers
+    .map((offer) => {
+      const requiredCounts = new Array(kindKeys.length).fill(0);
+
+      for (const [kind, count] of Object.entries(offer.requiredKindCounts)) {
+        const idx = kindIndex.get(kind);
+        if (idx === undefined) return null;
+        requiredCounts[idx] = count;
+      }
+
+      return { price: offer.price, requiredCounts };
+    })
+    .filter((offer): offer is PreparedOffer => offer !== null);
+
+  if (preparedOffers.length === 0) {
+    return { totalPrice: baseTotal, savings: 0 };
+  }
+
+  const memo = new Map<string, number>();
+  const initialState = new Array(kindKeys.length).fill(0);
+
+  const getBestSavings = (consumedCounts: number[]): number => {
+    const key = consumedCounts.join("|");
+    const cached = memo.get(key);
+    if (cached !== undefined) return cached;
+
+    let bestSavings = 0;
+
+    preparedOffers.forEach((offer) => {
+      const nextCounts = [...consumedCounts];
+      let rawItemsTotal = 0;
+      let canApply = true;
+
+      for (let i = 0; i < offer.requiredCounts.length; i += 1) {
+        const needed = offer.requiredCounts[i];
+        if (needed === 0) continue;
+
+        const nextCount = consumedCounts[i] + needed;
+        if (nextCount > maxKindCounts[i]) {
+          canApply = false;
+          break;
+        }
+
+        rawItemsTotal += pricePrefixSums[i][nextCount] - pricePrefixSums[i][consumedCounts[i]];
+        nextCounts[i] = nextCount;
+      }
+
+      if (!canApply) return;
+
+      const candidateSavings = rawItemsTotal - offer.price + getBestSavings(nextCounts);
+      if (candidateSavings > bestSavings) {
+        bestSavings = candidateSavings;
+      }
+    });
+
+    memo.set(key, bestSavings);
+    return bestSavings;
+  };
+
+  const savings = Math.max(0, getBestSavings(initialState));
+  const totalPrice = Math.max(0, baseTotal - savings);
+
+  return { totalPrice, savings };
 }
 
 // Find today's menu or return first day

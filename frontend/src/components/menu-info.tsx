@@ -1,8 +1,14 @@
 "use client";
 
 import { getIcon } from "@/lib/icons";
-import { MenuInfoProps } from "@/types";
+import { MenuInfoEntry, MenuInfoProps } from "@/types";
 import * as React from "react";
+
+function toOfferItems(items: MenuInfoProps["items"][number]["items"]): MenuInfoEntry[] {
+  if (Array.isArray(items)) return items;
+  if (items) return [items];
+  return [];
+}
 
 export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
   if (!items || items.length === 0) return null;
@@ -12,9 +18,7 @@ export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
       <div className="space-y-3">
         {items.map((group, groupIdx) => {
           const { price } = group;
-          const mealItems = Array.isArray((group as any).items)
-            ? (group as any).items
-            : [group.items];
+          const mealItems = toOfferItems(group.items);
 
           return (
             <div
@@ -22,9 +26,9 @@ export function MenuInfo({ items }: Readonly<MenuInfoProps>) {
               className="flex items-center rounded-md border border-border/60 bg-neutral-900/40 px-5 py-3 text-sm md:text-base shadow-sm backdrop-blur-sm"
             >
               <ul className="grid grid-flow-col auto-cols-max items-center gap-3 w-full">
-                {mealItems.map((mi: any, idx: number) => {
+                {mealItems.map((mi, idx: number) => {
                   const Icon = getIcon(mi.kind || mi.description);
-                  const label = mi.description;
+                  const label = mi.description || mi.kind;
 
                   return (
                     <React.Fragment key={mi.id ?? idx}>

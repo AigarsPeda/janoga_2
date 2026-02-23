@@ -185,20 +185,25 @@ export interface MenuProps extends Base<"layout.menu"> {
   helperText?: string;
   itemLabel?: string;
   itemsLabel?: string;
+  specialOfferAppliedLabel?: string;
   days: MenuDay[];
   buttonLink?: NavLink;
 }
 
+export interface MenuInfoEntry {
+  id: string;
+  kind: DishKind;
+  description?: string;
+}
+
+export interface MenuInfoGroup {
+  id: string;
+  price: string | number;
+  items: MenuInfoEntry[] | MenuInfoEntry;
+}
+
 export interface MenuInfoProps extends Base<"layout.menu-info"> {
-  items: {
-    id: string;
-    price: string | number;
-    items: {
-      id: string;
-      kind: DishKind;
-      description: string;
-    };
-  }[];
+  items: MenuInfoGroup[];
 }
 
 export type Field = {

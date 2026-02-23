@@ -34,6 +34,11 @@
       "required": false,
       "default": "items"
     },
+    "specialOfferAppliedLabel": {
+      "type": "string",
+      "required": false,
+      "default": "Special offer applied"
+    },
     "days": {
       "type": "component",
       "component": "layout.day",

@@ -6,7 +6,8 @@
   "options": {},
   "attributes": {
     "price": {
-      "type": "string"
+      "type": "decimal",
+      "required": true
     },
     "items": {
       "type": "component",
