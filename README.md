@@ -17,3 +17,7 @@ This will start both our `backend` and `frontend`.
 Before navigating to our frontend, you will be prompted to create your first **Strapi Admin** user.
 
 You can check out the `package.json` file for more details on what the script will do.
+
+# Payments
+https://developers.klix.app/test-environment/
+https://developers.klix.app/api/

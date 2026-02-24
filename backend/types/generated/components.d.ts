@@ -564,6 +564,16 @@ export interface LayoutMenu extends Struct.ComponentSchema {
     helperText: Schema.Attribute.String;
     itemLabel: Schema.Attribute.String & Schema.Attribute.DefaultTo<'item'>;
     itemsLabel: Schema.Attribute.String & Schema.Attribute.DefaultTo<'items'>;
+    paymentBackButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Back to Home'>;
+    paymentFailureText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Something went wrong with your payment. Please try again.'>;
+    paymentFailureTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Payment Failed'>;
+    paymentSuccessText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Thank you for your order. Your payment has been processed successfully.'>;
+    paymentSuccessTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Payment Successful'>;
     singleDayLabel: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Single Day'>;
     specialOfferAppliedLabel: Schema.Attribute.String &

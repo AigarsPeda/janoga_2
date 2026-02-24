@@ -48,6 +48,31 @@
       "type": "component",
       "component": "elements.link",
       "repeatable": false
+    },
+    "paymentSuccessTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Payment Successful"
+    },
+    "paymentSuccessText": {
+      "type": "string",
+      "required": false,
+      "default": "Thank you for your order. Your payment has been processed successfully."
+    },
+    "paymentFailureTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Payment Failed"
+    },
+    "paymentFailureText": {
+      "type": "string",
+      "required": false,
+      "default": "Something went wrong with your payment. Please try again."
+    },
+    "paymentBackButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "Back to Home"
     }
   },
   "config": {}

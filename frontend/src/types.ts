@@ -186,6 +186,11 @@ export interface MenuProps extends Base<"layout.menu"> {
   itemLabel?: string;
   itemsLabel?: string;
   specialOfferAppliedLabel?: string;
+  paymentSuccessTitle?: string;
+  paymentSuccessText?: string;
+  paymentFailureTitle?: string;
+  paymentFailureText?: string;
+  paymentBackButtonText?: string;
   days: MenuDay[];
   buttonLink?: NavLink;
 }

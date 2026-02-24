@@ -54,6 +54,11 @@ export default function Menu({
   itemLabel,
   itemsLabel,
   specialOfferAppliedLabel,
+  paymentSuccessTitle,
+  paymentSuccessText,
+  paymentFailureTitle,
+  paymentFailureText,
+  paymentBackButtonText,
 }: MenuCardProps) {
   const [viewMode, setViewMode] = useState<"single" | "week">("single");
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
@@ -149,6 +154,16 @@ export default function Menu({
       const data = await response.json();
 
       if (data.success && data.checkout_url) {
+        sessionStorage.setItem(
+          "paymentTexts",
+          JSON.stringify({
+            successTitle: paymentSuccessTitle || "Payment Successful",
+            successText: paymentSuccessText || "Thank you for your order. Your payment has been processed successfully.",
+            failureTitle: paymentFailureTitle || "Payment Failed",
+            failureText: paymentFailureText || "Something went wrong with your payment. Please try again.",
+            backButtonText: paymentBackButtonText || "Back to Home",
+          }),
+        );
         window.location.href = data.checkout_url;
       } else {
         console.error("Payment creation failed:", data.message);
