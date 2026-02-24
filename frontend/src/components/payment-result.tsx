@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface PaymentTexts {
@@ -19,16 +20,6 @@ const defaults: PaymentTexts = {
   backButtonText: "Back to Home",
 };
 
-function getTexts(): PaymentTexts {
-  try {
-    const stored = sessionStorage.getItem("paymentTexts");
-    if (stored) {
-      return { ...defaults, ...JSON.parse(stored) };
-    }
-  } catch {}
-  return defaults;
-}
-
 export function PaymentResult({
   variant,
   locale,
@@ -36,7 +27,41 @@ export function PaymentResult({
   variant: "success" | "failure";
   locale: string;
 }) {
-  const texts = getTexts();
+  // Start with defaults (matches SSR), then read sessionStorage after mount
+  const [texts, setTexts] = useState<PaymentTexts>(defaults);
+  const [mounted, setMounted] = useState(false);
+  const notifiedRef = useRef(false);
+
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem("paymentTexts");
+      if (stored) {
+        setTexts({ ...defaults, ...JSON.parse(stored) });
+      }
+    } catch {}
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (variant !== "success" || notifiedRef.current) return;
+    notifiedRef.current = true;
+
+    try {
+      const stored = sessionStorage.getItem("paymentOrder");
+      if (!stored) return;
+
+      const order = JSON.parse(stored);
+      if (!order.notificationEmail) return;
+
+      fetch("/api/payments/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: stored,
+      }).finally(() => {
+        sessionStorage.removeItem("paymentOrder");
+      });
+    } catch {}
+  }, [variant]);
 
   const isSuccess = variant === "success";
   const title = isSuccess ? texts.successTitle : texts.failureTitle;
@@ -44,7 +69,9 @@ export function PaymentResult({
 
   return (
     <div className="flex min-h-[82vh] items-center justify-center px-4">
-      <div className="text-center space-y-6 max-w-md">
+      <div
+        className={`text-center space-y-6 max-w-md transition-opacity duration-200 ${mounted ? "opacity-100" : "opacity-0"}`}
+      >
         <div
           className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${
             isSuccess ? "bg-green-500/20" : "bg-red-500/20"

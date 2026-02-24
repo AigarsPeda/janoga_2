@@ -59,6 +59,7 @@ export default function Menu({
   paymentFailureTitle,
   paymentFailureText,
   paymentBackButtonText,
+  paymentNotificationEmail,
 }: MenuCardProps) {
   const [viewMode, setViewMode] = useState<"single" | "week">("single");
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
@@ -162,6 +163,14 @@ export default function Menu({
             failureTitle: paymentFailureTitle || "Payment Failed",
             failureText: paymentFailureText || "Something went wrong with your payment. Please try again.",
             backButtonText: paymentBackButtonText || "Back to Home",
+          }),
+        );
+        sessionStorage.setItem(
+          "paymentOrder",
+          JSON.stringify({
+            notificationEmail: paymentNotificationEmail,
+            items,
+            totalPrice,
           }),
         );
         window.location.href = data.checkout_url;

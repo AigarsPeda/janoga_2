@@ -73,6 +73,10 @@
       "type": "string",
       "required": false,
       "default": "Back to Home"
+    },
+    "paymentNotificationEmail": {
+      "type": "email",
+      "required": false
     }
   },
   "config": {}

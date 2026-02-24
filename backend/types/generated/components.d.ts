@@ -570,6 +570,7 @@ export interface LayoutMenu extends Struct.ComponentSchema {
       Schema.Attribute.DefaultTo<'Something went wrong with your payment. Please try again.'>;
     paymentFailureTitle: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Payment Failed'>;
+    paymentNotificationEmail: Schema.Attribute.Email;
     paymentSuccessText: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Thank you for your order. Your payment has been processed successfully.'>;
     paymentSuccessTitle: Schema.Attribute.String &
