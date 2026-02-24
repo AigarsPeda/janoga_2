@@ -13,6 +13,7 @@ interface CreatePaymentBody {
   items: OrderItem[];
   totalPrice: number;
   locale?: string;
+  customerEmail?: string;
 }
 
 export async function POST(request: Request) {
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
 
     const result = await createKlixPurchase(products, {
       language: locale,
+      email: body.customerEmail,
       reference: `order-${Date.now()}`,
       successRedirect: `${siteUrl}/${locale}/payment/success`,
       failureRedirect: `${siteUrl}/${locale}/payment/failure`,

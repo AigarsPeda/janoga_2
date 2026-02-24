@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { CheckoutDialog, type CustomerInfo } from "@/components/checkout-dialog";
 import { cn } from "@/lib/utils";
 import { MenuDay, MenuInfoEntry, MenuInfoProps, MenuItem, MenuProps, Weekday } from "@/types";
 import type { LucideIcon } from "lucide-react";
@@ -65,6 +66,7 @@ export default function Menu({
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
   const [selections, setSelections] = useState<Record<string, DishSelection>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   useEffect(() => {
     console.log("selections:", selections);
@@ -133,7 +135,7 @@ export default function Menu({
 
   const totalItems = Object.values(selections).reduce((sum, s) => sum + s.quantity, 0);
 
-  const handlePayment = async () => {
+  const handlePayment = async (customerInfo: CustomerInfo) => {
     if (totalItems === 0 || isSubmitting) return;
     setIsSubmitting(true);
 
@@ -149,7 +151,12 @@ export default function Menu({
       const response = await fetch("/api/payments/klix/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items, totalPrice, locale: "lv" }),
+        body: JSON.stringify({
+          items,
+          totalPrice,
+          locale: "lv",
+          customerEmail: customerInfo.email,
+        }),
       });
 
       const data = await response.json();
@@ -169,6 +176,9 @@ export default function Menu({
           "paymentOrder",
           JSON.stringify({
             notificationEmail: paymentNotificationEmail,
+            customerEmail: customerInfo.email,
+            customerAddress: customerInfo.address,
+            customerNotes: customerInfo.notes,
             items,
             totalPrice,
           }),
@@ -445,12 +455,21 @@ export default function Menu({
                 totalItems === 0 && "opacity-50 pointer-events-none",
               )}
               disabled={totalItems === 0 || isSubmitting}
-              onClick={handlePayment}
+              onClick={() => setCheckoutOpen(true)}
             >
               {isSubmitting ? "Processing..." : buttonLink.text}
             </Button>
           </div>
         )}
+
+        <CheckoutDialog
+          open={checkoutOpen}
+          onOpenChange={setCheckoutOpen}
+          onConfirm={handlePayment}
+          isSubmitting={isSubmitting}
+          totalPrice={totalPrice}
+          totalItems={totalItems}
+        />
 
         {/* Decorative Background Gradient */}
         <div className="pointer-events-none absolute inset-0 -z-10 rounded-[2.2rem] bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />

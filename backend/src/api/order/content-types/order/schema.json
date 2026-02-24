@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Order",
+    "description": "Customer orders from menu payments"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "reference": {
+      "type": "string",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "paid", "failed", "cancelled"],
+      "default": "paid",
+      "required": true
+    },
+    "totalPrice": {
+      "type": "decimal",
+      "required": true
+    },
+    "items": {
+      "type": "json",
+      "required": true
+    },
+    "customerEmail": {
+      "type": "email",
+      "required": true
+    },
+    "customerAddress": {
+      "type": "text"
+    },
+    "customerNotes": {
+      "type": "text"
+    },
+    "notificationEmail": {
+      "type": "email"
+    },
+    "orderDate": {
+      "type": "date",
+      "required": true
+    }
+  }
+}
