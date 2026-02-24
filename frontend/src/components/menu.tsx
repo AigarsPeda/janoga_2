@@ -17,7 +17,6 @@ import {
   Soup,
   UtensilsCrossed,
 } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 interface MenuCardProps extends MenuProps {
@@ -59,6 +58,7 @@ export default function Menu({
   const [viewMode, setViewMode] = useState<"single" | "week">("single");
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
   const [selections, setSelections] = useState<Record<string, DishSelection>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     console.log("selections:", selections);
@@ -126,6 +126,39 @@ export default function Menu({
   );
 
   const totalItems = Object.values(selections).reduce((sum, s) => sum + s.quantity, 0);
+
+  const handlePayment = async () => {
+    if (totalItems === 0 || isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      const items = Object.values(selections).map((s) => ({
+        dishId: s.dishId,
+        description: s.description,
+        kind: s.kind,
+        price: s.price,
+        quantity: s.quantity,
+      }));
+
+      const response = await fetch("/api/payments/klix/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, totalPrice, locale: "lv" }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.checkout_url) {
+        window.location.href = data.checkout_url;
+      } else {
+        console.error("Payment creation failed:", data.message);
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="w-full flex justify-center">
@@ -382,20 +415,15 @@ export default function Menu({
               </div>
             )}
             <Button
-              asChild
-              size={"lg"}
+              size="lg"
               className={cn(
                 "w-full shadow-lg",
                 totalItems === 0 && "opacity-50 pointer-events-none",
               )}
+              disabled={totalItems === 0 || isSubmitting}
+              onClick={handlePayment}
             >
-              <Link
-                href={buttonLink.href}
-                className="cursor-pointer"
-                target={buttonLink.isExternal ? "_blank" : "_self"}
-              >
-                {buttonLink.text}
-              </Link>
+              {isSubmitting ? "Processing..." : buttonLink.text}
             </Button>
           </div>
         )}
