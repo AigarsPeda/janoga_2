@@ -590,20 +590,16 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     customerAddress: Schema.Attribute.Text;
     customerEmail: Schema.Attribute.Email & Schema.Attribute.Required;
+    customerName: Schema.Attribute.String & Schema.Attribute.Required;
     customerNotes: Schema.Attribute.Text;
+    customerPhone: Schema.Attribute.String & Schema.Attribute.Required;
     items: Schema.Attribute.JSON & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;
-    notificationEmail: Schema.Attribute.Email;
     orderDate: Schema.Attribute.Date & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     reference: Schema.Attribute.String & Schema.Attribute.Required;
-    status: Schema.Attribute.Enumeration<
-      ['pending', 'paid', 'failed', 'cancelled']
-    > &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'paid'>;
     totalPrice: Schema.Attribute.Decimal & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

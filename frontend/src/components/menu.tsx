@@ -61,12 +61,30 @@ export default function Menu({
   paymentFailureText,
   paymentBackButtonText,
   paymentNotificationEmail,
+  checkoutTitle,
+  checkoutNameLabel,
+  checkoutNamePlaceholder,
+  checkoutNameRequiredError,
+  checkoutEmailLabel,
+  checkoutEmailPlaceholder,
+  checkoutEmailRequiredError,
+  checkoutEmailInvalidError,
+  checkoutPhoneLabel,
+  checkoutPhonePlaceholder,
+  checkoutPhoneRequiredError,
+  checkoutAddressLabel,
+  checkoutAddressPlaceholder,
+  checkoutAddressRequiredError,
+  checkoutNotesLabel,
+  checkoutNotesPlaceholder,
+  checkoutCancelButtonText,
+  checkoutPayButtonText,
 }: MenuCardProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"single" | "week">("single");
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
   const [selections, setSelections] = useState<Record<string, DishSelection>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   useEffect(() => {
     console.log("selections:", selections);
@@ -166,9 +184,12 @@ export default function Menu({
           "paymentTexts",
           JSON.stringify({
             successTitle: paymentSuccessTitle || "Payment Successful",
-            successText: paymentSuccessText || "Thank you for your order. Your payment has been processed successfully.",
+            successText:
+              paymentSuccessText ||
+              "Thank you for your order. Your payment has been processed successfully.",
             failureTitle: paymentFailureTitle || "Payment Failed",
-            failureText: paymentFailureText || "Something went wrong with your payment. Please try again.",
+            failureText:
+              paymentFailureText || "Something went wrong with your payment. Please try again.",
             backButtonText: paymentBackButtonText || "Back to Home",
           }),
         );
@@ -176,7 +197,9 @@ export default function Menu({
           "paymentOrder",
           JSON.stringify({
             notificationEmail: paymentNotificationEmail,
+            customerName: customerInfo.name,
             customerEmail: customerInfo.email,
+            customerPhone: customerInfo.phone,
             customerAddress: customerInfo.address,
             customerNotes: customerInfo.notes,
             items,
@@ -433,7 +456,7 @@ export default function Menu({
               <div className="mb-4 px-1 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
-                    {totalItems} {totalItems === 1 ? (itemLabel || "item") : (itemsLabel || "items")}
+                    {totalItems} {totalItems === 1 ? itemLabel || "item" : itemsLabel || "items"}
                   </span>
                   <span className="text-2xl font-bold tabular-nums text-foreground">
                     {totalPrice.toFixed(2)}{" "}
@@ -469,6 +492,28 @@ export default function Menu({
           isSubmitting={isSubmitting}
           totalPrice={totalPrice}
           totalItems={totalItems}
+          itemLabel={itemLabel}
+          itemsLabel={itemsLabel}
+          labels={{
+            title: checkoutTitle,
+            nameLabel: checkoutNameLabel,
+            namePlaceholder: checkoutNamePlaceholder,
+            nameRequiredError: checkoutNameRequiredError,
+            emailLabel: checkoutEmailLabel,
+            emailPlaceholder: checkoutEmailPlaceholder,
+            emailRequiredError: checkoutEmailRequiredError,
+            emailInvalidError: checkoutEmailInvalidError,
+            phoneLabel: checkoutPhoneLabel,
+            phonePlaceholder: checkoutPhonePlaceholder,
+            phoneRequiredError: checkoutPhoneRequiredError,
+            addressLabel: checkoutAddressLabel,
+            addressPlaceholder: checkoutAddressPlaceholder,
+            addressRequiredError: checkoutAddressRequiredError,
+            notesLabel: checkoutNotesLabel,
+            notesPlaceholder: checkoutNotesPlaceholder,
+            cancelButtonText: checkoutCancelButtonText,
+            payButtonText: checkoutPayButtonText,
+          }}
         />
 
         {/* Decorative Background Gradient */}

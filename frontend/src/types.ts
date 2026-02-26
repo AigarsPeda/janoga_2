@@ -192,6 +192,24 @@ export interface MenuProps extends Base<"layout.menu"> {
   paymentFailureText?: string;
   paymentBackButtonText?: string;
   paymentNotificationEmail?: string;
+  checkoutTitle?: string;
+  checkoutNameLabel?: string;
+  checkoutNamePlaceholder?: string;
+  checkoutNameRequiredError?: string;
+  checkoutEmailLabel?: string;
+  checkoutEmailPlaceholder?: string;
+  checkoutEmailRequiredError?: string;
+  checkoutEmailInvalidError?: string;
+  checkoutPhoneLabel?: string;
+  checkoutPhonePlaceholder?: string;
+  checkoutPhoneRequiredError?: string;
+  checkoutAddressLabel?: string;
+  checkoutAddressPlaceholder?: string;
+  checkoutAddressRequiredError?: string;
+  checkoutNotesLabel?: string;
+  checkoutNotesPlaceholder?: string;
+  checkoutCancelButtonText?: string;
+  checkoutPayButtonText?: string;
   days: MenuDay[];
   buttonLink?: NavLink;
 }

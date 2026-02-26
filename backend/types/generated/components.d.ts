@@ -558,6 +558,42 @@ export interface LayoutMenu extends Struct.ComponentSchema {
   };
   attributes: {
     buttonLink: Schema.Attribute.Component<'elements.link', false>;
+    checkoutAddressLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Pieg\u0101des adrese'>;
+    checkoutAddressPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Iela, pils\u0113ta, pasta indekss'>;
+    checkoutAddressRequiredError: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Adrese ir oblig\u0101ta'>;
+    checkoutCancelButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Atcelt'>;
+    checkoutEmailInvalidError: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'L\u016Bdzu ievadiet der\u012Bgu e-pastu'>;
+    checkoutEmailLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'E-pasts'>;
+    checkoutEmailPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'jusu@epasts.lv'>;
+    checkoutEmailRequiredError: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'E-pasts ir oblig\u0101ts'>;
+    checkoutNameLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'V\u0101rds, Uzv\u0101rds'>;
+    checkoutNamePlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'J\u0101nis B\u0113rzi\u0146\u0161'>;
+    checkoutNameRequiredError: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'V\u0101rds ir oblig\u0101ts'>;
+    checkoutNotesLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Piez\u012Bmes'>;
+    checkoutNotesPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'\u012Apa\u0161as v\u0113lmes...'>;
+    checkoutPayButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Maks\u0101t'>;
+    checkoutPhoneLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'T\u0101lrunis'>;
+    checkoutPhonePlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'+371 20000000'>;
+    checkoutPhoneRequiredError: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'T\u0101lrunis ir oblig\u0101ts'>;
+    checkoutTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Pas\u016Bt\u012Bjuma noform\u0113\u0161ana'>;
     days: Schema.Attribute.Component<'layout.day', true>;
     fullWeekLabel: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Full Week'>;

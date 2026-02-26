@@ -77,6 +77,96 @@
     "paymentNotificationEmail": {
       "type": "email",
       "required": false
+    },
+    "checkoutTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Pasūtījuma noformēšana"
+    },
+    "checkoutNameLabel": {
+      "type": "string",
+      "required": false,
+      "default": "Vārds, Uzvārds"
+    },
+    "checkoutNamePlaceholder": {
+      "type": "string",
+      "required": false,
+      "default": "Jānis Bērziņš"
+    },
+    "checkoutNameRequiredError": {
+      "type": "string",
+      "required": false,
+      "default": "Vārds ir obligāts"
+    },
+    "checkoutEmailLabel": {
+      "type": "string",
+      "required": false,
+      "default": "E-pasts"
+    },
+    "checkoutEmailPlaceholder": {
+      "type": "string",
+      "required": false,
+      "default": "jusu@epasts.lv"
+    },
+    "checkoutEmailRequiredError": {
+      "type": "string",
+      "required": false,
+      "default": "E-pasts ir obligāts"
+    },
+    "checkoutEmailInvalidError": {
+      "type": "string",
+      "required": false,
+      "default": "Lūdzu ievadiet derīgu e-pastu"
+    },
+    "checkoutPhoneLabel": {
+      "type": "string",
+      "required": false,
+      "default": "Tālrunis"
+    },
+    "checkoutPhonePlaceholder": {
+      "type": "string",
+      "required": false,
+      "default": "+371 20000000"
+    },
+    "checkoutPhoneRequiredError": {
+      "type": "string",
+      "required": false,
+      "default": "Tālrunis ir obligāts"
+    },
+    "checkoutAddressLabel": {
+      "type": "string",
+      "required": false,
+      "default": "Piegādes adrese"
+    },
+    "checkoutAddressPlaceholder": {
+      "type": "string",
+      "required": false,
+      "default": "Iela, pilsēta, pasta indekss"
+    },
+    "checkoutAddressRequiredError": {
+      "type": "string",
+      "required": false,
+      "default": "Adrese ir obligāta"
+    },
+    "checkoutNotesLabel": {
+      "type": "string",
+      "required": false,
+      "default": "Piezīmes"
+    },
+    "checkoutNotesPlaceholder": {
+      "type": "string",
+      "required": false,
+      "default": "Īpašas vēlmes..."
+    },
+    "checkoutCancelButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "Atcelt"
+    },
+    "checkoutPayButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "Maksāt"
     }
   },
   "config": {}

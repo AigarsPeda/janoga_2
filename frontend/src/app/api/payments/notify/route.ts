@@ -10,7 +10,9 @@ interface OrderItem {
 
 interface NotifyBody {
   notificationEmail: string;
+  customerName: string;
   customerEmail: string;
+  customerPhone: string;
   customerAddress: string;
   customerNotes: string;
   items: OrderItem[];
@@ -29,13 +31,13 @@ async function saveOrderToStrapi(body: NotifyBody) {
   const payload = {
     data: {
       reference: `order-${Date.now()}`,
-      status: "paid",
       totalPrice: body.totalPrice,
       items: body.items,
+      customerName: body.customerName || null,
       customerEmail: body.customerEmail || null,
+      customerPhone: body.customerPhone || null,
       customerAddress: body.customerAddress || null,
       customerNotes: body.customerNotes || null,
-      notificationEmail: body.notificationEmail || null,
       orderDate: new Date().toISOString().split("T")[0],
     },
   };
@@ -102,7 +104,9 @@ export async function POST(request: Request) {
         .join("\n");
 
       const customerSection = [
+        body.customerName && `Name: ${body.customerName}`,
         body.customerEmail && `Email: ${body.customerEmail}`,
+        body.customerPhone && `Phone: ${body.customerPhone}`,
         body.customerAddress && `Address: ${body.customerAddress}`,
         body.customerNotes && `Notes: ${body.customerNotes}`,
       ]
@@ -110,7 +114,9 @@ export async function POST(request: Request) {
         .join("\n");
 
       const customerHtml = [
+        body.customerName && `<p><strong>Name:</strong> ${body.customerName}</p>`,
         body.customerEmail && `<p><strong>Email:</strong> ${body.customerEmail}</p>`,
+        body.customerPhone && `<p><strong>Phone:</strong> ${body.customerPhone}</p>`,
         body.customerAddress && `<p><strong>Address:</strong> ${body.customerAddress}</p>`,
         body.customerNotes && `<p><strong>Notes:</strong> ${body.customerNotes}</p>`,
       ]

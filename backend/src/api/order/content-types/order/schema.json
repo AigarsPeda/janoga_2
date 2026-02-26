@@ -15,12 +15,6 @@
       "type": "string",
       "required": true
     },
-    "status": {
-      "type": "enumeration",
-      "enum": ["pending", "paid", "failed", "cancelled"],
-      "default": "paid",
-      "required": true
-    },
     "totalPrice": {
       "type": "decimal",
       "required": true
@@ -29,8 +23,16 @@
       "type": "json",
       "required": true
     },
+    "customerName": {
+      "type": "string",
+      "required": true
+    },
     "customerEmail": {
       "type": "email",
+      "required": true
+    },
+    "customerPhone": {
+      "type": "string",
       "required": true
     },
     "customerAddress": {
@@ -38,9 +40,6 @@
     },
     "customerNotes": {
       "type": "text"
-    },
-    "notificationEmail": {
-      "type": "email"
     },
     "orderDate": {
       "type": "date",
